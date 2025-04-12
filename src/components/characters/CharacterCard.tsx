@@ -19,14 +19,14 @@ const CharacterCard = ({ character, index = 0 }: CharacterCardProps) => {
       return character.image;
     }
     
-    // Si la imagen ya empieza con /images/, usarla directamente
+    // Si la imagen ya empieza con /images/, añadir el prefijo base
     if (character.image.startsWith('/images/')) {
-      return character.image;
+      return `${import.meta.env.BASE_URL || '/Bombardino'}${character.image}`;
     }
     
     // Si la imagen es un nombre de archivo, construir la ruta en /images/
     const fileName = character.name.replace(/\s+/g, '%20');
-    return `/images/${fileName}.webp`;
+    return `${import.meta.env.BASE_URL || '/Bombardino'}/images/${fileName}.webp`;
   };
   
   return (
@@ -39,7 +39,7 @@ const CharacterCard = ({ character, index = 0 }: CharacterCardProps) => {
       <Link to={`/personajes/${characterSlug}`} className="block h-full">
         <div className="relative h-48 overflow-hidden">
           <img
-            src={imageError ? `/placeholder.svg` : getImagePath()}
+            src={imageError ? `${import.meta.env.BASE_URL || '/Bombardino'}/placeholder.svg` : getImagePath()}
             alt={character.name}
             className="w-full h-full object-contain object-center bg-brainrot-darker transition-transform duration-500 hover:scale-105"
             onError={() => setImageError(true)}

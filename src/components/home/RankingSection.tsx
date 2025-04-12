@@ -58,8 +58,8 @@ const RankingSection = () => {
                               character.image.startsWith('http') 
                                 ? character.image 
                                 : character.image.startsWith('/') 
-                                  ? character.image
-                                  : `/images/${character.name.replace(/\s+/g, '%20')}.webp`
+                                  ? `${import.meta.env.BASE_URL || '/Bombardino'}${character.image}` 
+                                  : `${import.meta.env.BASE_URL || '/Bombardino'}/images/${character.name.replace(/\s+/g, '%20')}.webp`
                             }
                             alt={character.name} 
                             className="h-full w-full object-contain bg-brainrot-darker"
@@ -67,7 +67,7 @@ const RankingSection = () => {
                             height="40"
                             loading="lazy"
                             onError={(e) => { 
-                              (e.target as HTMLImageElement).src = `/placeholder.svg`;
+                              (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL || '/Bombardino'}/placeholder.svg`;
                             }}
                           />
                         </div>

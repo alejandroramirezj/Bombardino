@@ -68,21 +68,21 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
       return character.image;
     }
     
-    // Si la imagen ya empieza con /images/, usarla directamente
+    // Si la imagen ya empieza con /images/, añadir el prefijo base
     if (character.image.startsWith('/images/')) {
-      return character.image;
+      return `${import.meta.env.BASE_URL || '/Bombardino'}${character.image}`;
     }
     
     // Si la imagen es un nombre de archivo, construir la ruta en /images/
     const fileName = character.name.replace(/\s+/g, '%20');
-    return `/images/${fileName}.webp`;
+    return `${import.meta.env.BASE_URL || '/Bombardino'}/images/${fileName}.webp`;
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
         <Link 
-          to="/personajes"
+          to={`/personajes`}
           className="inline-flex items-center text-gray-400 hover:text-brainrot-turquoise transition-colors"
         >
           <ChevronLeft size={20} />
@@ -103,7 +103,7 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
         >
           <div className="bg-brainrot-light rounded-xl overflow-hidden shadow-xl mb-4">
             <img 
-              src={imageError ? `/placeholder.svg` : getImagePath()}
+              src={imageError ? `${import.meta.env.BASE_URL || '/Bombardino'}/placeholder.svg` : getImagePath()}
               alt={character.name}
               className="w-full h-auto object-contain bg-brainrot-darker py-4 mx-auto max-h-[500px]"
               onError={() => setImageError(true)}
@@ -157,7 +157,7 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
             <div className="bg-brainrot-dark p-4 rounded-lg border border-amber-600 flex items-center text-sm mb-4">
               <AlertCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
               <p className="text-amber-500">
-                <Link to="/login" className="underline font-medium hover:text-amber-400">
+                <Link to={`/login`} className="underline font-medium hover:text-amber-400">
                   Inicia sesión
                 </Link> para votar por este personaje.
               </p>
@@ -290,7 +290,7 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
       {showShareModal && (
         <ShareModal 
           title={`¡Mira este personaje de Bombardino: ${character.name}!`}
-          url={`${window.location.origin}/characters/${character.id}`}
+          url={`${window.location.origin}/#/personajes/${character.name.toLowerCase().replace(/\s+/g, '-')}`}
           onClose={() => setShowShareModal(false)}
         />
       )}

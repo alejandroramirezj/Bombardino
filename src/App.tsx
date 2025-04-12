@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -31,7 +31,7 @@ const App = () => (
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <BrowserRouter basename="/Bombardino">
+              <HashRouter>
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     <Route index element={<HomePage />} />
@@ -51,7 +51,7 @@ const App = () => (
                     <Route path="about" element={<Navigate to="/acerca-de" replace />} />
                   </Route>
                 </Routes>
-              </BrowserRouter>
+              </HashRouter>
             </TooltipProvider>
           </HelmetProvider>
         </VoteProvider>
