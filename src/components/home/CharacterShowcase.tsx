@@ -52,7 +52,7 @@ const CharacterShowcase = () => {
         
         <div className="text-center">
           <Button asChild variant="outline" size="lg" className="border-brainrot-turquoise text-brainrot-turquoise hover:bg-brainrot-turquoise/20">
-            <Link to="/personajes" className="inline-flex items-center">
+            <Link to={`${import.meta.env.BASE_URL}personajes`} className="inline-flex items-center">
               Explorar todos los personajes
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>

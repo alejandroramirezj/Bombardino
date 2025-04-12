@@ -25,15 +25,15 @@ const Hero = () => {
               <img 
                 src="/images/Bombardino%20Crocodillo.webp"
                 alt="Bombardino coccodrillo"
-                width="100%"
-                height="auto"
+                className="w-full h-auto object-contain rounded mx-auto"
+                style={{ maxHeight: "400px" }}
               />
             </div>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-brainrot-blue hover:bg-brainrot-blue/90">
-              <Link to="/characters">
+              <Link to="/personajes">
                 Esplora Personaggi
               </Link>
             </Button>

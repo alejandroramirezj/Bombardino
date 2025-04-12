@@ -82,7 +82,7 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
         <Link 
-          to="/personajes" 
+          to="/personajes"
           className="inline-flex items-center text-gray-400 hover:text-brainrot-turquoise transition-colors"
         >
           <ChevronLeft size={20} />
@@ -103,9 +103,9 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
         >
           <div className="bg-brainrot-light rounded-xl overflow-hidden shadow-xl mb-4">
             <img 
-              src={imageError ? '/placeholder.svg' : getImagePath()}
+              src={imageError ? `/placeholder.svg` : getImagePath()}
               alt={character.name}
-              className="w-full object-cover aspect-[3/4]"
+              className="w-full h-auto object-contain bg-brainrot-darker py-4 mx-auto max-h-[500px]"
               onError={() => setImageError(true)}
             />
           </div>

@@ -54,12 +54,21 @@ const RankingSection = () => {
                       <Link to={`/personajes/${character.name.toLowerCase().replace(/\s+/g, '-')}`} className="flex items-center space-x-3">
                         <div className="h-10 w-10 rounded-full overflow-hidden bg-brainrot-darker border border-brainrot-light p-0.5">
                           <img 
-                            src={character.image} 
+                            src={
+                              character.image.startsWith('http') 
+                                ? character.image 
+                                : character.image.startsWith('/') 
+                                  ? character.image
+                                  : `/images/${character.name.replace(/\s+/g, '%20')}.webp`
+                            }
                             alt={character.name} 
-                            className="h-full w-full object-cover rounded-full"
+                            className="h-full w-full object-contain bg-brainrot-darker"
                             width="40"
                             height="40"
                             loading="lazy"
+                            onError={(e) => { 
+                              (e.target as HTMLImageElement).src = `/placeholder.svg`;
+                            }}
                           />
                         </div>
                         <span className="text-white hover:text-brainrot-blue transition-colors">

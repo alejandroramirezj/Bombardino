@@ -74,14 +74,20 @@ const CharacterCreateForm = () => {
     setIsSubmitting(true);
 
     try {
+      // Ajustar la ruta para GitHub Pages agregando el prefijo base
+      const basePath = import.meta.env.BASE_URL || '/Bombardino/';
+      
       // Si estamos subiendo un archivo, primero lo procesaríamos
       // Esta es una simulación, en un entorno real subirías el archivo a un servidor
-      const finalImageUrl = imageTab === "url" ? imageUrl : `/images/${name.toLowerCase().replace(/\s+/g, '_')}.webp`;
+      const finalImageUrl = imageTab === "url" 
+        ? imageUrl 
+        : `${basePath.replace(/\/$/, '')}/images/${name.toLowerCase().replace(/\s+/g, '_')}.webp`;
       
       // Simular biografía y otras propiedades adicionales
       const biography = `${name} es un personaje de tipo ${type} con poderes extraordinarios. ${description}`;
       
       addCharacter({
+        id: Date.now().toString(),
         name,
         type,
         power,
@@ -90,6 +96,8 @@ const CharacterCreateForm = () => {
         allies: allies.split(',').map(a => a.trim()).filter(Boolean),
         rivals: rivals.split(',').map(r => r.trim()).filter(Boolean),
         biography: biography,
+        votes: [],
+        voteCount: 0
       });
       
       // En un caso real, aquí subirías el archivo al servidor

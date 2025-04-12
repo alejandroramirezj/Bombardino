@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bombardino - Italian Brainrot</title>
+  <script>
+    // Manejo de rutas para Single Page Applications en GitHub Pages
+    (function() {
+      // No redireccionar para archivos o recursos específicos
+      if (
+        location.pathname.includes('.') || 
+        location.pathname.startsWith('/assets/') || 
+        location.pathname.startsWith('/images/')
+      ) {
+        return;
+      }
+
+      const baseUrl = '/Bombardino';
+      const path = location.pathname;
+      
+      // Redirigir a la aplicación principal con la ruta correcta
+      const redirectTo = baseUrl + '/#' + path;
+      sessionStorage.setItem('redirectPath', path);
+      
+      window.location.replace(redirectTo);
+    })();
+  </script>
+</head>
+<body>
+  <div style="font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
+    <h1>Redirecting...</h1>
+    <p>If you are not redirected automatically, <a href="/Bombardino/">click here</a>.</p>
+  </div>
+</body>
+</html> 
