@@ -42,7 +42,18 @@ const Navbar = () => {
                   <span className="hidden sm:inline">Crear personaje</span>
                 </Button>
               </Link>
-              <span className="text-gray-300 text-sm hidden sm:inline">{user?.email}</span>
+              <Link to="perfil" className="text-gray-300 hover:text-white flex items-center transition-colors">
+                {user?.picture ? (
+                  <img 
+                    src={user.picture} 
+                    alt={user.name || user.email}
+                    className="w-8 h-8 rounded-full mr-2"
+                  />
+                ) : (
+                  <User size={18} className="mr-2" />
+                )}
+                <span className="hidden sm:inline">{user?.name || user?.email}</span>
+              </Link>
               <Button onClick={logout} variant="ghost" size="sm" className="text-gray-300">
                 <LogOut size={18} />
                 <span className="ml-2 hidden sm:inline">Cerrar sesión</span>

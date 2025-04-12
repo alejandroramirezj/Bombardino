@@ -18,6 +18,7 @@ import RankingPage from "@/pages/RankingPage";
 import AboutPage from "@/pages/AboutPage";
 import BrainrotPage from "@/pages/BrainrotPage";
 import LoginPage from "@/pages/LoginPage";
+import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/components/layout/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
                     <Route path="acerca-de" element={<AboutPage />} />
                     <Route path="brainrot" element={<BrainrotPage />} />
                     <Route path="login" element={<LoginPage />} />
+                    <Route path="perfil" element={<ProfilePage />} />
                     <Route path="*" element={<NotFound />} />
                     
                     {/* Redirects for backwards compatibility */}

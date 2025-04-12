@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import initialCharacters from '../data/characters';
 import { toast } from 'sonner';
 import { Character, CharacterType } from '@/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 export interface CharacterContextType {
   characters: Character[];
@@ -23,11 +24,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [characters, setCharacters] = useState<Character[]>(initialCharacters);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentUser] = useState(() => {
-    return localStorage.getItem('brainrot-user') 
-      ? JSON.parse(localStorage.getItem('brainrot-user') || '{}') 
-      : null;
-  });
+  
+  const { user, addVotedCharacter, removeVotedCharacter, addCreatedCharacter } = useAuth();
 
   useEffect(() => {
     // Simulamos carga de datos
@@ -79,6 +77,12 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
 
     setCharacters(prevCharacters => [...prevCharacters, newCharacter]);
+    
+    // Registrar el personaje creado en el perfil del usuario
+    if (user) {
+      addCreatedCharacter(newCharacter.id);
+    }
+    
     toast.success('¡Personaje creado con éxito!');
   };
 
@@ -100,12 +104,12 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const voteForCharacter = async (characterId: string) => {
     try {
-      if (!currentUser) {
+      if (!user) {
         toast.error('Debes iniciar sesión para votar');
         return;
       }
 
-      const userId = currentUser.id;
+      const userId = user.id;
       const characterIndex = characters.findIndex(char => char.id === characterId);
       
       if (characterIndex === -1) {
@@ -124,6 +128,10 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           votes: character.votes.filter(id => id !== userId),
           voteCount: character.voteCount - 1
         };
+        
+        // Actualizar perfil del usuario
+        removeVotedCharacter(characterId);
+        
         toast.success('Voto eliminado');
       } else {
         // Añadir voto
@@ -132,6 +140,10 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           votes: [...character.votes, userId],
           voteCount: character.voteCount + 1
         };
+        
+        // Actualizar perfil del usuario
+        addVotedCharacter(characterId);
+        
         toast.success('¡Voto registrado!');
       }
       
