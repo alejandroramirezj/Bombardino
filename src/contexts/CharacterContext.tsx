@@ -9,6 +9,7 @@ interface CharacterContextType {
   getCharactersByType: (type: CharacterType | 'Tutti') => Character[];
   getTopCharacters: (limit?: number) => Character[];
   addCharacter: (character: Omit<Character, 'id' | 'votes'>) => void;
+  updateCharacterVotes: (characterId: string, increment: number) => void;
 }
 
 const CharacterContext = createContext<CharacterContextType | undefined>(undefined);
@@ -56,6 +57,18 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     localStorage.setItem('brainrot-characters', JSON.stringify(updatedCharacters));
   };
 
+  const updateCharacterVotes = (characterId: string, increment: number) => {
+    const updatedCharacters = characters.map(char => {
+      if (char.id === characterId) {
+        return { ...char, votes: char.votes + increment };
+      }
+      return char;
+    });
+    
+    setCharacters(updatedCharacters);
+    localStorage.setItem('brainrot-characters', JSON.stringify(updatedCharacters));
+  };
+
   return (
     <CharacterContext.Provider
       value={{
@@ -63,7 +76,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         getCharacterById,
         getCharactersByType,
         getTopCharacters,
-        addCharacter
+        addCharacter,
+        updateCharacterVotes
       }}
     >
       {children}

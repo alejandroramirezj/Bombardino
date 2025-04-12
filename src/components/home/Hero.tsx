@@ -24,7 +24,7 @@ const Hero = () => {
           <div className="mb-12">
             <div className="bg-brainrot-darker border border-brainrot-light p-1 rounded-lg max-w-xl mx-auto">
               <img 
-                src="/lovable-uploads/f2493c83-285f-45e6-993a-53dbe74db3b6.png" 
+                src="/lovable-uploads/1718c260-9094-4237-9071-bbd817673d82.png" 
                 alt="Bombardino Coccodrillo" 
                 className="w-full h-auto rounded-lg"
               />

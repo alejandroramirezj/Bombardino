@@ -1,8 +1,8 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Character } from '../types';
 import { useAuth } from './AuthContext';
 import { toast } from 'sonner';
+import { useCharacters } from './CharacterContext';
 
 interface VoteContextType {
   voteForCharacter: (characterId: string) => void;
@@ -14,6 +14,7 @@ const VoteContext = createContext<VoteContextType | undefined>(undefined);
 
 export const VoteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
+  const { updateCharacterVotes } = useCharacters();
   const [userVotes, setUserVotes] = useState<string[]>([]);
 
   useEffect(() => {
@@ -44,16 +45,8 @@ export const VoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUserVotes(updatedVotes);
     localStorage.setItem(`brainrot-votes-${user.id}`, JSON.stringify(updatedVotes));
     
-    // Update character votes in localStorage
-    const characters = JSON.parse(localStorage.getItem('brainrot-characters') || '[]');
-    const updatedCharacters = characters.map((char: Character) => {
-      if (char.id === characterId) {
-        return { ...char, votes: char.votes + 1 };
-      }
-      return char;
-    });
-    
-    localStorage.setItem('brainrot-characters', JSON.stringify(updatedCharacters));
+    // Update character votes using the context method
+    updateCharacterVotes(characterId, 1);
     toast.success("Voto registrato!");
   };
 
