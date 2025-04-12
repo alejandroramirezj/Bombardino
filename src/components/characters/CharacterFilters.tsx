@@ -56,11 +56,11 @@ const CharacterFilters = ({ filters, onFilterChange }: FiltersProps) => {
 
   return (
     <div className="mb-8 bg-gray-800 rounded-lg p-6 shadow-lg">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Búsqueda */}
         <div>
           <label htmlFor="search" className="block text-sm font-medium text-gray-300 mb-2">
-            Buscar
+            Buscar por nombre
           </label>
           <input
             type="text"
@@ -73,28 +73,6 @@ const CharacterFilters = ({ filters, onFilterChange }: FiltersProps) => {
               text-white placeholder-gray-400 focus:ring-2 focus:ring-brainrot-turquoise 
               focus:border-transparent"
           />
-        </div>
-
-        {/* Filtro por tipo */}
-        <div>
-          <label htmlFor="type" className="block text-sm font-medium text-gray-300 mb-2">
-            Tipo
-          </label>
-          <select
-            id="type"
-            name="type"
-            value={filters.type}
-            onChange={handleInputChange}
-            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md 
-              text-white focus:ring-2 focus:ring-brainrot-turquoise 
-              focus:border-transparent"
-          >
-            <option value="all">Todos</option>
-            <option value="héroe">Héroes</option>
-            <option value="villano">Villanos</option>
-            <option value="aliado">Aliados</option>
-            <option value="neutral">Neutrales</option>
-          </select>
         </div>
 
         {/* Ordenar por */}
@@ -115,26 +93,6 @@ const CharacterFilters = ({ filters, onFilterChange }: FiltersProps) => {
             <option value="power">Poder (Mayor-Menor)</option>
             <option value="votes">Popularidad (Votos)</option>
             <option value="recent">Más recientes</option>
-          </select>
-        </div>
-        
-        {/* Orden de clasificación */}
-        <div>
-          <label htmlFor="sortOrder" className="block text-sm font-medium text-gray-300 mb-2">
-            Mostrar primero
-          </label>
-          <select
-            id="sortOrder"
-            name="sortOrder"
-            value={filters.sortOrder}
-            onChange={handleInputChange}
-            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md 
-              text-white focus:ring-2 focus:ring-brainrot-turquoise 
-              focus:border-transparent"
-          >
-            <option value="recent">Más recientes</option>
-            <option value="popularity">Más populares</option>
-            <option value="alphabetical">Orden alfabético</option>
           </select>
         </div>
       </div>
