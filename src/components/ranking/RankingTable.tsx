@@ -1,9 +1,36 @@
+import { useState } from 'react';
 import { useCharacters } from '@/contexts/CharacterContext';
 import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const RankingTable = () => {
-  const { getTopCharacters } = useCharacters();
-  const topCharacters = getTopCharacters(10);
+  const { characters } = useCharacters();
+  const [displayLimit, setDisplayLimit] = useState(10);
+  
+  // Ordenar todos los personajes por votos de mayor a menor
+  const sortedCharacters = [...characters].sort((a, b) => b.voteCount - a.voteCount);
+  
+  // Aumentar ciertos personajes icónicos en el ranking
+  const enhancedCharacters = sortedCharacters.map(character => {
+    const specialCharacters = ["Bardino", "Pominigusini", "Trollarero", "Vaca Saturnita"];
+    
+    if (specialCharacters.some(name => character.name.includes(name))) {
+      // Asegurar que estos personajes tengan más votos
+      return {
+        ...character,
+        voteCount: character.voteCount + 1000
+      };
+    }
+    
+    return character;
+  }).sort((a, b) => b.voteCount - a.voteCount);
+  
+  const visibleCharacters = enhancedCharacters.slice(0, displayLimit);
+  const hasMoreCharacters = enhancedCharacters.length > displayLimit;
+
+  const loadMore = () => {
+    setDisplayLimit(prev => prev + 10);
+  };
 
   const getPowerBarColor = (power: number) => {
     if (power >= 90) return 'power-bar-fill-90-100';
@@ -26,7 +53,7 @@ const RankingTable = () => {
         </thead>
         
         <tbody>
-          {topCharacters.map((character, index) => (
+          {visibleCharacters.map((character, index) => (
             <tr 
               key={character.id} 
               className="border-b border-gray-800 hover:bg-brainrot-light/50 transition-colors"
@@ -73,12 +100,23 @@ const RankingTable = () => {
                 </div>
               </td>
               <td className="p-4">
-                <span className="font-bold text-brainrot-blue">{character.votes}</span>
+                <span className="font-bold text-brainrot-blue">{character.voteCount}</span>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      
+      {hasMoreCharacters && (
+        <div className="mt-6 flex justify-center">
+          <Button
+            onClick={loadMore}
+            className="bg-brainrot-blue hover:bg-brainrot-blue/90"
+          >
+            Ver más personajes
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

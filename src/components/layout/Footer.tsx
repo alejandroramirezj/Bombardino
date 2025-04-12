@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Instagram, Twitter } from 'lucide-react';
 
@@ -26,76 +25,54 @@ const Footer = () => {
           </div>
           
           <div>
-            <h4 className="text-brainrot-blue uppercase text-sm font-bold mb-4">EXPLORE</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/characters" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  All Characters
-                </Link>
-              </li>
-              <li>
-                <Link to="/ranking" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Power Ranking
-                </Link>
-              </li>
-              <li>
-                <Link to="/gallery" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Gallery
-                </Link>
-              </li>
-            </ul>
+            <span className="font-semibold">Explora</span>
+            <div className="mt-2 flex flex-col space-y-1">
+              <Link to="personajes" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Personajes
+              </Link>
+              <Link to="ranking" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Power Ranking
+              </Link>
+              <Link to="gallery" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Galería
+              </Link>
+            </div>
           </div>
           
           <div>
-            <h4 className="text-brainrot-blue uppercase text-sm font-bold mb-4">RESOURCES</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/faq" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link to="/wiki" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Wiki
-                </Link>
-              </li>
-              <li>
-                <Link to="/universe-guide" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Universe Guide
-                </Link>
-              </li>
-              <li>
-                <Link to="/meme-history" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Meme History
-                </Link>
-              </li>
-            </ul>
+            <span className="font-semibold">Recursos</span>
+            <div className="mt-2 flex flex-col space-y-1">
+              <Link to="faq" className="text-gray-400 hover:text-white transition-colors text-sm">
+                FAQ
+              </Link>
+              <Link to="wiki" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Wiki
+              </Link>
+              <Link to="universe-guide" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Guía del Universo
+              </Link>
+              <Link to="meme-history" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Historia del Meme
+              </Link>
+            </div>
           </div>
           
           <div>
-            <h4 className="text-brainrot-blue uppercase text-sm font-bold mb-4">COMMUNITY</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/discord" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Discord
-                </Link>
-              </li>
-              <li>
-                <Link to="/contribute" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Contribute
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Terms
-                </Link>
-              </li>
-              <li>
-                <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors text-sm">
-                  Privacy
-                </Link>
-              </li>
-            </ul>
+            <span className="font-semibold">Comunidad</span>
+            <div className="mt-2 flex flex-col space-y-1">
+              <Link to="discord" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Discord
+              </Link>
+              <Link to="contribute" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Contribuir
+              </Link>
+              <Link to="terms" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Términos
+              </Link>
+              <Link to="privacy" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Privacidad
+              </Link>
+            </div>
           </div>
         </div>
         

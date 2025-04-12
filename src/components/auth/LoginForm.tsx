@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -7,11 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Loader2, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { GoogleLogin } from '@react-oauth/google';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, isLoading } = useAuth();
+  const { login, loginWithGoogle, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,7 +42,35 @@ const LoginForm = () => {
     <div className="bg-brainrot-light p-8 rounded-lg shadow-lg max-w-md w-full">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-white mb-2">Accedi al Brainrot</h2>
-        <p className="text-gray-400">Entra per votare i tuoi personaggi preferiti</p>
+        <p className="text-gray-400">Entra para votar tus personajes favoritos</p>
+      </div>
+      
+      <div className="mb-6">
+        <GoogleLogin
+          onSuccess={(response) => {
+            if (response.credential) {
+              loginWithGoogle(response.credential);
+              navigate('/');
+            }
+          }}
+          onError={() => {
+            toast.error('Error al iniciar sesión con Google');
+          }}
+          theme="filled_blue"
+          shape="pill"
+          width="100%"
+          text="signin_with"
+          locale="es"
+        />
+      </div>
+      
+      <div className="relative mb-6">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-gray-700"></span>
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-brainrot-light px-2 text-gray-400">o continúa con</span>
+        </div>
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -55,7 +83,7 @@ const LoginForm = () => {
             <Input
               id="email"
               type="email"
-              placeholder="tu@esempio.com"
+              placeholder="tu@ejemplo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="pl-10 bg-brainrot-dark border-gray-700 text-white placeholder:text-gray-500"
@@ -63,7 +91,7 @@ const LoginForm = () => {
             />
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            Ti invieremo un magic link per accedere senza password
+            Te enviaremos un magic link para acceder sin contraseña
           </p>
         </div>
         
@@ -75,18 +103,18 @@ const LoginForm = () => {
           {(isSubmitting || isLoading) ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Elaborazione...
+              Procesando...
             </>
           ) : (
-            "Invia magic link"
+            "Enviar magic link"
           )}
         </Button>
       </form>
       
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-500">
-          Per questa demo, l'accesso è immediato per scopi di test.
-          <br />In un'applicazione reale, riceveresti un'email con un link per accedere.
+          Para esta demo, el acceso es inmediato para propósitos de prueba.
+          <br />En una aplicación real, recibirías un email con un enlace para acceder.
         </p>
       </div>
     </div>

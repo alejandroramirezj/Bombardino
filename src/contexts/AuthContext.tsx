@@ -2,9 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 interface AuthContextType {
-  user: { id: string; email: string } | null;
+  user: { id: string; email: string; name?: string; picture?: string } | null;
   isLoading: boolean;
   login: (email: string) => Promise<void>;
+  loginWithGoogle: (credential: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -12,7 +13,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<{ id: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ id: string; email: string; name?: string; picture?: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -44,6 +45,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithGoogle = (credential: string) => {
+    setIsLoading(true);
+    try {
+      // Decode JWT token to get user info
+      const payload = JSON.parse(atob(credential.split('.')[1]));
+      
+      const newUser = {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+        picture: payload.picture
+      };
+      
+      localStorage.setItem('brainrot-user', JSON.stringify(newUser));
+      setUser(newUser);
+      toast.success(`¡Bienvenido, ${payload.name}!`);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error al iniciar sesión con Google:', error);
+      toast.error("Error al iniciar sesión con Google");
+      setIsLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('brainrot-user');
     setUser(null);
@@ -56,6 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         isLoading,
         login,
+        loginWithGoogle,
         logout,
         isAuthenticated: !!user,
       }}

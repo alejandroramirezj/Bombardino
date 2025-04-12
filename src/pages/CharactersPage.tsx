@@ -12,7 +12,8 @@ const CharactersPage = () => {
   const [filters, setFilters] = useState({
     type: 'all',
     search: '',
-    sortBy: 'name'
+    sortBy: 'name',
+    sortOrder: 'popularity' as 'recent' | 'popularity' | 'alphabetical'
   });
 
   useEffect(() => {
@@ -36,18 +37,42 @@ const CharactersPage = () => {
       );
     }
     
-    // Ordenar
-    results.sort((a, b) => {
+    // Aplicar el orden de clasificación principal
+    switch (filters.sortOrder) {
+      case 'recent':
+        // Asumir que los personajes más recientes están al final del array original
+        results.sort((a, b) => (b.id > a.id ? 1 : -1));
+        break;
+      case 'popularity':
+        results.sort((a, b) => (b.votes?.length || 0) - (a.votes?.length || 0));
+        break;
+      case 'alphabetical':
+        results.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+    }
+    
+    // Aplicar ordenamiento secundario si es diferente del principal
+    if (
+      (filters.sortOrder === 'popularity' && filters.sortBy !== 'votes') ||
+      (filters.sortOrder === 'alphabetical' && filters.sortBy !== 'name') ||
+      (filters.sortOrder === 'recent' && filters.sortBy !== 'recent')
+    ) {
+      // Ordenar
       switch(filters.sortBy) {
         case 'votes':
-          return (b.votes || 0) - (a.votes || 0);
+          results.sort((a, b) => (b.votes?.length || 0) - (a.votes?.length || 0));
+          break;
         case 'power':
-          return (b.power || 0) - (a.power || 0);
+          results.sort((a, b) => (b.power || 0) - (a.power || 0));
+          break;
         case 'name':
-        default:
-          return a.name.localeCompare(b.name);
+          results.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case 'recent':
+          results.sort((a, b) => (b.id > a.id ? 1 : -1));
+          break;
       }
-    });
+    }
     
     setFilteredCharacters(results);
   }, [characters, filters, loading]);

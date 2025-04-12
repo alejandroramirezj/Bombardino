@@ -18,16 +18,16 @@ const Navbar = () => {
 
         <div className="flex-1 hidden md:flex justify-center">
           <div className="flex space-x-8">
-            <Link to="/personajes" className="text-gray-300 hover:text-white transition-colors">
+            <Link to="personajes" className="text-gray-300 hover:text-white transition-colors">
               Personajes
             </Link>
-            <Link to="/ranking" className="text-gray-300 hover:text-white transition-colors">
+            <Link to="ranking" className="text-gray-300 hover:text-white transition-colors">
               Ranking
             </Link>
-            <Link to="/acerca-de" className="text-gray-300 hover:text-white transition-colors">
+            <Link to="acerca-de" className="text-gray-300 hover:text-white transition-colors">
               Acerca de
             </Link>
-            <Link to="/brainrot" className="text-gray-300 hover:text-white transition-colors">
+            <Link to="brainrot" className="text-gray-300 hover:text-white transition-colors">
               Brainrot
             </Link>
           </div>
@@ -36,7 +36,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {isAuthenticated ? (
             <>
-              <Link to="/crear-personaje">
+              <Link to="crear-personaje">
                 <Button variant="outline" size="sm" className="flex items-center gap-2 bg-brainrot-blue/20 border-brainrot-blue text-white hover:bg-brainrot-blue/30">
                   <PlusCircle size={16} />
                   <span className="hidden sm:inline">Crear personaje</span>
@@ -49,7 +49,7 @@ const Navbar = () => {
               </Button>
             </>
           ) : (
-            <Link to="/login">
+            <Link to="login">
               <Button variant="ghost" size="sm" className="text-gray-300">
                 <LogIn size={18} />
                 <span className="ml-2 hidden sm:inline">Iniciar sesión</span>

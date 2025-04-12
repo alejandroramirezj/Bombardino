@@ -65,7 +65,7 @@ const CharacterMarquee = () => {
         {[...brainrotCharacters, ...brainrotCharacters].map((character, index) => (
           <Link
             key={index} 
-            to="/personajes" 
+            to="personajes" 
             className="mx-2 whitespace-nowrap text-brainrot-turquoise hover:text-white flex items-center transition-colors"
           >
             <span className="mr-1">{character.emoji}</span>

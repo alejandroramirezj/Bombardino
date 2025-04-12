@@ -109,7 +109,7 @@ const RankingSection = () => {
             size="lg"
             className="border-yellow-400 text-yellow-400 hover:bg-yellow-400/20"
           >
-            <Link to="/ranking" className="inline-flex items-center">
+            <Link to="ranking" className="inline-flex items-center">
               Ver ranking completo
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>

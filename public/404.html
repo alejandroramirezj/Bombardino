@@ -19,11 +19,21 @@
       const baseUrl = '/Bombardino';
       const path = location.pathname;
       
-      // Redirigir a la aplicación principal con la ruta correcta
-      const redirectTo = baseUrl + '/#' + path;
-      sessionStorage.setItem('redirectPath', path);
+      // Evitar redirecciones duplicadas
+      if (path.includes(baseUrl + baseUrl)) {
+        // Corregir duplicación de baseUrl
+        const correctedPath = path.replace(baseUrl + baseUrl, baseUrl);
+        window.location.replace(correctedPath);
+        return;
+      }
       
-      window.location.replace(redirectTo);
+      // Si la ruta ya comienza con el baseUrl, no hacer nada adicional
+      if (path.startsWith(baseUrl) && path !== baseUrl && path !== baseUrl + '/') {
+        return;
+      }
+      
+      // Redirigir a la aplicación principal
+      window.location.replace(baseUrl + '/');
     })();
   </script>
 </head>

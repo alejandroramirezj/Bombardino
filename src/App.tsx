@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -31,7 +31,7 @@ const App = () => (
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <HashRouter>
+              <BrowserRouter basename="/Bombardino">
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     <Route index element={<HomePage />} />
@@ -45,13 +45,13 @@ const App = () => (
                     <Route path="*" element={<NotFound />} />
                     
                     {/* Redirects for backwards compatibility */}
-                    <Route path="characters" element={<Navigate to="/personajes" replace />} />
-                    <Route path="characters/:characterSlug" element={<Navigate to="/personajes/:characterSlug" replace />} />
-                    <Route path="personajes/crear" element={<Navigate to="/crear-personaje" replace />} />
-                    <Route path="about" element={<Navigate to="/acerca-de" replace />} />
+                    <Route path="characters" element={<Navigate to="personajes" replace />} />
+                    <Route path="characters/:characterSlug" element={<Navigate to={`personajes/${location.pathname.split('/').pop()}`} replace />} />
+                    <Route path="personajes/crear" element={<Navigate to="../crear-personaje" replace />} />
+                    <Route path="about" element={<Navigate to="acerca-de" replace />} />
                   </Route>
                 </Routes>
-              </HashRouter>
+              </BrowserRouter>
             </TooltipProvider>
           </HelmetProvider>
         </VoteProvider>

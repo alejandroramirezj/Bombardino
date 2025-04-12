@@ -33,13 +33,13 @@ const Hero = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-brainrot-blue hover:bg-brainrot-blue/90">
-              <Link to="/personajes">
+              <Link to="personajes">
                 Esplora Personaggi
               </Link>
             </Button>
             
             <Button asChild size="lg" variant="outline" className="border-brainrot-turquoise text-brainrot-turquoise hover:bg-brainrot-turquoise/20">
-              <Link to="/ranking">
+              <Link to="ranking">
                 Power Ranking
               </Link>
             </Button>

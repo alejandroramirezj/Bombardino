@@ -8,6 +8,7 @@ interface FilterValues {
   type: string;
   search: string;
   sortBy: string;
+  sortOrder: 'recent' | 'popularity' | 'alphabetical';
 }
 
 interface FiltersProps {
@@ -55,7 +56,7 @@ const CharacterFilters = ({ filters, onFilterChange }: FiltersProps) => {
 
   return (
     <div className="mb-8 bg-gray-800 rounded-lg p-6 shadow-lg">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Búsqueda */}
         <div>
           <label htmlFor="search" className="block text-sm font-medium text-gray-300 mb-2">
@@ -113,6 +114,27 @@ const CharacterFilters = ({ filters, onFilterChange }: FiltersProps) => {
             <option value="name">Nombre (A-Z)</option>
             <option value="power">Poder (Mayor-Menor)</option>
             <option value="votes">Popularidad (Votos)</option>
+            <option value="recent">Más recientes</option>
+          </select>
+        </div>
+        
+        {/* Orden de clasificación */}
+        <div>
+          <label htmlFor="sortOrder" className="block text-sm font-medium text-gray-300 mb-2">
+            Mostrar primero
+          </label>
+          <select
+            id="sortOrder"
+            name="sortOrder"
+            value={filters.sortOrder}
+            onChange={handleInputChange}
+            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md 
+              text-white focus:ring-2 focus:ring-brainrot-turquoise 
+              focus:border-transparent"
+          >
+            <option value="recent">Más recientes</option>
+            <option value="popularity">Más populares</option>
+            <option value="alphabetical">Orden alfabético</option>
           </select>
         </div>
       </div>
