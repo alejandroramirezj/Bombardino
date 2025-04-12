@@ -66,15 +66,15 @@ const RankingTable = () => {
                       src={
                         character.image.startsWith('http') 
                           ? character.image 
-                          : character.image.startsWith('/') 
-                            ? `${import.meta.env.BASE_URL || '/Bombardino'}${character.image}` 
-                            : `${import.meta.env.BASE_URL || '/Bombardino'}/images/${character.name.replace(/\s+/g, '%20')}.webp`
+                          : character.image.startsWith('/images/') 
+                            ? `${character.image.substring(1)}` 
+                            : `images/${character.name.replace(/\s+/g, '%20')}.webp`
                       }
                       alt={character.name} 
                       className="h-full w-full object-contain bg-brainrot-darker"
                       loading="lazy"
                       onError={(e) => { 
-                        (e.target as HTMLImageElement).src = `/placeholder.svg`;
+                        (e.target as HTMLImageElement).src = `placeholder.svg`;
                       }}
                     />
                   </div>
