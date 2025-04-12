@@ -18,7 +18,7 @@ import RankingPage from "@/pages/RankingPage";
 import AboutPage from "@/pages/AboutPage";
 import BrainrotPage from "@/pages/BrainrotPage";
 import LoginPage from "@/pages/LoginPage";
-import NotFound from "@/pages/NotFound";
+import NotFound from "@/components/layout/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -31,13 +31,13 @@ const App = () => (
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <HashRouter>
+              <HashRouter basename="/">
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     <Route index element={<HomePage />} />
                     <Route path="personajes" element={<CharactersPage />} />
                     <Route path="personajes/:characterSlug" element={<CharacterDetailPage />} />
-                    <Route path="personajes/crear" element={<CharacterCreatePage />} />
+                    <Route path="crear-personaje" element={<CharacterCreatePage />} />
                     <Route path="ranking" element={<RankingPage />} />
                     <Route path="acerca-de" element={<AboutPage />} />
                     <Route path="brainrot" element={<BrainrotPage />} />
@@ -47,7 +47,7 @@ const App = () => (
                     {/* Redirects for backwards compatibility */}
                     <Route path="characters" element={<Navigate to="/personajes" replace />} />
                     <Route path="characters/:characterSlug" element={<Navigate to="/personajes/:characterSlug" replace />} />
-                    <Route path="characters/create" element={<Navigate to="/personajes/crear" replace />} />
+                    <Route path="personajes/crear" element={<Navigate to="/crear-personaje" replace />} />
                     <Route path="about" element={<Navigate to="/acerca-de" replace />} />
                   </Route>
                 </Routes>

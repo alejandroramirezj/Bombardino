@@ -36,7 +36,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {isAuthenticated ? (
             <>
-              <Link to="/personajes/crear">
+              <Link to="/crear-personaje">
                 <Button variant="outline" size="sm" className="flex items-center gap-2 bg-brainrot-blue/20 border-brainrot-blue text-white hover:bg-brainrot-blue/30">
                   <PlusCircle size={16} />
                   <span className="hidden sm:inline">Crear personaje</span>
