@@ -33,7 +33,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter basename={
-                window.location.hostname === "bombardinocrocodilo.com" 
+                window.location.hostname === "bombardirocrocodrilo.com" 
                 ? "/" 
                 : "/Bombardino"
               }>
