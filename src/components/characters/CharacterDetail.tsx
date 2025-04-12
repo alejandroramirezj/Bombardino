@@ -110,7 +110,7 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
             <img 
               src={getImagePath()}
               alt={character.name}
-              className="w-full h-auto object-contain bg-brainrot-darker py-4 mx-auto max-h-[500px]"
+              className="w-full h-[400px] object-contain object-center bg-brainrot-darker transition-transform duration-500"
             />
           </div>
           
