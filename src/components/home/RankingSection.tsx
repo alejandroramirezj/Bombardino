@@ -67,7 +67,7 @@ const RankingSection = () => {
                             height="40"
                             loading="lazy"
                             onError={(e) => { 
-                              (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL || '/Bombardino'}/placeholder.svg`;
+                              (e.target as HTMLImageElement).src = `/placeholder.svg`;
                             }}
                           />
                         </div>

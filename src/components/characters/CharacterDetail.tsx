@@ -63,19 +63,19 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
   };
 
   const getImagePath = () => {
-    // Si la imagen ya es una URL externa completa, usarla directamente
+    // Si la imagen es una URL externa, usarla directamente
     if (character.image.startsWith('http')) {
       return character.image;
     }
     
-    // Si la imagen ya empieza con /images/, añadir el prefijo base
+    // Si la imagen ya empieza con /images/, quitar el slash inicial
     if (character.image.startsWith('/images/')) {
-      return `${import.meta.env.BASE_URL || '/Bombardino'}${character.image}`;
+      return `${character.image.substring(1)}`;
     }
     
     // Si la imagen es un nombre de archivo, construir la ruta en /images/
     const fileName = character.name.replace(/\s+/g, '%20');
-    return `${import.meta.env.BASE_URL || '/Bombardino'}/images/${fileName}.webp`;
+    return `images/${fileName}.webp`;
   };
 
   return (
@@ -103,7 +103,7 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
         >
           <div className="bg-brainrot-light rounded-xl overflow-hidden shadow-xl mb-4">
             <img 
-              src={imageError ? `${import.meta.env.BASE_URL || '/Bombardino'}/placeholder.svg` : getImagePath()}
+              src={imageError ? `/placeholder.svg` : getImagePath()}
               alt={character.name}
               className="w-full h-auto object-contain bg-brainrot-darker py-4 mx-auto max-h-[500px]"
               onError={() => setImageError(true)}

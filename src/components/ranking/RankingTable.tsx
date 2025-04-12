@@ -74,7 +74,7 @@ const RankingTable = () => {
                       className="h-full w-full object-contain bg-brainrot-darker"
                       loading="lazy"
                       onError={(e) => { 
-                        (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL || '/Bombardino'}/placeholder.svg`;
+                        (e.target as HTMLImageElement).src = `/placeholder.svg`;
                       }}
                     />
                   </div>
