@@ -68,9 +68,9 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
       return character.image;
     }
     
-    // Si la imagen ya empieza con /images/, quitar el slash inicial
+    // Si la imagen ya empieza con /images/, añadir el prefijo base
     if (character.image.startsWith('/images/')) {
-      return `images/${character.image.substring(8)}`;
+      return `${character.image.substring(1)}`;
     }
     
     // Si la imagen es un nombre de archivo, construir la ruta en /images/

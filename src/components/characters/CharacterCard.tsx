@@ -39,7 +39,7 @@ const CharacterCard = ({ character, index = 0 }: CharacterCardProps) => {
       <Link to={`/personajes/${characterSlug}`} className="block h-full">
         <div className="relative h-48 overflow-hidden">
           <img
-            src={imageError ? `/placeholder.svg` : getImagePath()}
+            src={imageError ? `placeholder.svg` : getImagePath()}
             alt={character.name}
             className="w-full h-full object-contain object-center bg-brainrot-darker transition-transform duration-500 hover:scale-105"
             onError={() => setImageError(true)}
