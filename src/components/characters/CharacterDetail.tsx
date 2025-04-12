@@ -70,13 +70,18 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
     
     // Si la imagen ya empieza con /images/, quitar el slash inicial
     if (character.image.startsWith('/images/')) {
-      return `${character.image.substring(1)}`;
+      return `images/${character.image.substring(8)}`;
     }
     
     // Si la imagen es un nombre de archivo, construir la ruta en /images/
     const fileName = character.name.replace(/\s+/g, '%20');
     return `images/${fileName}.webp`;
   };
+
+  // Se agrega un efecto para resetear el error de imagen cuando cambia el personaje
+  useEffect(() => {
+    setImageError(false);
+  }, [character.id]);
 
   return (
     <div className="container mx-auto px-4 py-8">
