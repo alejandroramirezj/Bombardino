@@ -108,10 +108,9 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
         >
           <div className="bg-brainrot-light rounded-xl overflow-hidden shadow-xl mb-4">
             <img 
-              src={imageError ? `placeholder.svg` : getImagePath()}
+              src={getImagePath()}
               alt={character.name}
               className="w-full h-auto object-contain bg-brainrot-darker py-4 mx-auto max-h-[500px]"
-              onError={() => setImageError(true)}
             />
           </div>
           
