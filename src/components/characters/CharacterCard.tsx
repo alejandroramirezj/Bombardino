@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Character } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -30,73 +29,36 @@ const CharacterCard = ({ character }: CharacterCardProps) => {
   };
 
   return (
-    <div className="character-card bg-brainrot-dark rounded-lg overflow-hidden">
-      <div className="relative aspect-square overflow-hidden">
+    <div className="bg-brainrot-light rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+      <div className="relative h-64">
         <img 
-          src={character.image} 
           alt={character.name}
-          className="w-full h-full object-cover transition-transform hover:scale-110 duration-500"
-          loading="lazy"
+          loading="lazy" 
+          decoding="async" 
+          data-nimg="fill" 
+          className="object-contain rounded-lg"
+          src={character.image}
+          style={{position: 'absolute', height: '100%', width: '100%', inset: 0, color: 'transparent'}}
         />
       </div>
-      
-      <div className="p-4">
-        <Link to={`/character/${character.id}`}>
-          <h3 className="text-xl font-bold text-brainrot-turquoise mb-1">{character.name}</h3>
-        </Link>
-        
-        <div className="mb-3">
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold text-white">{character.name}</h3>
           <span className={`type-badge type-${character.type.toLowerCase()}`}>
             {character.type}
           </span>
         </div>
-        
-        <div className="mb-4">
-          <div className="flex justify-between items-center mb-1">
-            <span className="text-xs text-gray-400">Potenza:</span>
-            <span className="text-xs font-bold text-yellow-400">{character.power}/100</span>
+        <p className="text-gray-400 mb-4 line-clamp-3">{character.description}</p>
+        <div className="flex justify-between items-center">
+          <div className="text-sm text-brainrot-blue">
+            <span className="font-bold">{character.votes}</span> voti
           </div>
-          <div className="power-bar">
-            <div 
-              className={getPowerBarColor(character.power)}
-              style={{ width: `${character.power}%` }}
-            ></div>
-          </div>
-        </div>
-        
-        <p className="text-sm text-gray-300 mb-4 line-clamp-2">{character.description}</p>
-        
-        <div className="border-t border-gray-700 pt-4 mt-4">
-          <div className="flex justify-between items-center">
-            <div className="text-brainrot-blue font-bold">
-              {character.votes} <span className="text-xs text-gray-400">voti</span>
-            </div>
-            
-            <div className="flex gap-2">
-              <Button 
-                variant="outline"
-                size="sm"
-                asChild
-                className="text-brainrot-turquoise border-brainrot-turquoise hover:bg-brainrot-turquoise/20"
-              >
-                <Link to={`/character/${character.id}`}>
-                  <Info className="w-4 h-4 mr-1" />
-                  Details
-                </Link>
-              </Button>
-              
-              <Button
-                variant={hasVoted ? "secondary" : "default"}
-                size="sm"
-                onClick={handleVote}
-                disabled={!isAuthenticated || hasVoted}
-                className={hasVoted ? "bg-gray-700 text-gray-300" : "bg-brainrot-blue hover:bg-brainrot-blue/80"}
-              >
-                <ThumbsUp className="w-4 h-4 mr-1" />
-                Vote
-              </Button>
-            </div>
-          </div>
+          <Link 
+            to={`/characters/${character.id}`}
+            className="text-brainrot-blue hover:underline font-medium"
+          >
+            Dettagli
+          </Link>
         </div>
       </div>
     </div>

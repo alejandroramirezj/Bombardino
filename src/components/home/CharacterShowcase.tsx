@@ -1,4 +1,3 @@
-
 import { useCharacters } from '@/contexts/CharacterContext';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -26,12 +25,15 @@ const CharacterShowcase = () => {
               className="bg-brainrot-dark border-none overflow-hidden hover:shadow-lg transition-all duration-300"
             >
               <Link to={`/character/${character.id}`}>
-                <div className="aspect-square overflow-hidden">
+                <div className="aspect-square overflow-hidden relative">
                   <img 
-                    src={character.image} 
                     alt={character.name}
-                    className="w-full h-full object-cover transform transition-transform hover:scale-110 duration-500"
-                    loading="lazy"
+                    loading="lazy" 
+                    decoding="async" 
+                    data-nimg="fill" 
+                    className="object-contain rounded-lg"
+                    src={character.image}
+                    style={{position: 'absolute', height: '100%', width: '100%', inset: 0, color: 'transparent'}}
                   />
                 </div>
                 

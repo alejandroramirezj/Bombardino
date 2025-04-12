@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,7 +33,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div>
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
               <div className="hidden md:block text-sm text-gray-300">

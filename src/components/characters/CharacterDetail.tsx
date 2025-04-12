@@ -1,4 +1,3 @@
-
 import { Character } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useVote } from '@/contexts/VoteContext';
@@ -33,12 +32,15 @@ const CharacterDetail = ({ character }: CharacterDetailProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div className="relative aspect-square bg-brainrot-dark rounded-lg overflow-hidden">
           <img 
-            src={character.image} 
-            alt={character.name} 
-            className="w-full h-full object-contain"
-            loading="lazy"
+            alt={character.name}
+            loading="lazy" 
+            decoding="async" 
+            data-nimg="fill" 
+            className="object-contain rounded-lg"
+            src={character.image}
+            style={{position: 'absolute', height: '100%', width: '100%', inset: 0, color: 'transparent'}}
           />
-          <div className="absolute bottom-2 right-2 text-xs text-gray-400">
+          <div className="absolute bottom-2 right-2 text-xs text-gray-400 z-10">
             Clicca sull'immagine per attivare il potere
           </div>
         </div>
