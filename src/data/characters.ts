@@ -4,7 +4,7 @@ const initialCharacters: Character[] = [
   {
     id: "1",
     name: "La vaca saturno saturnita",
-    image: "/images/Vaca%20Saturno%20Saturnita.webp",
+    image: "/Bombardino/images/Vaca%20Saturno%20Saturnita.webp",
     type: "Galattico",
     power: 97,
     description: "La mucca cosmica nata 13,8 miliardi di anni fa. Il suo peso di 5,685E26 kg la rende una delle entità più potenti.",
@@ -19,7 +19,7 @@ const initialCharacters: Character[] = [
   {
     id: "2",
     name: "Bombardino coccodrillo",
-    image: "/images/Bombardino%20Crocodillo.webp",
+    image: "/Bombardino/images/Bombardino%20Crocodillo.webp",
     type: "Anfibio",
     power: 95,
     description: "Il leggendario coccodrillo italiano con poteri esplosivi. Il suo morso può attraversare il metallo.",
@@ -32,7 +32,7 @@ const initialCharacters: Character[] = [
   {
     id: "3",
     name: "Trippi Troppi",
-    image: "/images/Trippi%20Troppi.webp",
+    image: "/Bombardino/images/Trippi%20Troppi.webp",
     type: "Tecnologia",
     power: 91,
     description: "Il vigilante con la testa a forma di fotocamera. Vede tutto e non dimentica mai.",
@@ -44,7 +44,7 @@ const initialCharacters: Character[] = [
   {
     id: "4",
     name: "Bombombini Gusini",
-    image: "/images/Bombombini%20Gusini.webp",
+    image: "/Bombardino/images/Bombombini%20Gusini.webp",
     type: "Anfibio",
     power: 90,
     description: "Rivale diretto di Bombardino con abilità esplosive superiori.",
@@ -55,7 +55,7 @@ const initialCharacters: Character[] = [
   {
     id: "5",
     name: "Bobritto bandito",
-    image: "/images/Bobritto%20Bandito.webp",
+    image: "/Bombardino/images/Bobritto%20Bandito.webp",
     type: "Ladro",
     power: 89,
     description: "Il ladro più abile dell'universo Italian Brainrot.",
@@ -66,7 +66,7 @@ const initialCharacters: Character[] = [
   {
     id: "6",
     name: "Glorbo Fruttodrillo",
-    image: "/images/Glorbo%20Fruttodrillo.webp",
+    image: "/Bombardino/images/Glorbo%20Fruttodrillo.webp",
     type: "Anfibio",
     power: 88,
     description: "Cugino di Bombardino. Esperto in tattiche di combattimento e frutti tropicali.",
@@ -77,7 +77,7 @@ const initialCharacters: Character[] = [
   {
     id: "7",
     name: "Tung tung tung sahur",
-    image: "/images/Tung%20Tung%20Tung.webp",
+    image: "/Bombardino/images/Tung%20Tung%20Tung.webp",
     type: "Indonesiano",
     power: 88,
     description: "Il misterioso personaggio indonesiano che annuncia il sahur durante il Ramadan. Il suo ritmo penetra nella mente.",
@@ -88,7 +88,7 @@ const initialCharacters: Character[] = [
   {
     id: "8",
     name: "Tralalelo Tralala",
-    image: "/images/Tralalero%20Tralala.webp",
+    image: "/Bombardino/images/Tralalero%20Tralala.webp",
     type: "Sonoro",
     power: 86,
     description: "Maestro delle arti sonore, può manipolare le onde sonore.",
@@ -99,7 +99,7 @@ const initialCharacters: Character[] = [
   {
     id: "9",
     name: "Pesce umano",
-    image: "/images/Trulimero%20Trulicina.webp",
+    image: "/Bombardino/images/Trulimero%20Trulicina.webp",
     type: "Anfibio",
     power: 85,
     description: "Metà pesce, metà umano. Una creatura straordinaria che può respirare sia sott'acqua che sulla terraferma.",
@@ -111,7 +111,7 @@ const initialCharacters: Character[] = [
   {
     id: "10",
     name: "Squalo con scarpe",
-    image: "/images/Brr%20Brr%20Patapim.webp",
+    image: "/Bombardino/images/Brr%20Brr%20Patapim.webp",
     type: "Aereo",
     power: 83,
     description: "Uno squalo che indossa scarpe sportive blu. Velocissimo sia in mare che sulla terra.",
@@ -123,7 +123,7 @@ const initialCharacters: Character[] = [
   {
     id: "11",
     name: "Gatto Pesce",
-    image: "/images/Lirilì%20Larilà.webp",
+    image: "/Bombardino/images/Lirilì%20Larilà.webp",
     type: "Anfibio",
     power: 82,
     description: "Un ibrido tra gatto e pesce. Ama il mare ma odia l'acqua.",
