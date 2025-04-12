@@ -16,7 +16,9 @@
         return;
       }
 
-      const baseUrl = '/Bombardino';
+      // Determinar el baseUrl dependiendo del dominio
+      const isCustomDomain = location.hostname === 'bombardinocrocodilo.com';
+      const baseUrl = isCustomDomain ? '' : '/Bombardino';
       const path = location.pathname;
       
       // Evitar redirecciones duplicadas
@@ -27,8 +29,8 @@
         return;
       }
       
-      // Si la ruta ya comienza con el baseUrl, no hacer nada adicional
-      if (path.startsWith(baseUrl) && path !== baseUrl && path !== baseUrl + '/') {
+      // Si la ruta ya comienza con el baseUrl o estamos en dominio personalizado, no hacer nada adicional
+      if ((path.startsWith(baseUrl) && path !== baseUrl && path !== baseUrl + '/') || isCustomDomain) {
         return;
       }
       
@@ -40,7 +42,7 @@
 <body>
   <div style="font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
     <h1>Redirecting...</h1>
-    <p>If you are not redirected automatically, <a href="/Bombardino/">click here</a>.</p>
+    <p>If you are not redirected automatically, <a href="/">click here</a>.</p>
   </div>
 </body>
 </html> 

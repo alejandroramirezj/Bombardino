@@ -32,7 +32,11 @@ const App = () => (
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <BrowserRouter basename="/Bombardino">
+              <BrowserRouter basename={
+                window.location.hostname === "bombardinocrocodilo.com" 
+                ? "/" 
+                : "/Bombardino"
+              }>
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     <Route index element={<HomePage />} />
