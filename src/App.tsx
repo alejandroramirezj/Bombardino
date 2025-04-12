@@ -20,6 +20,7 @@ import BrainrotPage from "@/pages/BrainrotPage";
 import LoginPage from "@/pages/LoginPage";
 import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/components/layout/NotFound";
+import ScrollToTop from "@/components/utils/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <ScrollToTop />
                 <Routes>
                   <Route path="/" element={<Layout />}>
                     <Route index element={<HomePage />} />
