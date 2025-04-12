@@ -64,6 +64,7 @@
 
   body {
     @apply bg-background text-foreground;
+    padding-top: 70px;
   }
 
   /* Añadimos estilos para los badges de tipo */
@@ -165,6 +166,50 @@
     100% {
       transform: translateX(-50%);
     }
+  }
+
+  /* Animación para partículas flotantes */
+  @keyframes float {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.8;
+    }
+    50% {
+      transform: translateY(-30px) translateX(15px);
+      opacity: 0.4;
+    }
+    90% {
+      opacity: 0.2;
+    }
+    100% {
+      transform: translateY(-60px) translateX(0);
+      opacity: 0;
+    }
+  }
+
+  .animate-float {
+    animation: float 15s ease-in-out infinite;
+  }
+
+  /* Gradientes */
+  .bg-gradient-radial {
+    background-image: radial-gradient(var(--tw-gradient-stops));
+  }
+
+  /* Microinteracciones */
+  .hover-scale {
+    transition: transform 0.3s ease;
+  }
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  /* Efectos de brillo */
+  .hover-glow:hover {
+    filter: drop-shadow(0 0 8px theme('colors.brainrot-turquoise'));
   }
 }
 
