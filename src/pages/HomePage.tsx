@@ -1,6 +1,6 @@
-
 import Hero from '@/components/home/Hero';
 import CharacterShowcase from '@/components/home/CharacterShowcase';
+import CharacterMarquee from '@/components/home/CharacterMarquee';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +11,7 @@ const HomePage = () => {
   return (
     <div>
       <Hero />
+      <CharacterMarquee />
       <CharacterShowcase />
       
       <section className="py-16 bg-brainrot-dark">
