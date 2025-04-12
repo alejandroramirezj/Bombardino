@@ -68,14 +68,14 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
       return character.image;
     }
     
-    // Si la imagen ya empieza con /images/, añadir el prefijo base
+    // Si la imagen ya empieza con /images/, usar directamente
     if (character.image.startsWith('/images/')) {
-      return `${character.image.substring(1)}`;
+      return character.image;
     }
     
     // Si la imagen es un nombre de archivo, construir la ruta en /images/
     const fileName = character.name.replace(/\s+/g, '%20');
-    return `images/${fileName}.webp`;
+    return `/images/${fileName}.webp`;
   };
 
   // Se agrega un efecto para resetear el error de imagen cuando cambia el personaje
