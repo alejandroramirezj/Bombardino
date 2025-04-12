@@ -24,6 +24,9 @@ const Navbar = () => {
             <Link to="ranking" className="text-gray-300 hover:text-white transition-colors">
               Ranking
             </Link>
+            <Link to="batallas" className="text-gray-300 hover:text-white transition-colors">
+              Batallas
+            </Link>
             <Link to="acerca-de" className="text-gray-300 hover:text-white transition-colors">
               Acerca de
             </Link>

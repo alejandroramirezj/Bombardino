@@ -17,6 +17,7 @@ import CharacterCreatePage from "@/pages/CharacterCreatePage";
 import RankingPage from "@/pages/RankingPage";
 import AboutPage from "@/pages/AboutPage";
 import BrainrotPage from "@/pages/BrainrotPage";
+import BattleFAQPage from "@/pages/BattleFAQPage";
 import LoginPage from "@/pages/LoginPage";
 import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/components/layout/NotFound";
@@ -42,6 +43,7 @@ const App = () => (
                     <Route path="personajes/:characterSlug" element={<CharacterDetailPage />} />
                     <Route path="crear-personaje" element={<CharacterCreatePage />} />
                     <Route path="ranking" element={<RankingPage />} />
+                    <Route path="batallas" element={<BattleFAQPage />} />
                     <Route path="acerca-de" element={<AboutPage />} />
                     <Route path="brainrot" element={<BrainrotPage />} />
                     <Route path="login" element={<LoginPage />} />
