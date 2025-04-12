@@ -154,7 +154,7 @@
 
   /* Animación para el marquee */
   .marquee-animation {
-    animation: marquee 30s linear infinite;
+    animation: marquee 15s linear infinite;
     white-space: nowrap;
   }
 
