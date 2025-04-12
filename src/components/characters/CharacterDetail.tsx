@@ -1,161 +1,299 @@
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { Heart, AlertCircle, Share2, ChevronLeft } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCharacters } from '@/contexts/CharacterContext';
 import { Character } from '@/types';
 import { Button } from '@/components/ui/button';
-import { useVote } from '@/contexts/VoteContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { ThumbsUp, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import ShareModal from '../shared/ShareModal';
+import { toast } from 'sonner';
 
 interface CharacterDetailProps {
   character: Character;
 }
 
-const CharacterDetail = ({ character }: CharacterDetailProps) => {
-  const { voteForCharacter, hasVotedFor } = useVote();
-  const { isAuthenticated } = useAuth();
-  const hasVoted = hasVotedFor(character.id);
+export default function CharacterDetail({ character }: CharacterDetailProps) {
+  const { isAuthenticated, user } = useAuth();
+  const { voteForCharacter, hasUserVotedFor } = useCharacters();
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setHasVoted(hasUserVotedFor(character.id, user.id));
+    }
+  }, [isAuthenticated, user, character.id, hasUserVotedFor]);
+
+  const handleVote = async () => {
+    if (!isAuthenticated) {
+      toast.error('Debes iniciar sesión para votar');
+      return;
+    }
+
+    setIsVoting(true);
+    await voteForCharacter(character.id);
+    setHasVoted(true);
+    setIsVoting(false);
+    toast.success(`¡Has votado por ${character.name}!`);
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 }
+  };
+
+  const getImagePath = () => {
+    // Si la imagen ya es una URL externa completa, usarla directamente
+    if (character.image.startsWith('http')) {
+      return character.image;
+    }
+    
+    // Si la imagen ya empieza con /images/, usarla directamente
+    if (character.image.startsWith('/images/')) {
+      return character.image;
+    }
+    
+    // Si la imagen es un nombre de archivo, construir la ruta en /images/
+    const fileName = character.name.replace(/\s+/g, '%20');
+    return `/images/${fileName}.webp`;
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Link to="/characters" className="inline-flex items-center text-brainrot-blue hover:underline mb-8">
-        <ArrowLeft className="h-4 w-4 mr-2" />
-        Torna a tutti i personaggi
-      </Link>
-      
-      <h1 className="text-5xl font-bold text-center mb-4 text-white">{character.name}</h1>
-      
-      <div className="flex justify-center mb-8">
-        <span className={`type-badge type-${character.type.toLowerCase()}`}>
-          {character.type}
-        </span>
+      <div className="mb-6">
+        <Link 
+          to="/personajes" 
+          className="inline-flex items-center text-gray-400 hover:text-brainrot-turquoise transition-colors"
+        >
+          <ChevronLeft size={20} />
+          <span>Volver a personajes</span>
+        </Link>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div className="aspect-square bg-brainrot-darker border border-brainrot-light p-1 rounded-lg overflow-hidden relative">
-          <img 
-            src={character.image}
-            alt={character.name}
-            width="100%"
-            height="auto"
-            className="object-contain w-full h-full rounded-lg"
-            loading="lazy" 
-            decoding="async"
-          />
-          <div className="absolute bottom-2 right-2 text-xs text-gray-400 z-10">
-            Clicca sull'immagine per attivare il potere
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+      >
+        {/* Columna Izquierda - Imagen */}
+        <motion.div 
+          variants={itemVariants}
+          className="lg:col-span-1"
+        >
+          <div className="bg-brainrot-light rounded-xl overflow-hidden shadow-xl mb-4">
+            <img 
+              src={imageError ? '/placeholder.svg' : getImagePath()}
+              alt={character.name}
+              className="w-full object-cover aspect-[3/4]"
+              onError={() => setImageError(true)}
+            />
           </div>
-        </div>
+          
+          <div className="flex gap-2 mb-4">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className={`rounded-full ${
+                      hasVoted 
+                        ? 'bg-red-500 text-white hover:bg-red-600' 
+                        : 'bg-white bg-opacity-20 hover:bg-opacity-30 text-white'
+                    }`}
+                    onClick={handleVote}
+                    disabled={!isAuthenticated}
+                  >
+                    <Heart className={`h-5 w-5 ${hasVoted ? 'fill-current' : ''}`} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{hasVoted ? 'Ya has votado' : 'Votar por este personaje'}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white"
+                    onClick={() => setShowShareModal(true)}
+                  >
+                    <Share2 className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Compartir personaje</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          
+          {!isAuthenticated && (
+            <div className="bg-brainrot-dark p-4 rounded-lg border border-amber-600 flex items-center text-sm mb-4">
+              <AlertCircle className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
+              <p className="text-amber-500">
+                <Link to="/login" className="underline font-medium hover:text-amber-400">
+                  Inicia sesión
+                </Link> para votar por este personaje.
+              </p>
+            </div>
+          )}
+        </motion.div>
         
-        <div className="space-y-6">
-          <div className="bg-brainrot-light rounded-lg p-6">
-            <h2 className="text-xl font-bold text-brainrot-turquoise mb-4">Biografia</h2>
-            <p className="text-gray-300">{character.biography || character.description}</p>
+        {/* Columna Derecha - Información */}
+        <motion.div 
+          variants={itemVariants}
+          className="lg:col-span-2"
+        >
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-white">{character.name}</h1>
+            <Badge className="bg-brainrot-blue border-none text-white">{character.type}</Badge>
           </div>
           
+          {/* Biografía */}
+          <motion.div 
+            variants={itemVariants}
+            className="bg-brainrot-light p-6 rounded-xl mb-6"
+          >
+            <h2 className="text-xl font-bold text-white mb-3">Biografía</h2>
+            <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+              {character.biography || 'No hay información biográfica disponible para este personaje.'}
+            </p>
+          </motion.div>
+          
+          {/* Habilidades */}
           {character.abilities && character.abilities.length > 0 && (
-            <div className="bg-brainrot-light rounded-lg p-6">
-              <h2 className="text-xl font-bold text-brainrot-turquoise mb-4">Abilità</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <motion.div 
+              variants={itemVariants}
+              className="bg-brainrot-light p-6 rounded-xl mb-6"
+            >
+              <h2 className="text-xl font-bold text-white mb-3">Habilidades</h2>
+              <ul className="list-disc list-inside text-gray-300 space-y-2">
                 {character.abilities.map((ability, index) => (
-                  <div key={index} className="flex items-center bg-brainrot-dark p-3 rounded">
-                    <div className="w-2 h-2 bg-brainrot-blue rounded-full mr-2"></div>
-                    <span className="text-sm">{ability}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {character.phrase && (
-            <div className="bg-brainrot-light rounded-lg p-6">
-              <h2 className="text-xl font-bold text-brainrot-turquoise mb-4">Frase caratteristica</h2>
-              <blockquote className="border-l-4 border-brainrot-blue pl-4 py-2 italic text-gray-300">
-                "{character.phrase}"
-              </blockquote>
-            </div>
-          )}
-          
-          {character.appearances && character.appearances.length > 0 && (
-            <div className="bg-brainrot-light rounded-lg p-6">
-              <h2 className="text-xl font-bold text-brainrot-turquoise mb-4">Apparizioni notevoli</h2>
-              <ul className="list-inside space-y-2">
-                {character.appearances.map((appearance, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-brainrot-blue mr-2">■</span>
-                    <span className="text-gray-300">{appearance}</span>
+                  <li key={index} className="leading-relaxed">
+                    {ability}
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           )}
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div className="bg-brainrot-light rounded-lg p-6">
-          <h2 className="text-xl font-bold text-brainrot-turquoise mb-6">Statistiche di base</h2>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-1">
-                <span className="text-gray-400">Potere</span>
-                <span className="font-bold text-yellow-400">{character.power}/100</span>
-              </div>
-              <div className="w-full bg-gray-700 rounded-full h-2.5">
-                <div 
-                  className="h-2.5 rounded-full bg-gradient-to-r from-yellow-500 to-red-500" 
-                  style={{ width: `${character.power}%` }}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-brainrot-light rounded-lg p-6">
-          <h2 className="text-xl font-bold text-brainrot-turquoise mb-6">Relazioni</h2>
           
-          <div className="mb-6">
-            <h3 className="text-green-500 text-sm font-semibold mb-2">Alleati</h3>
-            <div className="flex flex-wrap gap-2">
-              {character.allies.map((ally, index) => (
-                <span 
-                  key={index} 
-                  className="px-3 py-1 bg-green-900/30 text-green-400 text-xs rounded-full"
-                >
-                  {ally}
-                </span>
-              ))}
-            </div>
-          </div>
+          {/* Apariciones Notables */}
+          {character.appearances && character.appearances.length > 0 && (
+            <motion.div 
+              variants={itemVariants}
+              className="bg-brainrot-light p-6 rounded-xl mb-6"
+            >
+              <h2 className="text-xl font-bold text-white mb-3">Apariciones Notables</h2>
+              <ul className="list-disc list-inside text-gray-300 space-y-2">
+                {character.appearances.map((appearance, index) => (
+                  <li key={index} className="leading-relaxed">
+                    {appearance}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
           
-          <div>
-            <h3 className="text-red-500 text-sm font-semibold mb-2">Rivali</h3>
-            <div className="flex flex-wrap gap-2">
-              {character.rivals.map((rival, index) => (
-                <span 
-                  key={index} 
-                  className="px-3 py-1 bg-red-900/30 text-red-400 text-xs rounded-full"
-                >
-                  {rival}
-                </span>
-              ))}
+          {/* Estadísticas */}
+          <motion.div 
+            variants={itemVariants}
+            className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6"
+          >
+            <div className="bg-brainrot-light p-4 rounded-xl text-center">
+              <p className="text-gray-400 text-sm mb-1 capitalize">Poder</p>
+              <p className="text-2xl font-bold text-brainrot-turquoise">{character.power}/10</p>
             </div>
+            {/* Puedes agregar más estadísticas fijas aquí */}
+          </motion.div>
+          
+          {/* Relaciones */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Aliados */}
+            {character.allies && character.allies.length > 0 && (
+              <motion.div 
+                variants={itemVariants}
+                className="bg-brainrot-light p-6 rounded-xl"
+              >
+                <h2 className="text-xl font-bold text-white mb-3">Aliados</h2>
+                <ul className="space-y-2">
+                  {character.allies.map((ally, index) => {
+                    const allySlug = ally.toLowerCase().replace(/\s+/g, '-');
+                    return (
+                      <li key={index}>
+                        <Link 
+                          to={`/personajes/${allySlug}`}
+                          className="text-brainrot-turquoise hover:underline"
+                        >
+                          {ally}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </motion.div>
+            )}
+            
+            {/* Rivales */}
+            {character.rivals && character.rivals.length > 0 && (
+              <motion.div 
+                variants={itemVariants}
+                className="bg-brainrot-light p-6 rounded-xl"
+              >
+                <h2 className="text-xl font-bold text-white mb-3">Rivales</h2>
+                <ul className="space-y-2">
+                  {character.rivals.map((rival, index) => {
+                    const rivalSlug = rival.toLowerCase().replace(/\s+/g, '-');
+                    return (
+                      <li key={index}>
+                        <Link 
+                          to={`/personajes/${rivalSlug}`}
+                          className="text-pink-500 hover:underline"
+                        >
+                          {rival}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </motion.div>
+            )}
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
       
-      <div className="flex justify-center">
-        <Button
-          size="lg"
-          variant={hasVoted ? "secondary" : "default"}
-          onClick={() => voteForCharacter(character.id)}
-          disabled={!isAuthenticated || hasVoted}
-          className={hasVoted ? "bg-gray-700 text-gray-300" : "bg-brainrot-blue hover:bg-brainrot-blue/90"}
-        >
-          <ThumbsUp className="h-5 w-5 mr-2" />
-          {hasVoted ? "Hai già votato" : "Vota per questo personaggio"}
-        </Button>
-      </div>
+      {showShareModal && (
+        <ShareModal 
+          title={`¡Mira este personaje de Bombardino: ${character.name}!`}
+          url={`${window.location.origin}/characters/${character.id}`}
+          onClose={() => setShowShareModal(false)}
+        />
+      )}
     </div>
   );
-};
-
-export default CharacterDetail;
+}

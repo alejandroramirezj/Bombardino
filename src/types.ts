@@ -1,4 +1,3 @@
-
 export type CharacterType = 
   | 'Anfibio' 
   | 'Tecnologia' 
@@ -8,7 +7,17 @@ export type CharacterType =
   | 'Indonesiano' 
   | 'Musicale' 
   | 'Aereo' 
-  | 'Bagno';
+  | 'Bagno'
+  | 'Acquatico-Vegetale'
+  | 'Gelatto'
+  | 'Animalico'
+  | 'Fruttoso'
+  | 'Folletto'
+  | 'Musico'
+  | 'Criminale'
+  | 'Fiabosco'
+  | 'Metallo'
+  | 'Buffonazzo';
 
 export interface Character {
   id: string;
@@ -19,7 +28,8 @@ export interface Character {
   description: string;
   allies: string[];
   rivals: string[];
-  votes: number;
+  votes: string[];
+  voteCount: number;
   phrase?: string;
   appearances?: string[];
   abilities?: string[];

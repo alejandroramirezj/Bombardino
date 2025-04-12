@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 // Lista completa de personajes del Italian Brainrot de la wiki
@@ -64,9 +63,9 @@ const CharacterMarquee = () => {
       <div className="flex marquee-animation">
         {/* Duplicamos los caracteres para crear un efecto continuo */}
         {[...brainrotCharacters, ...brainrotCharacters].map((character, index) => (
-          <Link 
+          <Link
             key={index} 
-            to="/characters" 
+            to="/personajes" 
             className="mx-2 whitespace-nowrap text-brainrot-turquoise hover:text-white flex items-center transition-colors"
           >
             <span className="mr-1">{character.emoji}</span>

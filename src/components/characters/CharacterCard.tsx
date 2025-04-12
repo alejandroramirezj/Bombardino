@@ -1,67 +1,71 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Character } from '@/types';
-import { Button } from '@/components/ui/button';
-import { useVote } from '@/contexts/VoteContext';
-import { Info, ThumbsUp } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { Badge } from '@/components/ui/badge';
 
 interface CharacterCardProps {
   character: Character;
+  index?: number;
 }
 
-const CharacterCard = ({ character }: CharacterCardProps) => {
-  const { voteForCharacter, hasVotedFor } = useVote();
-  const { isAuthenticated } = useAuth();
-  const hasVoted = hasVotedFor(character.id);
-
-  const getPowerBarColor = (power: number) => {
-    if (power >= 90) return 'power-bar-fill-90-100';
-    if (power >= 80) return 'power-bar-fill-80-90';
-    if (power >= 70) return 'power-bar-fill-70-80';
-    return 'power-bar-fill-0-70';
-  };
-
-  const handleVote = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (isAuthenticated) {
-      voteForCharacter(character.id);
+const CharacterCard = ({ character, index = 0 }: CharacterCardProps) => {
+  const characterSlug = character.name.toLowerCase().replace(/\s+/g, '-');
+  const [imageError, setImageError] = useState(false);
+  
+  const getImagePath = () => {
+    // Si la imagen ya es una URL externa completa, usarla directamente
+    if (character.image.startsWith('http')) {
+      return character.image;
     }
+    
+    // Si la imagen ya empieza con /images/, usarla directamente
+    if (character.image.startsWith('/images/')) {
+      return character.image;
+    }
+    
+    // Si la imagen es un nombre de archivo, construir la ruta en /images/
+    const fileName = character.name.replace(/\s+/g, '%20');
+    return `/images/${fileName}.webp`;
   };
-
+  
   return (
-    <div className="bg-brainrot-light rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
-      <div className="h-64 overflow-hidden bg-brainrot-darker border border-brainrot-light p-1 rounded-lg">
-        <img 
-          src={character.image}
-          alt={character.name}
-          width="100%"
-          height="auto"
-          className="object-contain w-full h-full rounded-lg"
-          loading="lazy" 
-          decoding="async"
-        />
-      </div>
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-white">{character.name}</h3>
-          <span className={`type-badge type-${character.type.toLowerCase()}`}>
-            {character.type}
-          </span>
-        </div>
-        <p className="text-gray-400 mb-4 line-clamp-3">{character.description}</p>
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-brainrot-blue">
-            <span className="font-bold">{character.votes}</span> voti
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
+      className="bg-brainrot-light rounded-lg overflow-hidden shadow-lg hover:shadow-brainrot-blue/20 transition-all duration-300"
+    >
+      <Link to={`/personajes/${characterSlug}`} className="block h-full">
+        <div className="relative h-48 overflow-hidden">
+          <img
+            src={imageError ? '/placeholder.svg' : getImagePath()}
+            alt={character.name}
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+            onError={() => setImageError(true)}
+          />
+          <div className="absolute top-2 right-2">
+            <Badge variant="outline" className="bg-brainrot-dark/80 text-brainrot-turquoise border-brainrot-turquoise">
+              {character.type}
+            </Badge>
           </div>
-          <Link 
-            to={`/characters/${character.id}`}
-            className="text-brainrot-blue hover:underline font-medium"
-          >
-            Dettagli
-          </Link>
         </div>
-      </div>
-    </div>
+        
+        <div className="p-4">
+          <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{character.name}</h3>
+          <p className="text-gray-400 text-sm mb-4 line-clamp-3">{character.description}</p>
+          
+          <div className="flex justify-between items-center">
+            <span className="text-brainrot-turquoise text-sm font-medium">
+              {character.voteCount || 0} votos
+            </span>
+            <span className="text-gray-400 text-sm hover:text-brainrot-blue transition-colors">
+              Ver más →
+            </span>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
   );
 };
 

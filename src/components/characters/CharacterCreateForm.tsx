@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useCharacters } from '@/contexts/CharacterContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,8 @@ import { CharacterType } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Upload, Link as LinkIcon } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const CharacterCreateForm = () => {
   const { addCharacter } = useCharacters();
@@ -25,42 +25,84 @@ const CharacterCreateForm = () => {
   const [allies, setAllies] = useState('');
   const [rivals, setRivals] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageTab, setImageTab] = useState<string>("url");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const characterTypes: CharacterType[] = [
     'Anfibio', 'Bagno', 'Tecnologia', 'Ladro', 
     'Sonoro', 'Indonesiano', 'Galattico', 'Musicale', 'Aereo'
   ];
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!user) {
-      toast.error("Devi accedere per creare un personaggio");
+      toast.error("Debes iniciar sesión para crear un personaje");
       return;
     }
     
-    if (!name || !description || !imageUrl) {
-      toast.error("Compila tutti i campi obbligatori");
+    if (!name || !description) {
+      toast.error("Completa todos los campos obligatorios");
+      return;
+    }
+
+    if (imageTab === "url" && !imageUrl) {
+      toast.error("Proporciona una URL de imagen");
+      return;
+    }
+
+    if (imageTab === "upload" && !imageFile) {
+      toast.error("Sube una imagen para el personaje");
       return;
     }
 
     setIsSubmitting(true);
 
     try {
+      // Si estamos subiendo un archivo, primero lo procesaríamos
+      // Esta es una simulación, en un entorno real subirías el archivo a un servidor
+      const finalImageUrl = imageTab === "url" ? imageUrl : `/images/${name.toLowerCase().replace(/\s+/g, '_')}.webp`;
+      
+      // Simular biografía y otras propiedades adicionales
+      const biography = `${name} es un personaje de tipo ${type} con poderes extraordinarios. ${description}`;
+      
       addCharacter({
         name,
         type,
         power,
         description,
-        image: imageUrl,
+        image: finalImageUrl,
         allies: allies.split(',').map(a => a.trim()).filter(Boolean),
         rivals: rivals.split(',').map(r => r.trim()).filter(Boolean),
+        biography: biography,
       });
       
-      toast.success("Personaggio creato con successo!");
+      // En un caso real, aquí subirías el archivo al servidor
+      if (imageTab === "upload" && imageFile) {
+        // Código de subida de archivos simulado
+        console.log(`Subiendo archivo ${imageFile.name} para ${name}`);
+        // La imagen se guardaría como /images/nombre_del_personaje.webp
+      }
+      
+      toast.success("¡Personaje creado con éxito!");
       navigate('/characters');
     } catch (error) {
-      toast.error("Si è verificato un errore durante la creazione del personaggio");
+      toast.error("Se produjo un error al crear el personaje");
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -70,7 +112,7 @@ const CharacterCreateForm = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <Label htmlFor="name">Nome del personaggio *</Label>
+        <Label htmlFor="name">Nombre del personaje *</Label>
         <Input
           id="name"
           value={name}
@@ -84,7 +126,7 @@ const CharacterCreateForm = () => {
         <Label htmlFor="type">Tipo *</Label>
         <Select defaultValue={type} onValueChange={(value) => setType(value as CharacterType)}>
           <SelectTrigger className="bg-brainrot-light border-gray-700 text-white">
-            <SelectValue placeholder="Seleziona un tipo" />
+            <SelectValue placeholder="Selecciona un tipo" />
           </SelectTrigger>
           <SelectContent className="bg-brainrot-light border-gray-700 text-white">
             {characterTypes.map((type) => (
@@ -95,7 +137,7 @@ const CharacterCreateForm = () => {
       </div>
       
       <div>
-        <Label htmlFor="power">Potenza: {power}</Label>
+        <Label htmlFor="power">Poder: {power}</Label>
         <Input
           id="power"
           type="range"
@@ -108,22 +150,76 @@ const CharacterCreateForm = () => {
       </div>
       
       <div>
-        <Label htmlFor="image">URL immagine *</Label>
-        <Input
-          id="image"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          placeholder="https://example.com/immagine.jpg"
-          required
-          className="bg-brainrot-light border-gray-700 text-white"
-        />
-        <p className="text-xs text-gray-400 mt-1">
-          Inserisci l'URL di un'immagine online o usa un servizio di hosting immagini
-        </p>
+        <Label>Imagen *</Label>
+        <Tabs defaultValue="url" value={imageTab} onValueChange={setImageTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-brainrot-light">
+            <TabsTrigger value="url" className="data-[state=active]:bg-brainrot-blue">
+              <LinkIcon className="w-4 h-4 mr-2" />
+              URL
+            </TabsTrigger>
+            <TabsTrigger value="upload" className="data-[state=active]:bg-brainrot-blue">
+              <Upload className="w-4 h-4 mr-2" />
+              Subir
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="url" className="mt-2">
+            <Input
+              id="image-url"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="https://ejemplo.com/imagen.jpg"
+              className="bg-brainrot-light border-gray-700 text-white"
+            />
+            <p className="text-xs text-gray-400 mt-1">
+              Introduce la URL de una imagen online o usa un servicio de alojamiento de imágenes
+            </p>
+          </TabsContent>
+          
+          <TabsContent value="upload" className="mt-2">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="bg-brainrot-light hover:bg-brainrot-light/80 border-gray-700 text-white"
+                >
+                  Elegir archivo
+                </Button>
+                <span className="text-sm text-gray-400">
+                  {imageFile ? imageFile.name : "Ningún archivo seleccionado"}
+                </span>
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
+              />
+              
+              {imagePreview && (
+                <div className="mt-2 border border-gray-700 rounded-md p-2">
+                  <p className="text-xs text-gray-400 mb-1">Vista previa:</p>
+                  <img 
+                    src={imagePreview} 
+                    alt="Vista previa" 
+                    className="max-h-40 rounded-md mx-auto"
+                  />
+                </div>
+              )}
+              
+              <p className="text-xs text-gray-400">
+                Formatos permitidos: JPG, PNG, WebP. Tamaño máximo: 5MB
+              </p>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
       
       <div>
-        <Label htmlFor="description">Descrizione *</Label>
+        <Label htmlFor="description">Descripción *</Label>
         <Textarea
           id="description"
           value={description}
@@ -135,23 +231,23 @@ const CharacterCreateForm = () => {
       </div>
       
       <div>
-        <Label htmlFor="allies">Alleati (separati da virgole)</Label>
+        <Label htmlFor="allies">Aliados (separados por comas)</Label>
         <Input
           id="allies"
           value={allies}
           onChange={(e) => setAllies(e.target.value)}
-          placeholder="Alleato 1, Alleato 2, ..."
+          placeholder="Aliado 1, Aliado 2, ..."
           className="bg-brainrot-light border-gray-700 text-white"
         />
       </div>
       
       <div>
-        <Label htmlFor="rivals">Rivali (separati da virgole)</Label>
+        <Label htmlFor="rivals">Rivales (separados por comas)</Label>
         <Input
           id="rivals"
           value={rivals}
           onChange={(e) => setRivals(e.target.value)}
-          placeholder="Rivale 1, Rivale 2, ..."
+          placeholder="Rival 1, Rival 2, ..."
           className="bg-brainrot-light border-gray-700 text-white"
         />
       </div>
@@ -164,10 +260,10 @@ const CharacterCreateForm = () => {
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Creazione in corso...
+            Creando personaje...
           </>
         ) : (
-          "Crea personaggio"
+          "Crear personaje"
         )}
       </Button>
     </form>

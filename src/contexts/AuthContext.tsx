@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
@@ -29,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       // Simulate magic link email sending
-      toast.success("Email di accesso inviato! Per questa demo, accederai automaticamente.");
+      toast.success("¡Email de acceso enviado! Para esta demo, accederás automáticamente.");
       
       // In a real app, you would send a magic link email here
       // For demo purposes, we'll just log in the user immediately
@@ -40,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsLoading(false);
       }, 1500);
     } catch (error) {
-      toast.error("Errore durante l'invio dell'email");
+      toast.error("Error al enviar el email");
       setIsLoading(false);
     }
   };
@@ -48,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     localStorage.removeItem('brainrot-user');
     setUser(null);
-    toast.success("Disconnessione avvenuta con successo");
+    toast.success("Desconexión realizada con éxito");
   };
 
   return (

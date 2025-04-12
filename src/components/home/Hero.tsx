@@ -17,14 +17,14 @@ const Hero = () => {
           </h2>
           
           <p className="text-gray-300 mb-10 max-w-2xl mx-auto">
-            Esplora l'universo di Bombardino Coccodrillo e tutti i personaggi del fenomeno "Italian Brainrot". Vota i tuoi preferiti e scopri le intricate relazioni tra queste icone della cultura di internet.
+            Esplora l'universo di Bombardino coccodrillo e tutti i personaggi del fenomeno "Italian Brainrot". Vota i tuoi preferiti e scopri le intricate relazioni tra queste icone della cultura di internet.
           </p>
           
           <div className="mb-12">
             <div className="bg-brainrot-darker border border-brainrot-light p-1 rounded-lg max-w-xl mx-auto">
               <img 
-                src="/Bombardino/images/Bombardino%20Crocodillo.webp"
-                alt="Bombardino Coccodrillo"
+                src="/images/Bombardino%20Crocodillo.webp"
+                alt="Bombardino coccodrillo"
                 width="100%"
                 height="auto"
               />

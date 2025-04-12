@@ -1,8 +1,10 @@
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
+
 import { AuthProvider } from "@/contexts/AuthContext";
 import { VoteProvider } from "@/contexts/VoteContext";
 import { CharacterProvider } from "@/contexts/CharacterContext";
@@ -25,25 +27,33 @@ const App = () => (
     <AuthProvider>
       <CharacterProvider>
         <VoteProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <HashRouter>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<HomePage />} />
-                  <Route path="characters" element={<CharactersPage />} />
-                  <Route path="character/:id" element={<CharacterDetailPage />} />
-                  <Route path="characters/create" element={<CharacterCreatePage />} />
-                  <Route path="ranking" element={<RankingPage />} />
-                  <Route path="about" element={<AboutPage />} />
-                  <Route path="brainrot" element={<BrainrotPage />} />
-                  <Route path="login" element={<LoginPage />} />
-                  <Route path="*" element={<NotFound />} />
-                </Route>
-              </Routes>
-            </HashRouter>
-          </TooltipProvider>
+          <HelmetProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <HashRouter>
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route index element={<HomePage />} />
+                    <Route path="personajes" element={<CharactersPage />} />
+                    <Route path="personajes/:characterSlug" element={<CharacterDetailPage />} />
+                    <Route path="personajes/crear" element={<CharacterCreatePage />} />
+                    <Route path="ranking" element={<RankingPage />} />
+                    <Route path="acerca-de" element={<AboutPage />} />
+                    <Route path="brainrot" element={<BrainrotPage />} />
+                    <Route path="login" element={<LoginPage />} />
+                    <Route path="*" element={<NotFound />} />
+                    
+                    {/* Redirects for backwards compatibility */}
+                    <Route path="characters" element={<Navigate to="/personajes" replace />} />
+                    <Route path="characters/:characterSlug" element={<Navigate to="/personajes/:characterSlug" replace />} />
+                    <Route path="characters/create" element={<Navigate to="/personajes/crear" replace />} />
+                    <Route path="about" element={<Navigate to="/acerca-de" replace />} />
+                  </Route>
+                </Routes>
+              </HashRouter>
+            </TooltipProvider>
+          </HelmetProvider>
         </VoteProvider>
       </CharacterProvider>
     </AuthProvider>

@@ -1,83 +1,167 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Character, CharacterType } from '../types';
 import initialCharacters from '../data/characters';
+import { toast } from 'sonner';
+import { Character, CharacterType } from '@/types';
 
-interface CharacterContextType {
+export interface CharacterContextType {
   characters: Character[];
+  loading: boolean;
+  error: string | null;
+  addCharacter: (character: Character) => void;
+  updateCharacter: (character: Character) => void;
+  deleteCharacter: (id: string) => void;
+  getTopCharacters: (limit: number) => Character[];
   getCharacterById: (id: string) => Character | undefined;
-  getCharactersByType: (type: CharacterType | 'Tutti') => Character[];
-  getTopCharacters: (limit?: number) => Character[];
-  addCharacter: (character: Omit<Character, 'id' | 'votes'>) => void;
-  updateCharacterVotes: (characterId: string, increment: number) => void;
+  getRandomCharacters: (limit: number) => Character[];
+  voteForCharacter: (characterId: string) => void;
+  hasUserVotedFor: (characterId: string, userId: string) => boolean;
 }
 
 const CharacterContext = createContext<CharacterContextType | undefined>(undefined);
 
 export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [characters, setCharacters] = useState<Character[]>([]);
+  const [characters, setCharacters] = useState<Character[]>(initialCharacters);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentUser] = useState(() => {
+    return localStorage.getItem('brainrot-user') 
+      ? JSON.parse(localStorage.getItem('brainrot-user') || '{}') 
+      : null;
+  });
 
   useEffect(() => {
-    const storedCharacters = localStorage.getItem('brainrot-characters');
-    if (storedCharacters) {
-      setCharacters(JSON.parse(storedCharacters));
-    } else {
-      // Initialize with default characters
-      setCharacters(initialCharacters);
-      localStorage.setItem('brainrot-characters', JSON.stringify(initialCharacters));
-    }
+    // Simulamos carga de datos
+    setTimeout(() => {
+      setLoading(false);
+    }, 800);
   }, []);
 
   const getCharacterById = (id: string): Character | undefined => {
-    return characters.find(char => char.id === id);
+    return characters.find(character => character.id === id);
   };
 
-  const getCharactersByType = (type: CharacterType | 'Tutti'): Character[] => {
-    if (type === 'Tutti') {
+  const getCharactersByType = (type: CharacterType | 'all'): Character[] => {
+    if (type === 'all') {
       return characters;
     }
-    return characters.filter(char => char.type === type);
+    return characters.filter(character => character.type === type);
   };
 
-  const getTopCharacters = (limit = 10): Character[] => {
+  const getTopCharacters = (limit: number) => {
     return [...characters]
-      .sort((a, b) => b.power - a.power || b.votes - a.votes)
+      .sort((a, b) => b.voteCount - a.voteCount)
       .slice(0, limit);
   };
 
-  const addCharacter = (character: Omit<Character, 'id' | 'votes'>) => {
-    const newCharacter: Character = {
-      ...character,
-      id: Math.random().toString(36).substring(2, 9),
-      votes: 0
-    };
-    
-    const updatedCharacters = [...characters, newCharacter];
-    setCharacters(updatedCharacters);
-    localStorage.setItem('brainrot-characters', JSON.stringify(updatedCharacters));
+  const getRandomCharacters = (limit: number) => {
+    return [...characters]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, limit);
   };
 
-  const updateCharacterVotes = (characterId: string, increment: number) => {
-    const updatedCharacters = characters.map(char => {
-      if (char.id === characterId) {
-        return { ...char, votes: char.votes + increment };
+  const addCharacter = (character: Omit<Character, 'id' | 'votes' | 'voteCount'> & { id?: string, votes?: string[], voteCount?: number }) => {
+    // Crear un personaje completo con valores por defecto para los campos opcionales
+    const newCharacter: Character = {
+      id: character.id || crypto.randomUUID(),
+      name: character.name,
+      type: character.type,
+      power: character.power,
+      description: character.description,
+      image: character.image,
+      allies: character.allies || [],
+      rivals: character.rivals || [],
+      votes: character.votes || [],
+      voteCount: character.voteCount || 0,
+      phrase: character.phrase,
+      appearances: character.appearances,
+      abilities: character.abilities,
+      biography: character.biography
+    };
+
+    setCharacters(prevCharacters => [...prevCharacters, newCharacter]);
+    toast.success('¡Personaje creado con éxito!');
+  };
+
+  const updateCharacter = (character: Character) => {
+    setCharacters(prevCharacters =>
+      prevCharacters.map(char =>
+        char.id === character.id ? character : char
+      )
+    );
+    toast.success('¡Personaje actualizado con éxito!');
+  };
+
+  const deleteCharacter = (id: string) => {
+    setCharacters(prevCharacters => 
+      prevCharacters.filter(char => char.id !== id)
+    );
+    toast.success('Personaje eliminado con éxito');
+  };
+
+  const voteForCharacter = async (characterId: string) => {
+    try {
+      if (!currentUser) {
+        toast.error('Debes iniciar sesión para votar');
+        return;
       }
-      return char;
-    });
-    
-    setCharacters(updatedCharacters);
-    localStorage.setItem('brainrot-characters', JSON.stringify(updatedCharacters));
+
+      const userId = currentUser.id;
+      const characterIndex = characters.findIndex(char => char.id === characterId);
+      
+      if (characterIndex === -1) {
+        toast.error('Personaje no encontrado');
+        return;
+      }
+
+      const character = characters[characterIndex];
+      const hasVoted = character.votes?.includes(userId) || false;
+
+      const updatedCharacters = [...characters];
+      if (hasVoted) {
+        // Quitar voto
+        updatedCharacters[characterIndex] = {
+          ...character,
+          votes: character.votes.filter(id => id !== userId),
+          voteCount: character.voteCount - 1
+        };
+        toast.success('Voto eliminado');
+      } else {
+        // Añadir voto
+        updatedCharacters[characterIndex] = {
+          ...character,
+          votes: [...character.votes, userId],
+          voteCount: character.voteCount + 1
+        };
+        toast.success('¡Voto registrado!');
+      }
+      
+      setCharacters(updatedCharacters);
+      
+    } catch (error) {
+      console.error('Error al votar:', error);
+      toast.error('Error al procesar el voto');
+    }
+  };
+
+  const hasUserVotedFor = (characterId: string, userId: string) => {
+    const character = characters.find(char => char.id === characterId);
+    return character?.votes?.includes(userId) || false;
   };
 
   return (
     <CharacterContext.Provider
       value={{
         characters,
-        getCharacterById,
-        getCharactersByType,
-        getTopCharacters,
+        loading,
+        error,
         addCharacter,
-        updateCharacterVotes
+        updateCharacter,
+        deleteCharacter,
+        getTopCharacters,
+        getCharacterById,
+        getRandomCharacters,
+        voteForCharacter,
+        hasUserVotedFor,
       }}
     >
       {children}
