@@ -30,15 +30,15 @@ const CharacterCard = ({ character }: CharacterCardProps) => {
 
   return (
     <div className="bg-brainrot-light rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
-      <div className="relative h-64">
+      <div className="h-64 overflow-hidden bg-brainrot-darker border border-brainrot-light p-1 rounded-lg">
         <img 
-          alt={character.name}
-          loading="lazy" 
-          decoding="async" 
-          data-nimg="fill" 
-          className="object-contain rounded-lg"
           src={character.image}
-          style={{position: 'absolute', height: '100%', width: '100%', inset: 0, color: 'transparent'}}
+          alt={character.name}
+          width="100%"
+          height="auto"
+          className="object-contain w-full h-full rounded-lg"
+          loading="lazy" 
+          decoding="async"
         />
       </div>
       <div className="p-6">

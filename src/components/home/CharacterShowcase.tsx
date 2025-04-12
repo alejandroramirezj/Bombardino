@@ -25,15 +25,15 @@ const CharacterShowcase = () => {
               className="bg-brainrot-dark border-none overflow-hidden hover:shadow-lg transition-all duration-300"
             >
               <Link to={`/character/${character.id}`}>
-                <div className="aspect-square overflow-hidden relative">
+                <div className="aspect-square bg-brainrot-darker border border-brainrot-light p-1 rounded-lg overflow-hidden">
                   <img 
-                    alt={character.name}
-                    loading="lazy" 
-                    decoding="async" 
-                    data-nimg="fill" 
-                    className="object-contain rounded-lg"
                     src={character.image}
-                    style={{position: 'absolute', height: '100%', width: '100%', inset: 0, color: 'transparent'}}
+                    alt={character.name}
+                    width="100%"
+                    height="auto"
+                    className="object-contain w-full h-full rounded-lg"
+                    loading="lazy" 
+                    decoding="async"
                   />
                 </div>
                 

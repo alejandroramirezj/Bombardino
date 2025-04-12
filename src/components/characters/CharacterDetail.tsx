@@ -30,15 +30,15 @@ const CharacterDetail = ({ character }: CharacterDetailProps) => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div className="relative aspect-square bg-brainrot-dark rounded-lg overflow-hidden">
+        <div className="aspect-square bg-brainrot-darker border border-brainrot-light p-1 rounded-lg overflow-hidden relative">
           <img 
-            alt={character.name}
-            loading="lazy" 
-            decoding="async" 
-            data-nimg="fill" 
-            className="object-contain rounded-lg"
             src={character.image}
-            style={{position: 'absolute', height: '100%', width: '100%', inset: 0, color: 'transparent'}}
+            alt={character.name}
+            width="100%"
+            height="auto"
+            className="object-contain w-full h-full rounded-lg"
+            loading="lazy" 
+            decoding="async"
           />
           <div className="absolute bottom-2 right-2 text-xs text-gray-400 z-10">
             Clicca sull'immagine per attivare il potere

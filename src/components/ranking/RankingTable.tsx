@@ -1,30 +1,30 @@
-
 import { useCharacters } from '@/contexts/CharacterContext';
 import { Link } from 'react-router-dom';
 
 const RankingTable = () => {
   const { getTopCharacters } = useCharacters();
-  const topCharacters = getTopCharacters();
+  const topCharacters = getTopCharacters(10);
 
   const getPowerBarColor = (power: number) => {
-    if (power >= 90) return 'bg-gradient-to-r from-red-600 to-red-400';
-    if (power >= 80) return 'bg-gradient-to-r from-yellow-600 to-yellow-400';
-    if (power >= 70) return 'bg-gradient-to-r from-green-600 to-green-400';
-    return 'bg-gradient-to-r from-blue-600 to-blue-400';
+    if (power >= 90) return 'power-bar-fill-90-100';
+    if (power >= 80) return 'power-bar-fill-80-90';
+    if (power >= 70) return 'power-bar-fill-70-80';
+    return 'power-bar-fill-0-70';
   };
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full bg-brainrot-darker rounded-lg overflow-hidden">
-        <thead>
-          <tr className="bg-brainrot-light text-left">
-            <th className="p-4 text-brainrot-turquoise">#</th>
-            <th className="p-4 text-brainrot-turquoise">Character</th>
-            <th className="p-4 text-brainrot-turquoise">Type</th>
-            <th className="p-4 text-brainrot-turquoise">Power</th>
-            <th className="p-4 text-brainrot-turquoise">Votes</th>
+      <table className="w-full text-sm text-white">
+        <thead className="text-xs uppercase bg-brainrot-darker">
+          <tr>
+            <th className="p-4">#</th>
+            <th className="p-4 text-left">Nome</th>
+            <th className="p-4">Tipo</th>
+            <th className="p-4">Potenza</th>
+            <th className="p-4">Voti</th>
           </tr>
         </thead>
+        
         <tbody>
           {topCharacters.map((character, index) => (
             <tr 
@@ -34,11 +34,14 @@ const RankingTable = () => {
               <td className="p-4 font-bold text-gray-400">{index + 1}</td>
               <td className="p-4">
                 <Link to={`/character/${character.id}`} className="flex items-center space-x-3">
-                  <div className="h-10 w-10 rounded-full overflow-hidden">
+                  <div className="h-10 w-10 rounded-full overflow-hidden bg-brainrot-darker border border-brainrot-light p-0.5">
                     <img 
                       src={character.image} 
                       alt={character.name} 
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover rounded-full"
+                      width="100%"
+                      height="auto"
+                      loading="lazy"
                     />
                   </div>
                   <span className="text-white hover:text-brainrot-blue transition-colors">
