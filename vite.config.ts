@@ -9,7 +9,7 @@ const base = isCustomDomain ? '/' : '/Bombardino/';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: '/Bombardino/',
+  base: '/',
   server: {
     host: "::",
     port: 8080,
