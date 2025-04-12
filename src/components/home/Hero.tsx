@@ -27,6 +27,7 @@ const Hero = () => {
                 src="/lovable-uploads/1718c260-9094-4237-9071-bbd817673d82.png" 
                 alt="Bombardino Coccodrillo" 
                 className="w-full h-auto rounded-lg"
+                loading="lazy"
               />
             </div>
           </div>

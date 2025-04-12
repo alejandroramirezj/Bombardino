@@ -1,5 +1,4 @@
 
-import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import CharacterGrid from '@/components/characters/CharacterGrid';
 import { Button } from '@/components/ui/button';

@@ -24,16 +24,19 @@ const CharacterCard = ({ character }: CharacterCardProps) => {
 
   const handleVote = (e: React.MouseEvent) => {
     e.preventDefault();
-    voteForCharacter(character.id);
+    if (isAuthenticated) {
+      voteForCharacter(character.id);
+    }
   };
 
   return (
-    <div className="character-card">
+    <div className="character-card bg-brainrot-dark rounded-lg overflow-hidden">
       <div className="relative aspect-square overflow-hidden">
         <img 
           src={character.image} 
           alt={character.name}
           className="w-full h-full object-cover transition-transform hover:scale-110 duration-500"
+          loading="lazy"
         />
       </div>
       

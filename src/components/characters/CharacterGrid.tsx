@@ -31,6 +31,7 @@ const CharacterGrid = ({ filter = 'Tutti' }: CharacterGridProps) => {
                 ? 'bg-brainrot-blue text-white' 
                 : 'bg-brainrot-light text-gray-300 hover:bg-gray-700'
             }`}
+            aria-label={`Filter by ${type}`}
           >
             {type}
           </button>

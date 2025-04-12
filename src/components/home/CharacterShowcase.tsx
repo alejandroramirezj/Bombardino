@@ -31,6 +31,7 @@ const CharacterShowcase = () => {
                     src={character.image} 
                     alt={character.name}
                     className="w-full h-full object-cover transform transition-transform hover:scale-110 duration-500"
+                    loading="lazy"
                   />
                 </div>
                 
