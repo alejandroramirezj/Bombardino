@@ -1,0 +1,1 @@
+const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); console.log("Mobile Device:", isMobile); console.log("User Agent:", navigator.userAgent); console.log("Screen Size:", window.innerWidth, "x", window.innerHeight);
