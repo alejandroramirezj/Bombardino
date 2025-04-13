@@ -384,7 +384,7 @@ const initialCharacters: Character[] = [
   {
     id: "29",
     name: "Tracotocutulo",
-    image: "/images/Tracotocutulo-.webp",
+    image: "/images/Tracotocutulo.webp",
     type: "Sonoro",
     power: 79,
     description: "Entità fatta di puro suono che può replicare qualsiasi voce e manipolare le onde sonore.",
