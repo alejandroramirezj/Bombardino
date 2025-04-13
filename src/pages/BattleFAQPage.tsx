@@ -627,17 +627,17 @@ const BattleSimulator = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 overflow-hidden"
           onClick={() => setShowCharacterSelect(false)}
         >
           <motion.div 
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            className="bg-gradient-to-b from-brainrot-dark to-black p-4 sm:p-6 rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            className="bg-gradient-to-b from-brainrot-dark to-black p-4 sm:p-6 rounded-xl w-full max-w-4xl max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <div className="sticky top-0 z-10 bg-gradient-to-b from-brainrot-dark to-brainrot-dark/90 flex justify-between items-center mb-4 sm:mb-6 pb-2">
               <h3 className="text-xl sm:text-2xl font-bold text-brainrot-turquoise">Selecciona un personaje</h3>
               <Button 
                 variant="ghost" 
@@ -648,12 +648,12 @@ const BattleSimulator = () => {
               </Button>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 pb-4">
               {battleCharacters.map(character => (
                 <motion.div
                   key={character.id}
                   className="cursor-pointer group"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.03 }}
                   onClick={() => handleCharacterSelect(character)}
                 >
                   <div className="bg-gradient-to-b from-brainrot-darker/80 to-brainrot-dark border-2 border-transparent group-hover:border-brainrot-turquoise rounded-lg overflow-hidden transition-all duration-300">
@@ -661,7 +661,8 @@ const BattleSimulator = () => {
                       <img 
                         src={getImagePath(character)} 
                         alt={character.name}
-                        className="h-full object-contain filter drop-shadow-lg transform group-hover:scale-110 transition-transform duration-300"
+                        className="h-full object-contain filter drop-shadow-lg transform group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
                       />
                     </div>
                     <div className="p-2 sm:p-3 text-center bg-gradient-to-t from-black to-transparent">
@@ -683,9 +684,9 @@ const BattleSimulator = () => {
 
   // Mejorar el componente de carga
   const LoadingSpinner = () => (
-    <div className="flex justify-center items-center space-x-2 my-8">
-      <div className="animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent"></div>
-      <span className="text-blue-500 font-semibold">Calculando resultado...</span>
+    <div className="flex items-center justify-center space-x-2">
+      <div className="animate-spin h-5 w-5 border-3 border-white rounded-full border-t-transparent"></div>
+      <span className="text-white font-semibold">Simulando...</span>
     </div>
   );
 
@@ -876,8 +877,8 @@ const BattleSimulator = () => {
                 {isSimulating ? (
                   <LoadingSpinner />
                 ) : (
-                  <span className="flex items-center">
-                    <Swords className="mr-3 h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="flex items-center justify-center w-full">
+                    <Swords className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
                     ¡LUCHAR!
                   </span>
                 )}
