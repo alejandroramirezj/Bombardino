@@ -10,7 +10,7 @@ import {
 
 // Lista de personajes para la simulación
 const battleCharacters = [
-  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "images/Bombardino%20Crocodillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
+  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "images/Bombardino%20Coccodrillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
   { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "images/Tralalero%20Tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
   { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "images/Bombombini%20Gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
   { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "images/Tung%20Tung%20Tung%20Sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
