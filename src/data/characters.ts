@@ -19,7 +19,7 @@ const initialCharacters: Character[] = [
   {
     id: "2",
     name: "Bombardino coccodrillo",
-    image: "/images/Bombardino-Coccodrillo.webp",
+    image: "/images/Bombardino-Crocodillo.webp",
     type: "Anfibio",
     power: 95,
     description: "Il leggendario coccodrillo italiano con poteri esplosivi. Il suo morso può attraversare il metallo.",
