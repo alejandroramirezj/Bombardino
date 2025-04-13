@@ -5,7 +5,8 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
   Sword, Swords, ZapIcon, Flame, Droplets, 
-  Mountain, Wind, Skull, Trophy, Share2
+  Mountain, Wind, Skull, Trophy, Share2,
+  ChevronDown, Award, History, User, Bell, X
 } from 'lucide-react';
 import initialCharacters from '@/data/characters';
 
@@ -31,7 +32,10 @@ const battleCharacters = initialCharacters.map(character => ({
   image: character.image,
   power: character.power,
   type: character.type.toLowerCase(),
-  speciality: character.abilities && character.abilities.length > 0 ? character.abilities[0].toLowerCase() : "ataque"
+  speciality: character.abilities && character.abilities.length > 0 ? character.abilities[0].toLowerCase() : "ataque",
+  wins: 0,
+  losses: 0,
+  battles: 0
 }));
 
 // Lista de escenarios
@@ -69,6 +73,95 @@ const getImagePath = (character) => {
     console.error("Error al procesar ruta de imagen:", error);
     // En caso de error, devolvemos la ruta original o una ruta de respaldo
     return character.image || 'images/placeholder.webp';
+  }
+};
+
+// Función para guardar batallas en localStorage
+const saveBattle = (battle) => {
+  try {
+    // Obtener batallas existentes
+    const savedBattles = localStorage.getItem('savedBattles');
+    let battles = savedBattles ? JSON.parse(savedBattles) : [];
+    
+    // Añadir ID único y fecha a la batalla
+    battle.id = Date.now();
+    battle.date = new Date().toISOString();
+    battle.userType = localStorage.getItem('userId') ? 'registered' : 'anonymous';
+    battle.userId = localStorage.getItem('userId') || 'anon-' + Math.random().toString(36).substring(2, 9);
+    
+    // Añadir la nueva batalla
+    battles.push(battle);
+    
+    // Limitar a 50 batallas para no sobrecargar localStorage
+    if (battles.length > 50) {
+      battles = battles.slice(battles.length - 50);
+    }
+    
+    // Guardar en localStorage
+    localStorage.setItem('savedBattles', JSON.stringify(battles));
+    
+    // Actualizar estadísticas de personajes
+    updateCharacterStats(battle);
+    
+    return battle.id;
+  } catch (error) {
+    console.error("Error al guardar la batalla:", error);
+    return null;
+  }
+};
+
+// Función para actualizar estadísticas de personajes
+const updateCharacterStats = (battle) => {
+  try {
+    // Obtener estadísticas existentes
+    const savedStats = localStorage.getItem('characterStats');
+    const stats = savedStats ? JSON.parse(savedStats) : {};
+    
+    // Actualizar estadísticas del ganador
+    const winnerName = battle.winner;
+    if (!stats[winnerName]) {
+      stats[winnerName] = { wins: 0, losses: 0, battles: 0 };
+    }
+    stats[winnerName].wins += 1;
+    stats[winnerName].battles += 1;
+    
+    // Actualizar estadísticas del perdedor
+    const loserName = battle.fighter1.name === winnerName ? battle.fighter2.name : battle.fighter1.name;
+    if (!stats[loserName]) {
+      stats[loserName] = { wins: 0, losses: 0, battles: 0 };
+    }
+    stats[loserName].losses += 1;
+    stats[loserName].battles += 1;
+    
+    // Guardar en localStorage
+    localStorage.setItem('characterStats', JSON.stringify(stats));
+  } catch (error) {
+    console.error("Error al actualizar estadísticas:", error);
+  }
+};
+
+// Función para compartir batalla
+const shareBattle = (battleId) => {
+  try {
+    // Crear URL para compartir
+    const shareUrl = `${window.location.origin}${window.location.pathname}?battle=${battleId}`;
+    
+    // Si está disponible la API de compartir, usarla
+    if (navigator.share) {
+      navigator.share({
+        title: 'Batalla Épica en Bombardino Universe',
+        text: '¡Mira esta batalla épica entre personajes del universo Bombardino!',
+        url: shareUrl
+      });
+    } else {
+      // Alternativa: copiar al portapapeles
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('¡Enlace copiado al portapapeles!');
+      });
+    }
+  } catch (error) {
+    console.error("Error al compartir:", error);
+    alert('No se pudo compartir. Intenta copiar la URL manualmente.');
   }
 };
 
@@ -212,260 +305,325 @@ const BattleStats = ({ stats }) => {
 
 // Añadir función generadora de narrativas de batalla
 const generateBattleNarrative = (fighter1, fighter2, scenario, winner) => {
-  // Identificar quién ganó y quién perdió
-  const winnerFighter = winner === fighter1.name ? fighter1 : fighter2;
-  const loserFighter = winner === fighter1.name ? fighter2 : fighter1;
-  
-  // Ventajas según escenario
-  const winnerHasAdvantage = winnerFighter.type === scenario.advantage;
-  const loserHasDisadvantage = loserFighter.type === scenario.disadvantage;
-  
-  // Narrativas específicas según personajes y escenarios
-  const narratives = {
-    // Bombardino
-    "Bombardino coccodrillo": {
+  try {
+    // Identificar quién ganó y quién perdió
+    const winnerFighter = winner === fighter1.name ? fighter1 : fighter2;
+    const loserFighter = winner === fighter1.name ? fighter2 : fighter1;
+    
+    // Ventajas según escenario
+    const winnerHasAdvantage = winnerFighter.type === scenario.advantage;
+    const loserHasDisadvantage = loserFighter.type === scenario.disadvantage;
+    
+    // Narrativas específicas según personajes y escenarios
+    const narratives = {
+      // Bombardino
+      "Bombardino coccodrillo": {
+        attacks: [
+          "un potente coletazo que dejó sin aliento a",
+          "una mordida fulminante que sorprendió a",
+          "su ataque especial 'Mandíbula Trituracohetes' contra",
+          "una embestida desde el agua que derribó a"
+        ],
+        finishers: [
+          `lanzó un gran chorro de agua a presión que dejó fuera de combate a ${loserFighter.name}`,
+          `giró en espiral creando un remolino que arrastró a ${loserFighter.name}`,
+          `usó su técnica especial "Bombardeo Acuático" que ${loserFighter.name} no pudo esquivar`,
+          `nadó en círculos a gran velocidad creando una trampa de la que ${loserFighter.name} no pudo escapar`
+        ],
+        defeats: [
+          `intentó su ataque acuático pero ${winnerFighter.name} fue más rápido`,
+          `no pudo mantener su fuerza fuera del agua y ${winnerFighter.name} aprovechó la oportunidad`,
+          `resbaló en el terreno desfavorable y ${winnerFighter.name} aprovechó el descuido`
+        ]
+      },
+      // Tralalero
+      "Tralalero Tralala": {
+        attacks: [
+          "una melodía hipnótica que confundió a",
+          "un riff de guitarra ensordecedor contra",
+          "una lluvia de notas musicales afiladas hacia",
+          "su ataque sónico que desestabilizó a"
+        ],
+        finishers: [
+          `tocó su solo de guitarra "Tralalazo Ensordecedor" dejando paralizado a ${loserFighter.name}`,
+          `lanzó su micrófono como un proyectil que impactó directamente en ${loserFighter.name}`,
+          `creó una onda de sonido tan potente que ${loserFighter.name} salió volando por los aires`,
+          `usó sus zapatillas de la suerte para golpear a ${loserFighter.name} en un punto débil`
+        ],
+        defeats: [
+          `intentó hipnotizar con su música pero ${winnerFighter.name} tapó sus oídos a tiempo`,
+          `falló su nota musical más poderosa y ${winnerFighter.name} contraatacó implacablemente`,
+          `tropezó con sus propios cables mientras actuaba y ${winnerFighter.name} no perdonó el error`
+        ]
+      },
+      // Bombombini
+      "Bombombini Gusini": {
+        attacks: [
+          "una explosión controlada que sorprendió a",
+          "una lluvia de pequeñas bombas sobre",
+          "un proyectil explosivo que impactó cerca de",
+          "su famosa técnica 'Explosión en Cadena' contra"
+        ],
+        finishers: [
+          `desplegó su "Bombazo Supremo" que ${loserFighter.name} no pudo esquivar`,
+          `creó una cortina de humo y atacó por sorpresa a ${loserFighter.name}`,
+          `calculó perfectamente el tiempo de una explosión retardada que pilló desprevenido a ${loserFighter.name}`,
+          `hizo explotar el terreno bajo los pies de ${loserFighter.name} haciéndole perder el equilibrio`
+        ],
+        defeats: [
+          `se le mojó la mecha de su bomba principal y ${winnerFighter.name} aprovechó el momento`,
+          `calculó mal el tiempo de explosión y ${winnerFighter.name} esquivó fácilmente el ataque`,
+          `se vio afectado por su propia explosión y ${winnerFighter.name} contraatacó`
+        ]
+      },
+      // Tung tung
+      "Tung tung tung sahur": {
+        attacks: [
+          "un ritmo de percusión que mareó a",
+          "un golpe de batería que resonó en todo el cuerpo de",
+          "una secuencia de golpes rítmicos contra",
+          "su técnica especial 'Percusión Paralizante' hacia"
+        ],
+        finishers: [
+          `ejecutó su "Ritmo Demoledor" que ${loserFighter.name} no pudo resistir`,
+          `creó vibraciones en el suelo que desequilibraron a ${loserFighter.name}`,
+          `aceleró tanto el ritmo de sus tambores que ${loserFighter.name} quedó hipnotizado`,
+          `lanzó sus baquetas como proyectiles precisos hacia los puntos débiles de ${loserFighter.name}`
+        ],
+        defeats: [
+          `perdió el ritmo en un momento crucial y ${winnerFighter.name} aprovechó la oportunidad`,
+          `rompió su tambor favorito y perdió concentración, momento que ${winnerFighter.name} usó a su favor`,
+          `no pudo mantener el tempo adecuado y ${winnerFighter.name} tomó la iniciativa`
+        ]
+      },
+      // La vaca
+      "La vaca saturno saturnita": {
+        attacks: [
+          "un campo gravitacional que aplastó a",
+          "un rayo cósmico que impactó cerca de",
+          "anillos gravitacionales que atraparon a",
+          "su mirada cósmica que desconcertó a"
+        ],
+        finishers: [
+          `alteró la gravedad haciendo flotar y luego caer bruscamente a ${loserFighter.name}`,
+          `absorbió la energía espacial y lanzó un "Rayo Galáctico" que ${loserFighter.name} no pudo esquivar`,
+          `creó un mini agujero negro que desestabilizó completamente a ${loserFighter.name}`,
+          `usó sus anillos cósmicos para atar y derribar a ${loserFighter.name}`
+        ],
+        defeats: [
+          `perdió su conexión cósmica temporalmente y ${winnerFighter.name} lo aprovechó`,
+          `se distrajo observando las estrellas y ${winnerFighter.name} atacó por sorpresa`,
+          `calculó mal la órbita de su ataque y ${winnerFighter.name} lo esquivó con facilidad`
+        ]
+      },
+      // Frigo Camelo
+      "Frigo Camelo": {
+        attacks: [
+          "una ventisca helada que ralentizó a",
+          "proyectiles de hielo afilados contra",
+          "una capa de escarcha que dificultó los movimientos de",
+          "su técnica 'Aliento Glacial' sobre"
+        ],
+        finishers: [
+          `creó una tormenta de nieve que cegó y desorientó a ${loserFighter.name}`,
+          `congeló el suelo haciendo resbalar y caer a ${loserFighter.name}`,
+          `formó un bloque de hielo alrededor de las piernas de ${loserFighter.name}, inmovilizándolo`,
+          `ejecutó su "Abrazo Polar" que dejó completamente helado a ${loserFighter.name}`
+        ],
+        defeats: [
+          `se derritió parcialmente bajo presión y ${winnerFighter.name} aprovechó su debilidad`,
+          `resbaló en su propio hielo y ${winnerFighter.name} atacó decisivamente`,
+          `no pudo mantener la temperatura baja y ${winnerFighter.name} ganó ventaja`
+        ]
+      },
+      // Akulini
+      "Akulini Cactusini": {
+        attacks: [
+          "una lluvia de espinas que acribillaron a",
+          "arena del desierto en los ojos de",
+          "un látigo de cactus que golpeó a",
+          "su técnica 'Abrazo Espinoso' contra"
+        ],
+        finishers: [
+          `disparó sus espinas venenosas que paralizaron lentamente a ${loserFighter.name}`,
+          `creó una tormenta de arena que desorientó completamente a ${loserFighter.name}`,
+          `enterró sus raíces en el suelo y emergió sorpresivamente bajo ${loserFighter.name}`,
+          `usó su "Floración Explosiva" liberando polen que adormeció a ${loserFighter.name}`
+        ],
+        defeats: [
+          `no pudo extraer suficiente agua del ambiente y ${winnerFighter.name} notó su debilidad`,
+          `perdió varias espinas intentando atacar y ${winnerFighter.name} encontró un punto vulnerable`,
+          `se secó temporalmente por el esfuerzo y ${winnerFighter.name} aprovechó el momento`
+        ]
+      },
+      // Bobritto
+      "Bobritto bandito": {
+        attacks: [
+          "una construcción rápida que bloqueó a",
+          "un golpe de cola que sorprendió a",
+          "una trampa de madera que atrapó a",
+          "su técnica 'Mordisco Constructor' sobre"
+        ],
+        finishers: [
+          `construyó una presa en tiempo récord que ahogó el ataque de ${loserFighter.name}`,
+          `lanzó troncos afilados como proyectiles que impactaron en ${loserFighter.name}`,
+          `creó un laberinto de madera del que ${loserFighter.name} no pudo escapar`,
+          `utilizó su "Ingeniería Suprema" para construir una trampa donde cayó ${loserFighter.name}`
+        ],
+        defeats: [
+          `se quedó sin materiales de construcción y ${winnerFighter.name} aprovechó el momento`,
+          `su presa se rompió en el peor momento y ${winnerFighter.name} usó esto a su favor`,
+          `se distrajo con los detalles de su construcción y ${winnerFighter.name} atacó por sorpresa`
+        ]
+      }
+    };
+    
+    // Narrativas genéricas para personajes sin narrativas específicas
+    const genericNarratives = {
       attacks: [
-        "un potente coletazo que dejó sin aliento a",
-        "una mordida fulminante que sorprendió a",
-        "su ataque especial 'Mandíbula Trituracohetes' contra",
-        "una embestida desde el agua que derribó a"
+        `un ataque sorprendente que impactó en`,
+        `una maniobra rápida contra`,
+        `un golpe directo hacia`,
+        `una táctica inesperada frente a`
       ],
       finishers: [
-        `lanzó un gran chorro de agua a presión que dejó fuera de combate a ${loserFighter.name}`,
-        `giró en espiral creando un remolino que arrastró a ${loserFighter.name}`,
-        `usó su técnica especial "Bombardeo Acuático" que ${loserFighter.name} no pudo esquivar`,
-        `nadó en círculos a gran velocidad creando una trampa de la que ${loserFighter.name} no pudo escapar`
+        `utilizó su ataque más poderoso que ${loserFighter.name} no pudo contrarrestar`,
+        `ejecutó una combinación perfecta que dejó sin opciones a ${loserFighter.name}`,
+        `aprovechó una oportunidad crucial para derrotar a ${loserFighter.name}`,
+        `demostró su superioridad con un movimiento final devastador contra ${loserFighter.name}`
       ],
       defeats: [
-        `intentó su ataque acuático pero ${winnerFighter.name} fue más rápido`,
-        `no pudo mantener su fuerza fuera del agua y ${winnerFighter.name} aprovechó la oportunidad`,
-        `resbaló en el terreno desfavorable y ${winnerFighter.name} aprovechó el descuido`
+        `intentó defenderse pero ${winnerFighter.name} fue más hábil`,
+        `no logró esquivar el ataque decisivo de ${winnerFighter.name}`,
+        `cometió un error táctico que ${winnerFighter.name} supo aprovechar`
       ]
-    },
-    // Tralalero
-    "Tralalero Tralala": {
-      attacks: [
-        "una melodía hipnótica que confundió a",
-        "un riff de guitarra ensordecedor contra",
-        "una lluvia de notas musicales afiladas hacia",
-        "su ataque sónico que desestabilizó a"
-      ],
-      finishers: [
-        `tocó su solo de guitarra "Tralalazo Ensordecedor" dejando paralizado a ${loserFighter.name}`,
-        `lanzó su micrófono como un proyectil que impactó directamente en ${loserFighter.name}`,
-        `creó una onda de sonido tan potente que ${loserFighter.name} salió volando por los aires`,
-        `usó sus zapatillas de la suerte para golpear a ${loserFighter.name} en un punto débil`
-      ],
-      defeats: [
-        `intentó hipnotizar con su música pero ${winnerFighter.name} tapó sus oídos a tiempo`,
-        `falló su nota musical más poderosa y ${winnerFighter.name} contraatacó implacablemente`,
-        `tropezó con sus propios cables mientras actuaba y ${winnerFighter.name} no perdonó el error`
-      ]
-    },
-    // Bombombini
-    "Bombombini Gusini": {
-      attacks: [
-        "una explosión controlada que sorprendió a",
-        "una lluvia de pequeñas bombas sobre",
-        "un proyectil explosivo que impactó cerca de",
-        "su famosa técnica 'Explosión en Cadena' contra"
-      ],
-      finishers: [
-        `desplegó su "Bombazo Supremo" que ${loserFighter.name} no pudo esquivar`,
-        `creó una cortina de humo y atacó por sorpresa a ${loserFighter.name}`,
-        `calculó perfectamente el tiempo de una explosión retardada que pilló desprevenido a ${loserFighter.name}`,
-        `hizo explotar el terreno bajo los pies de ${loserFighter.name} haciéndole perder el equilibrio`
-      ],
-      defeats: [
-        `se le mojó la mecha de su bomba principal y ${winnerFighter.name} aprovechó el momento`,
-        `calculó mal el tiempo de explosión y ${winnerFighter.name} esquivó fácilmente el ataque`,
-        `se vio afectado por su propia explosión y ${winnerFighter.name} contraatacó`
-      ]
-    },
-    // Tung tung
-    "Tung tung tung sahur": {
-      attacks: [
-        "un ritmo de percusión que mareó a",
-        "un golpe de batería que resonó en todo el cuerpo de",
-        "una secuencia de golpes rítmicos contra",
-        "su técnica especial 'Percusión Paralizante' hacia"
-      ],
-      finishers: [
-        `ejecutó su "Ritmo Demoledor" que ${loserFighter.name} no pudo resistir`,
-        `creó vibraciones en el suelo que desequilibraron a ${loserFighter.name}`,
-        `aceleró tanto el ritmo de sus tambores que ${loserFighter.name} quedó hipnotizado`,
-        `lanzó sus baquetas como proyectiles precisos hacia los puntos débiles de ${loserFighter.name}`
-      ],
-      defeats: [
-        `perdió el ritmo en un momento crucial y ${winnerFighter.name} aprovechó la oportunidad`,
-        `rompió su tambor favorito y perdió concentración, momento que ${winnerFighter.name} usó a su favor`,
-        `no pudo mantener el tempo adecuado y ${winnerFighter.name} tomó la iniciativa`
-      ]
-    },
-    // La vaca
-    "La vaca saturno saturnita": {
-      attacks: [
-        "un campo gravitacional que aplastó a",
-        "un rayo cósmico que impactó cerca de",
-        "anillos gravitacionales que atraparon a",
-        "su mirada cósmica que desconcertó a"
-      ],
-      finishers: [
-        `alteró la gravedad haciendo flotar y luego caer bruscamente a ${loserFighter.name}`,
-        `absorbió la energía espacial y lanzó un "Rayo Galáctico" que ${loserFighter.name} no pudo esquivar`,
-        `creó un mini agujero negro que desestabilizó completamente a ${loserFighter.name}`,
-        `usó sus anillos cósmicos para atar y derribar a ${loserFighter.name}`
-      ],
-      defeats: [
-        `perdió su conexión cósmica temporalmente y ${winnerFighter.name} lo aprovechó`,
-        `se distrajo observando las estrellas y ${winnerFighter.name} atacó por sorpresa`,
-        `calculó mal la órbita de su ataque y ${winnerFighter.name} lo esquivó con facilidad`
-      ]
-    },
-    // Frigo Camelo
-    "Frigo Camelo": {
-      attacks: [
-        "una ventisca helada que ralentizó a",
-        "proyectiles de hielo afilados contra",
-        "una capa de escarcha que dificultó los movimientos de",
-        "su técnica 'Aliento Glacial' sobre"
-      ],
-      finishers: [
-        `creó una tormenta de nieve que cegó y desorientó a ${loserFighter.name}`,
-        `congeló el suelo haciendo resbalar y caer a ${loserFighter.name}`,
-        `formó un bloque de hielo alrededor de las piernas de ${loserFighter.name}, inmovilizándolo`,
-        `ejecutó su "Abrazo Polar" que dejó completamente helado a ${loserFighter.name}`
-      ],
-      defeats: [
-        `se derritió parcialmente bajo presión y ${winnerFighter.name} aprovechó su debilidad`,
-        `resbaló en su propio hielo y ${winnerFighter.name} atacó decisivamente`,
-        `no pudo mantener la temperatura baja y ${winnerFighter.name} ganó ventaja`
-      ]
-    },
-    // Akulini
-    "Akulini Cactusini": {
-      attacks: [
-        "una lluvia de espinas que acribillaron a",
-        "arena del desierto en los ojos de",
-        "un látigo de cactus que golpeó a",
-        "su técnica 'Abrazo Espinoso' contra"
-      ],
-      finishers: [
-        `disparó sus espinas venenosas que paralizaron lentamente a ${loserFighter.name}`,
-        `creó una tormenta de arena que desorientó completamente a ${loserFighter.name}`,
-        `enterró sus raíces en el suelo y emergió sorpresivamente bajo ${loserFighter.name}`,
-        `usó su "Floración Explosiva" liberando polen que adormeció a ${loserFighter.name}`
-      ],
-      defeats: [
-        `no pudo extraer suficiente agua del ambiente y ${winnerFighter.name} notó su debilidad`,
-        `perdió varias espinas intentando atacar y ${winnerFighter.name} encontró un punto vulnerable`,
-        `se secó temporalmente por el esfuerzo y ${winnerFighter.name} aprovechó el momento`
-      ]
-    },
-    // Bobritto
-    "Bobritto bandito": {
-      attacks: [
-        "una construcción rápida que bloqueó a",
-        "un golpe de cola que sorprendió a",
-        "una trampa de madera que atrapó a",
-        "su técnica 'Mordisco Constructor' sobre"
-      ],
-      finishers: [
-        `construyó una presa en tiempo récord que ahogó el ataque de ${loserFighter.name}`,
-        `lanzó troncos afilados como proyectiles que impactaron en ${loserFighter.name}`,
-        `creó un laberinto de madera del que ${loserFighter.name} no pudo escapar`,
-        `utilizó su "Ingeniería Suprema" para construir una trampa donde cayó ${loserFighter.name}`
-      ],
-      defeats: [
-        `se quedó sin materiales de construcción y ${winnerFighter.name} aprovechó el momento`,
-        `su presa se rompió en el peor momento y ${winnerFighter.name} usó esto a su favor`,
-        `se distrajo con los detalles de su construcción y ${winnerFighter.name} atacó por sorpresa`
-      ]
+    };
+    
+    // Obtener narrativas para cada luchador (o usar genéricas si no existen)
+    const fighter1Narratives = narratives[fighter1.name] || { 
+      attacks: genericNarratives.attacks,
+      finishers: genericNarratives.finishers.map(f => f.replace('${loserFighter.name}', loserFighter.name)),
+      defeats: genericNarratives.defeats.map(d => d.replace('${winnerFighter.name}', winnerFighter.name))
+    };
+    
+    const fighter2Narratives = narratives[fighter2.name] || {
+      attacks: genericNarratives.attacks,
+      finishers: genericNarratives.finishers.map(f => f.replace('${loserFighter.name}', loserFighter.name)),
+      defeats: genericNarratives.defeats.map(d => d.replace('${winnerFighter.name}', winnerFighter.name))
+    };
+    
+    // Frases específicas por escenario
+    const scenarioEffects = {
+      "Agua": {
+        advantage: "las corrientes de agua amplificaron los movimientos de",
+        neutral: "el agua creó condiciones desafiantes para ambos combatientes",
+        disadvantage: "el exceso de humedad complicó las acciones de"
+      },
+      "Desierto": {
+        advantage: "la arena y el calor potenciaron las habilidades de",
+        neutral: "el calor del desierto afectó a ambos luchadores",
+        disadvantage: "la sequedad debilitó considerablemente a"
+      },
+      "Ciudad": {
+        advantage: "el entorno urbano proporcionó ventajas tácticas a",
+        neutral: "los edificios y calles crearon un escenario impredecible",
+        disadvantage: "la falta de su entorno natural limitó a"
+      },
+      "Espacio": {
+        advantage: "la ausencia de gravedad amplificó los poderes de",
+        neutral: "las condiciones espaciales sorprendieron a ambos",
+        disadvantage: "la falta de atmósfera complicó la estrategia de"
+      },
+      "Escenario musical": {
+        advantage: "la acústica del lugar potenció las habilidades de",
+        neutral: "los instrumentos musicales fueron usados por ambos luchadores",
+        disadvantage: "el ruido ambiental interfirió con las técnicas de"
+      },
+      "Montañas": {
+        advantage: "la altura y el terreno escarpado favorecieron a",
+        neutral: "el terreno montañoso desafió a ambos combatientes",
+        disadvantage: "las pendientes pronunciadas dificultaron los movimientos de"
+      }
+    };
+    
+    // Asegurar que exista el escenario o usar uno predeterminado
+    const effectForScenario = scenarioEffects[scenario.name] || {
+      advantage: "el ambiente favoreció a",
+      neutral: "el escenario presentó desafíos para ambos combatientes",
+      disadvantage: "el entorno dificultó el desempeño de"
+    };
+    
+    // Construir la narrativa
+    let narrative = "";
+    
+    // Introducción según el escenario
+    narrative += `<div class="text-gray-300 mt-3 mb-5 border-l-4 border-brainrot-turquoise pl-4 py-2 bg-brainrot-darker/30 rounded">`;
+    narrative += `<p class="mb-2"><span class="text-brainrot-turquoise font-semibold">Escenario:</span> ${scenario.name}</p>`;
+    
+    // Efectos del escenario
+    if (winnerHasAdvantage) {
+      narrative += `<p class="mb-1">${effectForScenario.advantage} ${winnerFighter.name}.</p>`;
+    } else if (loserHasDisadvantage) {
+      narrative += `<p class="mb-1">${effectForScenario.disadvantage} ${loserFighter.name}.</p>`;
+    } else {
+      narrative += `<p class="mb-1">${effectForScenario.neutral}.</p>`;
     }
-  };
-  
-  // Frases específicas por escenario
-  const scenarioEffects = {
-    "Agua": {
-      advantage: "las corrientes de agua amplificaron los movimientos de",
-      neutral: "el agua creó condiciones desafiantes para ambos combatientes",
-      disadvantage: "el exceso de humedad complicó las acciones de"
-    },
-    "Desierto": {
-      advantage: "la arena y el calor potenciaron las habilidades de",
-      neutral: "el calor del desierto afectó a ambos luchadores",
-      disadvantage: "la sequedad debilitó considerablemente a"
-    },
-    "Ciudad": {
-      advantage: "el entorno urbano proporcionó ventajas tácticas a",
-      neutral: "los edificios y calles crearon un escenario impredecible",
-      disadvantage: "la falta de su entorno natural limitó a"
-    },
-    "Espacio": {
-      advantage: "la ausencia de gravedad amplificó los poderes de",
-      neutral: "las condiciones espaciales sorprendieron a ambos",
-      disadvantage: "la falta de atmósfera complicó la estrategia de"
-    },
-    "Escenario musical": {
-      advantage: "la acústica del lugar potenció las habilidades de",
-      neutral: "los instrumentos musicales fueron usados por ambos luchadores",
-      disadvantage: "el ruido ambiental interfirió con las técnicas de"
-    },
-    "Montañas": {
-      advantage: "la altura y el terreno escarpado favorecieron a",
-      neutral: "el terreno montañoso desafió a ambos combatientes",
-      disadvantage: "las pendientes pronunciadas dificultaron los movimientos de"
+    narrative += `</div>`;
+    
+    // Desarrollo del combate
+    narrative += `<div class="space-y-4 text-gray-200">`;
+    
+    // Inicio - primeros intercambios
+    const fighter1Attack = fighter1Narratives.attacks[Math.floor(Math.random() * fighter1Narratives.attacks.length)];
+    const fighter2Attack = fighter2Narratives.attacks[Math.floor(Math.random() * fighter2Narratives.attacks.length)];
+    
+    narrative += `<p>El combate comenzó con ${fighter1.name} y ${fighter2.name} estudiándose mutuamente. 
+    <span class="text-brainrot-turquoise">${fighter1.emoji} ${fighter1.name}</span> lanzó ${fighter1Attack} 
+    <span class="text-red-400">${fighter2.emoji} ${fighter2.name}</span>, quien respondió con ${fighter2Attack} 
+    su oponente.</p>`;
+    
+    // Desarrollo - momento crucial
+    const momentoDecisivo = Math.random() > 0.5 
+      ? `<p>La batalla estuvo reñida hasta que ${scenario.name === "Agua" ? "una ola inesperada" : scenario.name === "Desierto" ? "una tormenta de arena" : scenario.name === "Ciudad" ? "un vehículo pasando cerca" : scenario.name === "Espacio" ? "una lluvia de meteoritos" : scenario.name === "Escenario musical" ? "un cambio de ritmo repentino" : "un derrumbe de rocas"} cambió el curso del combate.</p>`
+      : `<p>Ambos intercambiaron golpes, cada uno mostrando sus habilidades especiales. ${fighter1.name} utilizó su especialidad de ${fighter1.speciality} mientras que ${fighter2.name} contraatacó con su ${fighter2.speciality}.</p>`;
+    
+    narrative += momentoDecisivo;
+    
+    // Final - resolución
+    if (winner === fighter1.name) {
+      const finisher = fighter1Narratives.finishers[Math.floor(Math.random() * fighter1Narratives.finishers.length)];
+      const defeat = fighter2Narratives.defeats[Math.floor(Math.random() * fighter2Narratives.defeats.length)];
+      
+      narrative += `<p class="font-medium">En un movimiento decisivo, <span class="text-white">${fighter1.name}</span> ${finisher}.</p>`;
+      narrative += `<p>${fighter2.name} ${defeat}.</p>`;
+    } else {
+      const finisher = fighter2Narratives.finishers[Math.floor(Math.random() * fighter2Narratives.finishers.length)];
+      const defeat = fighter1Narratives.defeats[Math.floor(Math.random() * fighter1Narratives.defeats.length)];
+      
+      narrative += `<p class="font-medium">En un movimiento decisivo, <span class="text-white">${fighter2.name}</span> ${finisher}.</p>`;
+      narrative += `<p>${fighter1.name} ${defeat}.</p>`;
     }
-  };
-  
-  // Construir la narrativa
-  let narrative = "";
-  
-  // Introducción según el escenario
-  narrative += `<div class="text-gray-300 mt-3 mb-5 border-l-4 border-brainrot-turquoise pl-4 py-2 bg-brainrot-darker/30 rounded">`;
-  narrative += `<p class="mb-2"><span class="text-brainrot-turquoise font-semibold">Escenario:</span> ${scenario.name}</p>`;
-  
-  // Efectos del escenario
-  if (winnerHasAdvantage) {
-    narrative += `<p class="mb-1">${scenarioEffects[scenario.name].advantage} ${winnerFighter.name}.</p>`;
-  } else if (loserHasDisadvantage) {
-    narrative += `<p class="mb-1">${scenarioEffects[scenario.name].disadvantage} ${loserFighter.name}.</p>`;
-  } else {
-    narrative += `<p class="mb-1">${scenarioEffects[scenario.name].neutral}.</p>`;
+    
+    // Conclusión
+    narrative += `<p class="mt-3 text-yellow-300 font-semibold">¡${winner} logró la victoria gracias a su ${winnerFighter.speciality} superior y su increíble adaptación al ${scenario.name.toLowerCase()}!</p>`;
+    
+    narrative += `</div>`;
+    
+    return narrative;
+  } catch (error) {
+    console.error("Error al generar narrativa:", error);
+    // Narrativa de respaldo simple en caso de error
+    return `
+      <div class="text-gray-300 mt-3 mb-5 border-l-4 border-brainrot-turquoise pl-4 py-2 bg-brainrot-darker/30 rounded">
+        <p class="mb-2"><span class="text-brainrot-turquoise font-semibold">Escenario:</span> ${scenario ? scenario.name : 'Desconocido'}</p>
+      </div>
+      <div class="space-y-4 text-gray-200">
+        <p>Una batalla épica se desarrolló entre ${fighter1 ? fighter1.name : 'Luchador 1'} y ${fighter2 ? fighter2.name : 'Luchador 2'}.</p>
+        <p class="font-medium">Tras un intenso combate, <span class="text-white">${winner}</span> resultó victorioso.</p>
+        <p class="mt-3 text-yellow-300 font-semibold">¡${winner} ha ganado la batalla!</p>
+      </div>
+    `;
   }
-  narrative += `</div>`;
-  
-  // Desarrollo del combate
-  narrative += `<div class="space-y-4 text-gray-200">`;
-  
-  // Inicio - primeros intercambios
-  narrative += `<p>El combate comenzó con ${fighter1.name} y ${fighter2.name} estudiándose mutuamente. 
-  <span class="text-brainrot-turquoise">${fighter1.emoji} ${fighter1.name}</span> lanzó ${narratives[fighter1.name].attacks[Math.floor(Math.random() * narratives[fighter1.name].attacks.length)]} 
-  <span class="text-red-400">${fighter2.emoji} ${fighter2.name}</span>, quien respondió con ${narratives[fighter2.name].attacks[Math.floor(Math.random() * narratives[fighter2.name].attacks.length)]} 
-  su oponente.</p>`;
-  
-  // Desarrollo - momento crucial
-  const momentoDecisivo = Math.random() > 0.5 
-    ? `<p>La batalla estuvo reñida hasta que ${scenario.name === "Agua" ? "una ola inesperada" : scenario.name === "Desierto" ? "una tormenta de arena" : scenario.name === "Ciudad" ? "un vehículo pasando cerca" : scenario.name === "Espacio" ? "una lluvia de meteoritos" : scenario.name === "Escenario musical" ? "un cambio de ritmo repentino" : "un derrumbe de rocas"} cambió el curso del combate.</p>`
-    : `<p>Ambos intercambiaron golpes, cada uno mostrando sus habilidades especiales. ${fighter1.name} utilizó su especialidad de ${fighter1.speciality} mientras que ${fighter2.name} contraatacó con su ${fighter2.speciality}.</p>`;
-  
-  narrative += momentoDecisivo;
-  
-  // Final - resolución
-  if (winner === fighter1.name) {
-    narrative += `<p class="font-medium">En un movimiento decisivo, <span class="text-white">${fighter1.name}</span> ${narratives[fighter1.name].finishers[Math.floor(Math.random() * narratives[fighter1.name].finishers.length)]}.</p>`;
-    narrative += `<p>${fighter2.name} ${narratives[fighter2.name].defeats[Math.floor(Math.random() * narratives[fighter2.name].defeats.length)]}.</p>`;
-  } else {
-    narrative += `<p class="font-medium">En un movimiento decisivo, <span class="text-white">${fighter2.name}</span> ${narratives[fighter2.name].finishers[Math.floor(Math.random() * narratives[fighter2.name].finishers.length)]}.</p>`;
-    narrative += `<p>${fighter1.name} ${narratives[fighter1.name].defeats[Math.floor(Math.random() * narratives[fighter1.name].defeats.length)]}.</p>`;
-  }
-  
-  // Conclusión
-  narrative += `<p class="mt-3 text-yellow-300 font-semibold">¡${winner} logró la victoria gracias a su ${winnerFighter.speciality} superior y su increíble adaptación al ${scenario.name.toLowerCase()}!</p>`;
-  
-  narrative += `</div>`;
-  
-  return narrative;
 };
 
 // Componente para mostrar la narrativa del combate (versión mejorada para móvil)
@@ -481,6 +639,255 @@ const BattleNarrative = ({ narrative }) => {
   );
 };
 
+// Componente para mostrar el historial de batallas
+const BattleHistoryModal = ({ isOpen, onClose, battles }) => {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 touch-none"
+          onClick={onClose}
+        >
+          <motion.div 
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            className="bg-gradient-to-b from-brainrot-dark to-black p-3 sm:p-4 rounded-lg w-[95%] sm:w-full max-w-2xl max-h-[75vh] overflow-y-auto overscroll-contain"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 z-10 bg-gradient-to-b from-brainrot-dark to-brainrot-dark/90 flex justify-between items-center mb-2 sm:mb-4 pb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-brainrot-turquoise flex items-center">
+                <History className="w-5 h-5 mr-2" />
+                Historial de Batallas
+              </h3>
+              <Button 
+                variant="ghost" 
+                onClick={onClose}
+                className="text-gray-400 hover:text-white h-8 w-8 p-0"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            {battles && battles.length > 0 ? (
+              <div className="space-y-3 sm:space-y-4">
+                {battles.slice().reverse().map((battle) => (
+                  <div key={battle.id} className="bg-brainrot-darker p-2 sm:p-3 rounded-lg hover:bg-brainrot-darker/80">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-gray-400 text-xs">
+                        {new Date(battle.date).toLocaleDateString()}
+                      </span>
+                      <span className="text-brainrot-turquoise text-xs">
+                        {battle.scenario.name}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-brainrot-dark rounded-full overflow-hidden">
+                          <img 
+                            src={getImagePath(battle.fighter1)} 
+                            alt={battle.fighter1.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-white text-sm truncate max-w-[80px]">{battle.fighter1.name}</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <span className="text-gray-300 text-sm">{battle.score1}</span>
+                        <span className="text-gray-500">-</span>
+                        <span className="text-gray-300 text-sm">{battle.score2}</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <span className="text-white text-sm truncate max-w-[80px]">{battle.fighter2.name}</span>
+                        <div className="w-8 h-8 bg-brainrot-dark rounded-full overflow-hidden">
+                          <img 
+                            src={getImagePath(battle.fighter2)} 
+                            alt={battle.fighter2.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-yellow-300 text-xs flex items-center">
+                        <Trophy className="w-3 h-3 mr-1" />
+                        {battle.winner}
+                      </span>
+                      <Button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          shareBattle(battle.id);
+                        }}
+                        className="bg-brainrot-blue/30 hover:bg-brainrot-blue/50 text-white text-xs py-1 px-2 rounded"
+                      >
+                        <Share2 className="w-3 h-3 mr-1" />
+                        Compartir
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-400">No hay batallas guardadas</p>
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// Componente para mostrar estadísticas por personaje
+const CharacterStatsModal = ({ isOpen, onClose }) => {
+  const [stats, setStats] = useState({});
+  const [sortBy, setSortBy] = useState('battles');
+  
+  useEffect(() => {
+    if (isOpen) {
+      const savedStats = localStorage.getItem('characterStats');
+      setStats(savedStats ? JSON.parse(savedStats) : {});
+    }
+  }, [isOpen]);
+  
+  const sortedCharacters = Object.keys(stats).sort((a, b) => {
+    if (sortBy === 'winRate') {
+      const rateA = stats[a].wins / stats[a].battles || 0;
+      const rateB = stats[b].wins / stats[b].battles || 0;
+      return rateB - rateA;
+    }
+    return stats[b][sortBy] - stats[a][sortBy];
+  });
+  
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 touch-none"
+          onClick={onClose}
+        >
+          <motion.div 
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            className="bg-gradient-to-b from-brainrot-dark to-black p-3 sm:p-4 rounded-lg w-[95%] sm:w-full max-w-2xl max-h-[75vh] overflow-y-auto overscroll-contain"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 z-10 bg-gradient-to-b from-brainrot-dark to-brainrot-dark/90 flex justify-between items-center mb-2 sm:mb-4 pb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-brainrot-turquoise flex items-center">
+                <Award className="w-5 h-5 mr-2" />
+                Ranking de Personajes
+              </h3>
+              <Button 
+                variant="ghost" 
+                onClick={onClose}
+                className="text-gray-400 hover:text-white h-8 w-8 p-0"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <div className="mb-4 flex flex-wrap gap-2">
+              <button 
+                onClick={() => setSortBy('battles')}
+                className={`px-2 py-1 text-xs rounded ${sortBy === 'battles' ? 'bg-brainrot-blue text-white' : 'bg-brainrot-darker text-gray-300'}`}
+              >
+                Total Batallas
+              </button>
+              <button 
+                onClick={() => setSortBy('wins')}
+                className={`px-2 py-1 text-xs rounded ${sortBy === 'wins' ? 'bg-brainrot-blue text-white' : 'bg-brainrot-darker text-gray-300'}`}
+              >
+                Victorias
+              </button>
+              <button 
+                onClick={() => setSortBy('winRate')}
+                className={`px-2 py-1 text-xs rounded ${sortBy === 'winRate' ? 'bg-brainrot-blue text-white' : 'bg-brainrot-darker text-gray-300'}`}
+              >
+                % Victoria
+              </button>
+            </div>
+            
+            {sortedCharacters.length > 0 ? (
+              <div className="space-y-2">
+                {sortedCharacters.map((characterName, index) => {
+                  const character = battleCharacters.find(c => c.name === characterName) || { name: characterName, emoji: "❓" };
+                  const characterStats = stats[characterName];
+                  const winRate = ((characterStats.wins / characterStats.battles) * 100) || 0;
+                  
+                  return (
+                    <div key={characterName} className="bg-brainrot-darker p-2 sm:p-3 rounded-lg flex items-center">
+                      <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-brainrot-dark rounded-full mr-3 overflow-hidden flex items-center justify-center">
+                        {character && 'image' in character && character.image ? (
+                          <img src={getImagePath(character)} alt={character.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xl">{character.emoji}</span>
+                        )}
+                      </div>
+                      
+                      <div className="flex-grow">
+                        <h4 className="text-white text-sm font-semibold truncate">{characterName}</h4>
+                        <div className="flex text-xs text-gray-400 gap-3">
+                          <span>{characterStats.battles} batallas</span>
+                          <span className="text-green-400">{characterStats.wins} victorias</span>
+                          <span className="text-red-400">{characterStats.losses} derrotas</span>
+                        </div>
+                      </div>
+                      
+                      <div className="ml-2 flex-shrink-0 w-12 h-12 flex items-center justify-center">
+                        <div className="relative w-10 h-10">
+                          <svg className="w-10 h-10 transform -rotate-90">
+                            <circle
+                              cx="20"
+                              cy="20"
+                              r="15"
+                              fill="none"
+                              stroke="#333"
+                              strokeWidth="5"
+                            />
+                            <circle
+                              cx="20"
+                              cy="20"
+                              r="15"
+                              fill="none"
+                              stroke={winRate > 50 ? "#10b981" : "#ef4444"}
+                              strokeWidth="5"
+                              strokeDasharray={`${winRate}, 100`}
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
+                            {Math.round(winRate)}%
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-400">No hay estadísticas disponibles</p>
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
 // Componente del simulador de batalla
 const BattleSimulator = () => {
   const [fighter1, setFighter1] = useState(null);
@@ -491,6 +898,46 @@ const BattleSimulator = () => {
   const [battleStats, setBattleStats] = useState(null);
   const [showCharacterSelect, setShowCharacterSelect] = useState(false);
   const [selectingFighter, setSelectingFighter] = useState(null);
+  const [showBattleHistory, setShowBattleHistory] = useState(false);
+  const [showCharacterStats, setShowCharacterStats] = useState(false);
+  const [savedBattles, setSavedBattles] = useState([]);
+  const [battleId, setBattleId] = useState(null);
+
+  // Cargar batallas guardadas
+  useEffect(() => {
+    const savedData = localStorage.getItem('savedBattles');
+    if (savedData) {
+      setSavedBattles(JSON.parse(savedData));
+    }
+    
+    // Comprobar si hay una batalla compartida en la URL
+    const params = new URLSearchParams(window.location.search);
+    const sharedBattleId = params.get('battle');
+    if (sharedBattleId) {
+      loadSharedBattle(sharedBattleId);
+    }
+  }, []);
+
+  // Cargar batalla compartida
+  const loadSharedBattle = (battleId) => {
+    try {
+      const savedData = localStorage.getItem('savedBattles');
+      if (savedData) {
+        const battles = JSON.parse(savedData);
+        const battle = battles.find(b => b.id.toString() === battleId);
+        if (battle) {
+          setBattleResult(battle);
+          setBattleStats([
+            { label: "Poder base", fighter1Value: battle.fighter1.power, fighter2Value: battle.fighter2.power },
+            { label: "Ventaja escenario", fighter1Value: battle.fighter1.type === battle.scenario.advantage ? 75 : (battle.fighter1.type === battle.scenario.disadvantage ? 25 : 50), 
+              fighter2Value: battle.fighter2.type === battle.scenario.advantage ? 75 : (battle.fighter2.type === battle.scenario.disadvantage ? 25 : 50) },
+          ]);
+        }
+      }
+    } catch (error) {
+      console.error("Error al cargar batalla compartida:", error);
+    }
+  };
 
   // Asegurar que todos los personajes estén disponibles
   useEffect(() => {
@@ -546,26 +993,54 @@ const BattleSimulator = () => {
     // Determinar el ganador
     const winner = fighter1Power > fighter2Power ? fighter1.name : fighter2.name;
     
-    // Generar la narrativa de la batalla
-    const battleNarrative = generateBattleNarrative(fighter1, fighter2, scenario, winner);
-    
-    // Crear resultado y estadísticas
-    setBattleResult({
-      fighter1: fighter1,
-      fighter2: fighter2,
-      scenario: scenario,
-      score1: score1,
-      score2: score2,
-      winner: winner,
-      narrative: battleNarrative
-    });
-    
-    setBattleStats([
-      { label: "Poder base", fighter1Value: fighter1.power, fighter2Value: fighter2.power },
-      { label: "Ventaja escenario", fighter1Value: fighter1.type === scenario.advantage ? 75 : (fighter1.type === scenario.disadvantage ? 25 : 50), 
-        fighter2Value: fighter2.type === scenario.advantage ? 75 : (fighter2.type === scenario.disadvantage ? 25 : 50) },
-      { label: "Fortaleza", fighter1Value: f1Percent, fighter2Value: f2Percent },
-    ]);
+    try {
+      // Generar la narrativa de la batalla
+      const battleNarrative = generateBattleNarrative(fighter1, fighter2, scenario, winner);
+      
+      // Crear resultado y estadísticas
+      const result = {
+        fighter1: fighter1,
+        fighter2: fighter2,
+        scenario: scenario,
+        score1: score1,
+        score2: score2,
+        winner: winner,
+        narrative: battleNarrative
+      };
+      
+      setBattleResult(result);
+      
+      setBattleStats([
+        { label: "Poder base", fighter1Value: fighter1.power, fighter2Value: fighter2.power },
+        { label: "Ventaja escenario", fighter1Value: fighter1.type === scenario.advantage ? 75 : (fighter1.type === scenario.disadvantage ? 25 : 50), 
+          fighter2Value: fighter2.type === scenario.advantage ? 75 : (fighter2.type === scenario.disadvantage ? 25 : 50) },
+        { label: "Fortaleza", fighter1Value: f1Percent, fighter2Value: f2Percent },
+      ]);
+      
+      // Guardar batalla y obtener ID
+      const id = saveBattle(result);
+      setBattleId(id);
+      
+      // Actualizar lista de batallas
+      const savedData = localStorage.getItem('savedBattles');
+      if (savedData) {
+        setSavedBattles(JSON.parse(savedData));
+      }
+    } catch (error) {
+      console.error("Error al simular batalla:", error);
+      // En caso de error, mostrar resultado simplificado
+      const result = {
+        fighter1: fighter1,
+        fighter2: fighter2,
+        scenario: scenario,
+        score1: score1,
+        score2: score2,
+        winner: winner,
+        narrative: `<p>Ha ocurrido un error al generar la narrativa, pero ${winner} ha resultado victorioso.</p>`
+      };
+      
+      setBattleResult(result);
+    }
     
     setTimeout(() => {
       setIsSimulating(false);
@@ -579,6 +1054,11 @@ const BattleSimulator = () => {
     setScenario(null);
     setBattleResult(null);
     setBattleStats(null);
+    setBattleId(null);
+    
+    // Eliminar parámetros de URL si hay alguno
+    const urlWithoutParams = window.location.pathname + window.location.hash;
+    window.history.pushState({}, '', urlWithoutParams);
   };
 
   // Abrir selector de personajes
@@ -595,6 +1075,13 @@ const BattleSimulator = () => {
       setFighter2(character);
     }
     setShowCharacterSelect(false);
+  };
+
+  // Manejar compartir batalla
+  const handleShare = () => {
+    if (battleId) {
+      shareBattle(battleId);
+    }
   };
 
   // Iconos para los tipos de escenarios
@@ -683,12 +1170,40 @@ const BattleSimulator = () => {
   return (
     <div className="bg-brainrot-dark rounded-xl overflow-hidden shadow-xl border border-brainrot-blue/30">
       <CharacterSelectModal />
+      <BattleHistoryModal 
+        isOpen={showBattleHistory} 
+        onClose={() => setShowBattleHistory(false)} 
+        battles={savedBattles} 
+      />
+      <CharacterStatsModal 
+        isOpen={showCharacterStats} 
+        onClose={() => setShowCharacterStats(false)} 
+      />
       
       <div className="bg-gradient-to-r from-brainrot-darker to-brainrot-dark p-4 border-b border-brainrot-blue/30">
-        <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center">
-          <Swords className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-brainrot-turquoise" />
-          Simulador de Batallas Épicas
-        </h2>
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center">
+            <Swords className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-brainrot-turquoise" />
+            Simulador de Batallas Épicas
+          </h2>
+          
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => setShowCharacterStats(true)}
+              className="bg-brainrot-darker text-gray-300 border border-brainrot-blue/30 flex items-center text-xs sm:text-sm p-1.5"
+              title="Ver ranking de personajes"
+            >
+              <Award className="w-4 h-4" />
+            </Button>
+            <Button 
+              onClick={() => setShowBattleHistory(true)}
+              className="bg-brainrot-darker text-gray-300 border border-brainrot-blue/30 flex items-center text-xs sm:text-sm p-1.5"
+              title="Ver historial de batallas"
+            >
+              <History className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
         <p className="text-sm sm:text-base text-gray-400 mt-1">¿Quién ganaría en un enfrentamiento directo? ¡Descúbrelo!</p>
       </div>
 
@@ -732,6 +1247,7 @@ const BattleSimulator = () => {
               </Button>
               
               <Button 
+                onClick={handleShare}
                 className="bg-brainrot-darker text-gray-300 border border-brainrot-blue/30 flex items-center text-sm sm:text-base px-3 py-1.5 sm:px-4 sm:py-2"
               >
                 <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
