@@ -100,7 +100,7 @@ const Hero = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-brainrot-blue/0 via-brainrot-blue/30 to-brainrot-blue/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -translate-x-full group-hover:translate-x-full"></div>
               
               <motion.img 
-                src="images/Bombardino%20Crocodillo.webp"
+                src="/images/Bombardino-Crocodillo.webp"
                 alt="Bombardino coccodrillo"
                 className="w-full h-auto object-contain rounded mx-auto"
                 style={{ maxHeight: "400px" }}
