@@ -12,12 +12,12 @@ import {
 const battleCharacters = [
   { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "images/Bombardino%20Crocodillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
   { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "images/Tralalero%20Tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
-  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "images/bombombini-gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
-  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "images/tung-tung-tung-sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
-  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "images/la-vaca-saturno-saturnita.webp", power: 90, type: "cósmico", speciality: "gravedad" },
-  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "images/frigo-camelo.webp", power: 75, type: "glacial", speciality: "congelación" },
-  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "images/akulini-cactusini.webp", power: 65, type: "desértico", speciality: "espinas" },
-  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "images/bobritto-bandito.webp", power: 60, type: "constructor", speciality: "presas" }
+  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "images/Bombombini%20Gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
+  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "images/Tung%20Tung%20Tung%20Sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
+  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "images/La%20Vaca%20Saturno%20Saturnita.webp", power: 90, type: "cósmico", speciality: "gravedad" },
+  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "images/Frigo%20Camelo.webp", power: 75, type: "glacial", speciality: "congelación" },
+  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "images/Akulini%20Cactusini.webp", power: 65, type: "desértico", speciality: "espinas" },
+  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "images/Bobritto%20Bandito.webp", power: 60, type: "constructor", speciality: "presas" }
 ];
 
 // Lista de escenarios
