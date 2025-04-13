@@ -38,11 +38,11 @@ const CharacterSelectCard = ({ character, isSelected, onSelect }) => (
     }`}
     onClick={onSelect}
   >
-    <div className="relative h-28 bg-brainrot-darker">
+    <div className="relative h-28 bg-brainrot-darker flex items-center justify-center">
       <img 
         src={character.image} 
         alt={character.name}
-        className="h-full w-full object-contain"
+        className="h-full w-full object-cover object-center"
         onError={(e) => {
           const target = e.target as HTMLImageElement;
           target.src = "placeholder.svg";
@@ -90,11 +90,11 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
           <div className="flex items-center justify-between">
             <div className={`flex-1 text-center p-2 sm:p-3 rounded-l-lg ${winner === fighter1.name ? 'bg-green-800/40' : 'bg-emerald-900/40'}`}>
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brainrot-darker rounded-full mb-1 sm:mb-2 overflow-hidden">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brainrot-darker rounded-full mb-1 sm:mb-2 overflow-hidden flex items-center justify-center">
                   <img 
                     src={fighter1.image} 
                     alt={fighter1.name}
-                    className="h-full object-contain transform hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-cover object-center"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = "placeholder.svg";
@@ -114,11 +114,11 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
             
             <div className={`flex-1 text-center p-2 sm:p-3 rounded-r-lg ${winner === fighter2.name ? 'bg-green-800/40' : 'bg-emerald-900/40'}`}>
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brainrot-darker rounded-full mb-1 sm:mb-2 overflow-hidden">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brainrot-darker rounded-full mb-1 sm:mb-2 overflow-hidden flex items-center justify-center">
                   <img 
                     src={fighter2.image} 
                     alt={fighter2.name}
-                    className="h-full object-contain transform hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-cover object-center"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = "placeholder.svg";
@@ -726,7 +726,11 @@ const BattleSimulator = () => {
                         <img 
                           src={fighter1.image} 
                           alt={fighter1.name}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-cover object-center"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "placeholder.svg";
+                          }}
                         />
                       </div>
                     </div>
@@ -776,7 +780,11 @@ const BattleSimulator = () => {
                         <img 
                           src={fighter2.image} 
                           alt={fighter2.name}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-cover object-center"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "placeholder.svg";
+                          }}
                         />
                       </div>
                     </div>
