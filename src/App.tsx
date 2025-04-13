@@ -15,7 +15,6 @@ import CharactersPage from "@/pages/CharactersPage";
 import CharacterDetailPage from "@/pages/CharacterDetailPage";
 import CharacterCreatePage from "@/pages/CharacterCreatePage";
 import RankingPage from "@/pages/RankingPage";
-import AboutPage from "@/pages/AboutPage";
 import BrainrotPage from "@/pages/BrainrotPage";
 import BattleFAQPage from "@/pages/BattleFAQPage";
 import LoginPage from "@/pages/LoginPage";
@@ -48,7 +47,6 @@ const App = () => (
                     <Route path="crear-personaje" element={<CharacterCreatePage />} />
                     <Route path="ranking" element={<RankingPage />} />
                     <Route path="batallas" element={<BattleFAQPage />} />
-                    <Route path="acerca-de" element={<AboutPage />} />
                     <Route path="brainrot" element={<BrainrotPage />} />
                     <Route path="login" element={<LoginPage />} />
                     <Route path="perfil" element={<ProfilePage />} />
@@ -58,7 +56,8 @@ const App = () => (
                     <Route path="characters" element={<Navigate to="personajes" replace />} />
                     <Route path="characters/:characterSlug" element={<Navigate to={`personajes/${location.pathname.split('/').pop()}`} replace />} />
                     <Route path="personajes/crear" element={<Navigate to="../crear-personaje" replace />} />
-                    <Route path="about" element={<Navigate to="acerca-de" replace />} />
+                    <Route path="acerca-de" element={<Navigate to="brainrot" replace />} />
+                    <Route path="about" element={<Navigate to="brainrot" replace />} />
                   </Route>
                 </Routes>
               </Router>

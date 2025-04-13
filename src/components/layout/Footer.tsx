@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="bg-brainrot-darker pt-12 pb-6 mt-16">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           <div>
             <h3 className="text-white text-xl font-bold mb-4">
               <span className="text-white">Bombardino</span>
@@ -33,26 +33,11 @@ const Footer = () => {
               <Link to="ranking" className="text-gray-400 hover:text-white transition-colors text-sm">
                 Ranking de Poder
               </Link>
-              <Link to="gallery" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Galería
+              <Link to="batallas" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Batallas Épicas
               </Link>
-            </div>
-          </div>
-          
-          <div>
-            <span className="font-semibold">Recursos</span>
-            <div className="mt-2 flex flex-col space-y-1">
-              <Link to="faq" className="text-gray-400 hover:text-white transition-colors text-sm">
-                FAQ
-              </Link>
-              <Link to="wiki" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Wiki
-              </Link>
-              <Link to="universe-guide" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Guía del Universo
-              </Link>
-              <Link to="meme-history" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Historia del Meme
+              <Link to="brainrot" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Italian Brainrot
               </Link>
             </div>
           </div>
@@ -60,18 +45,15 @@ const Footer = () => {
           <div>
             <span className="font-semibold">Comunidad</span>
             <div className="mt-2 flex flex-col space-y-1">
-              <Link to="discord" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Discord
+              <Link to="crear-personaje" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Crear Personaje
               </Link>
-              <Link to="contribute" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Contribuir
+              <Link to="perfil" className="text-gray-400 hover:text-white transition-colors text-sm">
+                Mi Perfil
               </Link>
-              <Link to="terms" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Términos
-              </Link>
-              <Link to="privacy" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Privacidad
-              </Link>
+              <a href="https://github.com/alejandroramirezj/Bombardino" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors text-sm">
+                GitHub
+              </a>
             </div>
           </div>
         </div>

@@ -61,7 +61,6 @@ const Navbar = () => {
             <NavLink to="personajes" icon={<Users size={16} />}>Personajes</NavLink>
             <NavLink to="ranking" icon={<BarChart size={16} />}>Ranking</NavLink>
             <NavLink to="batallas" icon={<Swords size={16} />}>Batallas</NavLink>
-            <NavLink to="acerca-de" icon={<Info size={16} />}>Acerca de</NavLink>
             <NavLink to="brainrot" icon={<Zap size={16} />}>Brainrot</NavLink>
           </div>
         </div>
@@ -178,9 +177,6 @@ const Navbar = () => {
               </MobileNavLink>
               <MobileNavLink to="batallas" icon={<Swords size={20} />} onClick={() => setIsMenuOpen(false)}>
                 Batallas
-              </MobileNavLink>
-              <MobileNavLink to="acerca-de" icon={<Info size={20} />} onClick={() => setIsMenuOpen(false)}>
-                Acerca de
               </MobileNavLink>
               <MobileNavLink to="brainrot" icon={<Zap size={20} />} onClick={() => setIsMenuOpen(false)}>
                 Brainrot
