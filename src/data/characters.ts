@@ -450,6 +450,20 @@ const initialCharacters: Character[] = [
     abilities: ["Control mental digital", "Teletransporte entre dispositivos", "Manipulación de código", "Distorsión de realidad virtual"],
     biography: "Bri Bri Bri Kasoot surgió de un error en un videojuego educativo. Posee la capacidad de moverse entre dispositivos electrónicos y manipular la percepción de los jugadores. Utiliza su apariencia inocente para atraer a nuevas víctimas a su reino digital donde desafía sus mentes con preguntas imposibles.",
     phrase: "¡Responde rápido o tu mente será mía!"
+  },
+  {
+    id: "34",
+    name: "Tripi Tropa",
+    image: "/images/Tripi-Tropa.webp",
+    type: "Anfibio",
+    power: 84,
+    description: "Pesce evoluto con gambe possenti che cammina sulla terra e nuota negli abissi. Il suo sguardo ipnotico causa allucinazioni.",
+    allies: ["Bombardino coccodrillo", "Zucchini Macanini"],
+    rivals: ["Frigo Camelo", "Bobritto bandito"],
+    votes: 22,
+    abilities: ["Camminata terrestre", "Nuoto abissale", "Sguardo ipnotico", "Trasformazione anfibio-terrestre"],
+    biography: "Tripi Tropa è un rarissimo esemplare di pesce che ha sviluppato gambe possenti per camminare sulla terraferma. Originario delle profondità marine più misteriose, è emerso portando con sé i segreti degli abissi. I suoi occhi brillanti possono indurre allucinazioni psichedeliche in chiunque lo fissi troppo a lungo, facendo sperimentare visioni del mondo sottomarino.",
+    phrase: "Tra terra e mare, la realtà scompare!"
   }
 ];
 
