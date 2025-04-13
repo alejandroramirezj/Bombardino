@@ -10,14 +10,14 @@ import {
 
 // Lista de personajes para la simulación
 const battleCharacters = [
-  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "/images/Bombardino Coccodrillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
-  { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "/images/Tralalero Tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
-  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "/images/Bombombini Gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
-  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "/images/Tung Tung Tung Sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
-  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "/images/La Vaca Saturno Saturnita.webp", power: 90, type: "cósmico", speciality: "gravedad" },
-  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "/images/Frigo Camelo.webp", power: 75, type: "glacial", speciality: "congelación" },
-  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "/images/Akulini Cactusini.webp", power: 65, type: "desértico", speciality: "espinas" },
-  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "/images/Bobritto Bandito.webp", power: 60, type: "constructor", speciality: "presas" }
+  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "images/Bombardino-Coccodrillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
+  { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "images/Tralalero-Tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
+  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "images/Bombombini-Gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
+  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "images/Tung-Tung-Tung-Sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
+  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "images/La-Vaca-Saturno-Saturnita.webp", power: 90, type: "cósmico", speciality: "gravedad" },
+  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "images/Frigo-Camelo.webp", power: 75, type: "glacial", speciality: "congelación" },
+  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "images/Akulini-Cactusini.webp", power: 65, type: "desértico", speciality: "espinas" },
+  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "images/Bobritto-Bandito.webp", power: 60, type: "constructor", speciality: "presas" }
 ];
 
 // Lista de escenarios
@@ -32,19 +32,25 @@ const battleScenarios = [
 
 // Función para obtener la ruta correcta de la imagen
 const getImagePath = (character) => {
-  // Si la imagen es una URL externa, usarla directamente
-  if (character.image.startsWith('http')) {
-    return character.image;
+  try {
+    // Si es una URL absoluta, la devolvemos tal cual
+    if (character.image && character.image.startsWith('http')) {
+      return character.image;
+    }
+    
+    // Para las rutas relativas, aseguramos que sean correctas
+    if (character.image) {
+      return character.image;
+    }
+    
+    // Si la imagen no está definida, usamos un nombre basado en el personaje
+    const safeFileName = character.name.replace(/\s+/g, '-');
+    return `images/${safeFileName}.webp`;
+  } catch (error) {
+    console.error("Error al procesar ruta de imagen:", error);
+    // En caso de error, devolvemos la ruta original o una ruta de respaldo
+    return character.image || 'images/placeholder.webp';
   }
-  
-  // Si la imagen ya empieza con /images/, añadir el prefijo base
-  if (character.image.startsWith('/images/')) {
-    return `${character.image.substring(1)}`;
-  }
-  
-  // Si la imagen es un nombre de archivo, construir la ruta en /images/
-  const fileName = character.name.replace(/\s+/g, '%20');
-  return `images/${fileName}.webp`;
 };
 
 // Componente para tarjeta de selección de personaje
@@ -467,8 +473,14 @@ const BattleSimulator = () => {
   const [showCharacterSelect, setShowCharacterSelect] = useState(false);
   const [selectingFighter, setSelectingFighter] = useState(null);
 
-  // Ya no necesitamos esta transformación pues todas las imágenes tienen rutas correctas
-  const charactersWithImages = battleCharacters;
+  // Asegurar que todos los personajes estén disponibles
+  useEffect(() => {
+    // Forzar la recarga de imágenes al montar el componente
+    battleCharacters.forEach(character => {
+      const img = new Image();
+      img.src = getImagePath(character);
+    });
+  }, []);
 
   // Función para simular una batalla
   const simulateBattle = () => {
@@ -618,7 +630,7 @@ const BattleSimulator = () => {
             </div>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
-              {charactersWithImages.map(character => (
+              {battleCharacters.map(character => (
                 <motion.div
                   key={character.id}
                   className="cursor-pointer group"
