@@ -188,6 +188,14 @@ const BattleSimulator = () => {
   const [battleResult, setBattleResult] = useState(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [battleStats, setBattleStats] = useState(null);
+  const [showCharacterSelect, setShowCharacterSelect] = useState(false);
+  const [selectingFighter, setSelectingFighter] = useState(null);
+
+  // Asegurar que todas las imágenes de personajes tengan rutas correctas
+  const charactersWithImages = battleCharacters.map(char => ({
+    ...char,
+    image: char.image.includes('placeholder') ? `/images/${char.name.toLowerCase().replace(/\s+/g, '-')}.webp` : char.image
+  }));
 
   // Función para simular una batalla
   const simulateBattle = () => {
@@ -255,6 +263,22 @@ const BattleSimulator = () => {
     setBattleStats(null);
   };
 
+  // Abrir selector de personajes
+  const openCharacterSelect = (fighterNumber) => {
+    setSelectingFighter(fighterNumber);
+    setShowCharacterSelect(true);
+  };
+
+  // Seleccionar personaje
+  const handleCharacterSelect = (character) => {
+    if (selectingFighter === 1) {
+      setFighter1(character);
+    } else {
+      setFighter2(character);
+    }
+    setShowCharacterSelect(false);
+  };
+
   // Iconos para los tipos de escenarios
   const getScenarioIcon = (scenarioName) => {
     switch (scenarioName.toLowerCase()) {
@@ -268,84 +292,205 @@ const BattleSimulator = () => {
     }
   };
 
+  // Componente de selección de personaje al estilo juego de lucha
+  const CharacterSelectModal = () => (
+    <AnimatePresence>
+      {showCharacterSelect && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+          onClick={() => setShowCharacterSelect(false)}
+        >
+          <motion.div 
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            className="bg-gradient-to-b from-brainrot-dark to-black p-6 rounded-xl w-full max-w-4xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-brainrot-turquoise">Selecciona un personaje</h3>
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowCharacterSelect(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                Cerrar
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {charactersWithImages.map(character => (
+                <motion.div
+                  key={character.id}
+                  className="cursor-pointer group"
+                  whileHover={{ scale: 1.05 }}
+                  onClick={() => handleCharacterSelect(character)}
+                >
+                  <div className="bg-gradient-to-b from-brainrot-darker/80 to-brainrot-dark border-2 border-transparent group-hover:border-brainrot-turquoise rounded-lg overflow-hidden transition-all duration-300">
+                    <div className="h-36 bg-gradient-to-b from-brainrot-darker/50 to-transparent flex items-center justify-center p-2">
+                      <img 
+                        src={character.image} 
+                        alt={character.name}
+                        className="h-full object-contain filter drop-shadow-lg transform group-hover:scale-110 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "/placeholder.svg";
+                        }}
+                      />
+                    </div>
+                    <div className="p-3 text-center bg-gradient-to-t from-black to-transparent">
+                      <h4 className="font-bold text-white text-md mb-1 group-hover:text-brainrot-turquoise transition-colors">{character.name}</h4>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">{character.emoji} {character.type}</span>
+                        <span className="text-brainrot-turquoise">Poder: {character.power}</span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <div className="bg-brainrot-dark rounded-xl overflow-hidden shadow-xl border border-brainrot-blue/30">
+      <CharacterSelectModal />
+      
       <div className="bg-gradient-to-r from-brainrot-darker to-brainrot-dark p-4 border-b border-brainrot-blue/30">
         <h2 className="text-2xl font-bold text-white flex items-center">
           <Swords className="w-6 h-6 mr-2 text-brainrot-turquoise" />
           Simulador de Batallas Épicas
         </h2>
-        <p className="text-gray-400 mt-1">Selecciona dos luchadores y un escenario para simular el combate</p>
+        <p className="text-gray-400 mt-1">¿Quién ganaría en un enfrentamiento directo? ¡Descúbrelo!</p>
       </div>
 
       <div className="p-4">
-        {/* Sección de selección */}
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Selección de Fighter 1 */}
-          <div>
-            <h3 className="text-brainrot-turquoise font-bold mb-3 flex items-center">
-              <Sword className="w-4 h-4 mr-1" />
-              Luchador 1
-            </h3>
-            <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto p-2 bg-brainrot-darker/50 rounded-lg">
-              {battleCharacters.map(character => (
-                <CharacterSelectCard 
-                  key={character.id}
-                  character={character}
-                  isSelected={fighter1?.id === character.id}
-                  onSelect={() => setFighter1(character)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Selección de Fighter 2 */}
-          <div>
-            <h3 className="text-brainrot-turquoise font-bold mb-3 flex items-center">
-              <Sword className="w-4 h-4 mr-1" />
-              Luchador 2
-            </h3>
-            <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto p-2 bg-brainrot-darker/50 rounded-lg">
-              {battleCharacters.map(character => (
-                <CharacterSelectCard 
-                  key={character.id}
-                  character={character}
-                  isSelected={fighter2?.id === character.id}
-                  onSelect={() => setFighter2(character)}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Selección de Escenario */}
-          <div>
-            <h3 className="text-brainrot-turquoise font-bold mb-3">Escenario</h3>
-            <div className="grid grid-cols-2 gap-2 p-2 bg-brainrot-darker/50 rounded-lg">
-              {battleScenarios.map(scene => (
-                <div 
-                  key={scene.id}
-                  className={`bg-brainrot-darker rounded-lg p-3 cursor-pointer transition-all duration-300 transform ${
-                    scenario?.id === scene.id ? 'ring-2 ring-brainrot-turquoise scale-105' : 'hover:scale-105'
-                  }`}
-                  onClick={() => setScenario(scene)}
-                >
-                  <div className="flex items-center mb-1">
-                    <span className="mr-2 text-xl">{scene.emoji}</span>
-                    <span className="text-white font-semibold">{scene.name}</span>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    <div className="flex items-center">
-                      <span className="mr-1">✅</span>
-                      Ventaja: {scene.advantage}
-                    </div>
-                    <div className="flex items-center">
-                      <span className="mr-1">❌</span>
-                      Desventaja: {scene.disadvantage}
-                    </div>
+        {/* Versus screen de selección */}
+        <div className="relative flex items-center justify-center my-8">
+          {/* Personaje 1 */}
+          <motion.div 
+            className="flex-1 text-center"
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {fighter1 ? (
+              <div 
+                className="relative mx-auto cursor-pointer transition-transform hover:scale-105"
+                onClick={() => openCharacterSelect(1)}
+              >
+                <div className="w-36 h-36 mx-auto bg-gradient-to-b from-brainrot-blue/20 to-transparent rounded-full p-1">
+                  <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={fighter1.image} 
+                      alt={fighter1.name}
+                      className="h-full object-contain transform hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/placeholder.svg";
+                      }}
+                    />
                   </div>
                 </div>
-              ))}
+                <h3 className="text-xl font-bold text-white mt-3">{fighter1.name}</h3>
+                <div className="bg-brainrot-darker/60 rounded-full px-3 py-1 inline-flex items-center mt-1">
+                  <span className="mr-1">{fighter1.emoji}</span>
+                  <span className="text-brainrot-turquoise text-sm">{fighter1.type}</span>
+                </div>
+              </div>
+            ) : (
+              <div 
+                className="w-36 h-36 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-brainrot-blue/40"
+                onClick={() => openCharacterSelect(1)}
+              >
+                <div className="text-center">
+                  <div className="text-brainrot-turquoise text-5xl mb-2">+</div>
+                  <div className="text-gray-400 text-sm">Seleccionar</div>
+                </div>
+              </div>
+            )}
+          </motion.div>
+          
+          {/* VS */}
+          <div className="mx-6 z-10">
+            <div className="relative">
+              <div className="bg-gradient-to-r from-red-600 to-red-800 text-white text-3xl font-bold w-20 h-20 rounded-full flex items-center justify-center shadow-lg border-4 border-brainrot-darker">
+                VS
+              </div>
+              <div className="absolute -inset-3 bg-red-600/20 rounded-full blur-lg animate-pulse"></div>
             </div>
+          </div>
+          
+          {/* Personaje 2 */}
+          <motion.div 
+            className="flex-1 text-center"
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {fighter2 ? (
+              <div 
+                className="relative mx-auto cursor-pointer transition-transform hover:scale-105"
+                onClick={() => openCharacterSelect(2)}
+              >
+                <div className="w-36 h-36 mx-auto bg-gradient-to-b from-red-600/20 to-transparent rounded-full p-1">
+                  <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={fighter2.image} 
+                      alt={fighter2.name}
+                      className="h-full object-contain transform hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/placeholder.svg";
+                      }}
+                    />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-white mt-3">{fighter2.name}</h3>
+                <div className="bg-brainrot-darker/60 rounded-full px-3 py-1 inline-flex items-center mt-1">
+                  <span className="mr-1">{fighter2.emoji}</span>
+                  <span className="text-red-400 text-sm">{fighter2.type}</span>
+                </div>
+              </div>
+            ) : (
+              <div 
+                className="w-36 h-36 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-red-500/40"
+                onClick={() => openCharacterSelect(2)}
+              >
+                <div className="text-center">
+                  <div className="text-red-500 text-5xl mb-2">+</div>
+                  <div className="text-gray-400 text-sm">Seleccionar</div>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </div>
+
+        {/* Selección de escenario */}
+        <div className="my-8">
+          <h3 className="text-lg font-bold text-brainrot-turquoise mb-4 text-center">Escenario de batalla</h3>
+          <div className="flex flex-wrap justify-center gap-2">
+            {battleScenarios.map((scene) => (
+              <motion.div
+                key={scene.id}
+                whileHover={{ scale: 1.05 }}
+                className={`cursor-pointer px-3 py-2 rounded-lg flex items-center ${
+                  scenario?.id === scene.id 
+                    ? 'bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise text-white' 
+                    : 'bg-brainrot-darker text-gray-300 hover:bg-brainrot-darker/80'
+                }`}
+                onClick={() => setScenario(scene)}
+              >
+                <span className="text-xl mr-2">{scene.emoji}</span>
+                <span>{scene.name}</span>
+              </motion.div>
+            ))}
           </div>
         </div>
 
@@ -354,15 +499,28 @@ const BattleSimulator = () => {
           <Button
             onClick={simulateBattle}
             disabled={!fighter1 || !fighter2 || !scenario || isSimulating}
-            className="bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise text-white px-8 py-6"
+            className="bg-gradient-to-r from-red-600 to-red-800 text-white px-8 py-6 rounded-xl shadow-lg hover:shadow-red-500/20"
           >
-            {isSimulating ? "Simulando..." : "¡Luchar!"}
+            {isSimulating ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Simulando...
+              </span>
+            ) : (
+              <span className="flex items-center">
+                <Swords className="mr-2" />
+                ¡LUCHAR!
+              </span>
+            )}
           </Button>
           
           <Button
             onClick={resetSimulation}
             variant="outline"
-            className="border-brainrot-blue text-brainrot-turquoise"
+            className="border-gray-600 text-gray-400 hover:text-white"
           >
             Reiniciar
           </Button>
