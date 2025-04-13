@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
   Sword, Swords, ZapIcon, Flame, Droplets, 
-  Mountains, Wind, Skull, Trophy, Share2
+  Mountain, Wind, Skull, Trophy, Share2
 } from 'lucide-react';
 
 // Lista de personajes para la simulación
@@ -44,7 +44,8 @@ const CharacterSelectCard = ({ character, isSelected, onSelect }) => (
         alt={character.name}
         className="h-full w-full object-contain"
         onError={(e) => {
-          e.target.src = "placeholder.svg";
+          const target = e.target as HTMLImageElement;
+          target.src = "placeholder.svg";
         }}
       />
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
@@ -94,7 +95,10 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
                     src={fighter1.image} 
                     alt={fighter1.name}
                     className="w-full h-full object-contain"
-                    onError={(e) => { e.target.src = "placeholder.svg"; }}
+                    onError={(e) => { 
+                      const target = e.target as HTMLImageElement;
+                      target.src = "placeholder.svg"; 
+                    }}
                   />
                 </div>
                 <div className="text-lg font-bold text-white mb-2 line-clamp-1">{fighter1.name}</div>
@@ -115,7 +119,10 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
                     src={fighter2.image} 
                     alt={fighter2.name}
                     className="w-full h-full object-contain"
-                    onError={(e) => { e.target.src = "placeholder.svg"; }}
+                    onError={(e) => { 
+                      const target = e.target as HTMLImageElement;
+                      target.src = "placeholder.svg"; 
+                    }}
                   />
                 </div>
                 <div className="text-lg font-bold text-white mb-2 line-clamp-1">{fighter2.name}</div>
@@ -253,10 +260,10 @@ const BattleSimulator = () => {
     switch (scenarioName.toLowerCase()) {
       case "agua": return <Droplets className="w-5 h-5 mr-1" />;
       case "desierto": return <Flame className="w-5 h-5 mr-1" />;
-      case "ciudad": return <Mountains className="w-5 h-5 mr-1" />;
+      case "ciudad": return <Mountain className="w-5 h-5 mr-1" />;
       case "espacio": return <ZapIcon className="w-5 h-5 mr-1" />;
       case "escenario musical": return <Wind className="w-5 h-5 mr-1" />;
-      case "montañas": return <Mountains className="w-5 h-5 mr-1" />;
+      case "montañas": return <Mountain className="w-5 h-5 mr-1" />;
       default: return <ZapIcon className="w-5 h-5 mr-1" />;
     }
   };
