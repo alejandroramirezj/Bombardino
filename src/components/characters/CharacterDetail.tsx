@@ -294,7 +294,7 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
       {showShareModal && (
         <ShareModal 
           title={`¡Mira este personaje de Bombardino: ${character.name}!`}
-          url={`${window.location.origin}/personajes/${character.name.toLowerCase().replace(/\s+/g, '-')}`}
+          url={`${window.location.origin}${window.location.pathname.includes('/#/') ? '/#' : ''}/personajes/${character.name.toLowerCase().replace(/\s+/g, '-')}`}
           onClose={() => setShowShareModal(false)}
         />
       )}

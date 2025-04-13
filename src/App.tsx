@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, HashRouter } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,6 +23,10 @@ import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/components/layout/NotFound";
 import ScrollToTop from "@/components/utils/ScrollToTop";
 
+// Determinar si usamos dominio personalizado o GitHub Pages
+const isCustomDomain = window.location.hostname !== 'alejandroramirezj.github.io';
+const Router = isCustomDomain ? BrowserRouter : HashRouter;
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -34,7 +38,7 @@ const App = () => (
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <BrowserRouter>
+              <Router>
                 <ScrollToTop />
                 <Routes>
                   <Route path="/" element={<Layout />}>
@@ -57,7 +61,7 @@ const App = () => (
                     <Route path="about" element={<Navigate to="acerca-de" replace />} />
                   </Route>
                 </Routes>
-              </BrowserRouter>
+              </Router>
             </TooltipProvider>
           </HelmetProvider>
         </VoteProvider>
