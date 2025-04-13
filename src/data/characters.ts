@@ -89,7 +89,7 @@ const initialCharacters: Character[] = [
   {
     id: "7",
     name: "Tung tung tung sahur",
-    image: "/images/Tung-Tung-Tung.webp",
+    image: "/images/Tung-Tung-Tung-Sahur.webp",
     type: "Metallo",
     power: 88,
     description: "Il misterioso personaggio indonesiano che annuncia il sahur durante il Ramadan. Il suo ritmo penetra nella mente.",
