@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Debug Mobile - Bombardino</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: white;
+      background-color: #0A0A0A;
+    }
+    .debug-container {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .debug-info {
+      background-color: #2A2A2A;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .debug-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #33C3F0;
+    }
+    .debug-value {
+      word-break: break-all;
+      margin-bottom: 0.5rem;
+    }
+    .debug-button {
+      background-color: #33C3F0;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+    .debug-header {
+      font-size: 1.5rem;
+      text-align: center;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="debug-container">
+    <h1 class="debug-header">Bombardino Mobile Debug</h1>
+    
+    <div class="debug-info">
+      <div class="debug-title">User Agent:</div>
+      <div id="userAgent" class="debug-value"></div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">Viewport Dimensions:</div>
+      <div id="viewport" class="debug-value"></div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">Is Mobile Device:</div>
+      <div id="isMobile" class="debug-value"></div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">Device Pixel Ratio:</div>
+      <div id="pixelRatio" class="debug-value"></div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">Meta Viewport Tag:</div>
+      <div id="metaViewport" class="debug-value"></div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">CSS Media Queries:</div>
+      <div id="mediaQueries" class="debug-value"></div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">Browser Information:</div>
+      <div id="browserInfo" class="debug-value"></div>
+    </div>
+    
+    <button class="debug-button" onclick="refreshInfo()">Refresh Information</button>
+  </div>
+
+  <script>
+    function refreshInfo() {
+      // User Agent
+      document.getElementById('userAgent').innerText = navigator.userAgent;
+      
+      // Viewport Dimensions
+      document.getElementById('viewport').innerText = `Window: ${window.innerWidth}px × ${window.innerHeight}px, Screen: ${window.screen.width}px × ${window.screen.height}px`;
+      
+      // Is Mobile Device
+      const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      document.getElementById('isMobile').innerText = isMobile ? 'Yes' : 'No';
+      
+      // Device Pixel Ratio
+      document.getElementById('pixelRatio').innerText = window.devicePixelRatio;
+      
+      // Meta Viewport Tag
+      const metaViewport = document.querySelector('meta[name="viewport"]');
+      document.getElementById('metaViewport').innerText = metaViewport ? metaViewport.getAttribute('content') : 'Not found';
+      
+      // CSS Media Queries
+      const mediaQueryList = [
+        window.matchMedia('(max-width: 640px)'),
+        window.matchMedia('(max-width: 768px)'),
+        window.matchMedia('(max-width: 1024px)')
+      ];
+      
+      document.getElementById('mediaQueries').innerHTML = 
+        `max-width: 640px = ${mediaQueryList[0].matches}<br>` +
+        `max-width: 768px = ${mediaQueryList[1].matches}<br>` +
+        `max-width: 1024px = ${mediaQueryList[2].matches}`;
+      
+      // Browser Information
+      const browserInfo = {
+        cookiesEnabled: navigator.cookieEnabled,
+        language: navigator.language,
+        onLine: navigator.onLine,
+        platform: navigator.platform,
+        touchPoints: navigator.maxTouchPoints || 0
+      };
+      
+      document.getElementById('browserInfo').innerHTML = Object.entries(browserInfo)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('<br>');
+    }
+    
+    // Initial load
+    window.onload = refreshInfo;
+    
+    // Refresh on resize
+    window.addEventListener('resize', refreshInfo);
+  </script>
+</body>
+</html> 
