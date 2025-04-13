@@ -507,7 +507,7 @@ const BattleSimulator = () => {
     
     setIsSimulating(true);
     
-    // Tiempo para efecto de "calculando resultado"
+    // Reducir el tiempo de espera de 800ms a 400ms para respuesta casi instantánea
     setTimeout(() => {
       // Calcular ventajas basadas en escenario
       let fighter1Power = fighter1.power;
@@ -520,8 +520,8 @@ const BattleSimulator = () => {
       if (fighter2.type === scenario.disadvantage) fighter2Power -= 10;
       
       // Factores aleatorios para hacer las batallas más realistas
-      const randomFactor1 = Math.floor(Math.random() * 30) - 10; // Entre -10 y +20
-      const randomFactor2 = Math.floor(Math.random() * 30) - 10; // Entre -10 y +20
+      const randomFactor1 = Math.floor(Math.random() * 20) - 5; // Reducido de 30 a 20 para menos variabilidad
+      const randomFactor2 = Math.floor(Math.random() * 20) - 5; // Reducido de 30 a 20 para menos variabilidad
       fighter1Power += randomFactor1;
       fighter2Power += randomFactor2;
       
@@ -578,7 +578,7 @@ const BattleSimulator = () => {
       ]);
       
       setIsSimulating(false);
-    }, 1500);
+    }, 400); // Reducido significativamente para mejor experiencia de usuario
   };
 
   // Resetear selecciones
@@ -679,6 +679,14 @@ const BattleSimulator = () => {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+
+  // Mejorar el componente de carga
+  const LoadingSpinner = () => (
+    <div className="flex justify-center items-center space-x-2 my-8">
+      <div className="animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+      <span className="text-blue-500 font-semibold">Calculando resultado...</span>
+    </div>
   );
 
   return (
@@ -866,13 +874,7 @@ const BattleSimulator = () => {
                 className="bg-gradient-to-r from-red-600 to-red-800 text-white px-6 sm:px-10 py-4 sm:py-6 rounded-xl shadow-lg hover:shadow-red-500/20 text-lg sm:text-xl font-bold"
               >
                 {isSimulating ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Simulando...
-                  </span>
+                  <LoadingSpinner />
                 ) : (
                   <span className="flex items-center">
                     <Swords className="mr-3 h-5 w-5 sm:h-6 sm:w-6" />

@@ -40,7 +40,9 @@ const CharacterDetailPage = () => {
         <meta property="og:image" content={character.image} />
         <meta property="og:type" content="profile" />
       </Helmet>
-      <CharacterDetail character={character} />
+      <div className="min-h-screen bg-brainrot-darker">
+        <CharacterDetail character={character} />
+      </div>
     </>
   );
 };

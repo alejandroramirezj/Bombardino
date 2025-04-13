@@ -28,10 +28,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const { user, addVotedCharacter, removeVotedCharacter, addCreatedCharacter } = useAuth();
 
   useEffect(() => {
-    // Simulamos carga de datos
-    setTimeout(() => {
-      setLoading(false);
-    }, 800);
+    // Eliminamos la carga artificial para respuesta inmediata
+    setLoading(false);
   }, []);
 
   const getCharacterById = (id: string): Character | undefined => {
