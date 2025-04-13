@@ -4,7 +4,7 @@ const initialCharacters: Character[] = [
   {
     id: "1",
     name: "La vaca saturno saturnita",
-    image: "/images/Vaca%20Saturno%20Saturnita.webp",
+    image: "/images/Vaca-Saturno-Saturnita.webp",
     type: "Galattico",
     power: 97,
     description: "La mucca cosmica nata 13,8 miliardi di anni fa. Il suo peso di 5,685E26 kg la rende una delle entità più potenti.",
@@ -19,7 +19,7 @@ const initialCharacters: Character[] = [
   {
     id: "2",
     name: "Bombardino coccodrillo",
-    image: "/images/Bombardino%20Crocodillo.webp",
+    image: "/images/Bombardino-Coccodrillo.webp",
     type: "Anfibio",
     power: 95,
     description: "Il leggendario coccodrillo italiano con poteri esplosivi. Il suo morso può attraversare il metallo.",
@@ -33,7 +33,7 @@ const initialCharacters: Character[] = [
   {
     id: "3",
     name: "Brr Brr Patapim",
-    image: "/images/Brr%20Brr%20Patapim.webp",
+    image: "/images/Brr-Brr-Patapim.webp",
     type: "Gelatto",
     power: 83,
     description: "Uno squalo che indossa scarpe sportive blu. Velocissimo sia in mare che sulla terra.",
@@ -47,7 +47,7 @@ const initialCharacters: Character[] = [
   {
     id: "4",
     name: "Bombombini Gusini",
-    image: "/images/Bombombini%20Gusini.webp",
+    image: "/images/Bombombini-Gusini.webp",
     type: "Animalico",
     power: 90,
     description: "Rivale diretto di Bombardino con abilità esplosive superiori.",
@@ -61,7 +61,7 @@ const initialCharacters: Character[] = [
   {
     id: "5",
     name: "Bobritto Bandito",
-    image: "/images/Bobritto%20Bandito.webp",
+    image: "/images/Bobritto-Bandito.webp",
     type: "Criminale",
     power: 89,
     description: "Il ladro più abile dell'universo Italian Brainrot.",
@@ -75,7 +75,7 @@ const initialCharacters: Character[] = [
   {
     id: "6",
     name: "Glorbo Fruttodrillo",
-    image: "/images/Glorbo%20Fruttodrillo.webp",
+    image: "/images/Glorbo-Fruttodrillo.webp",
     type: "Fruttoso",
     power: 88,
     description: "Cugino di Bombardino. Esperto in tattiche di combattimento e frutti tropicali.",
@@ -89,7 +89,7 @@ const initialCharacters: Character[] = [
   {
     id: "7",
     name: "Tung tung tung sahur",
-    image: "/images/Tung%20Tung%20Tung.webp",
+    image: "/images/Tung-Tung-Tung.webp",
     type: "Metallo",
     power: 88,
     description: "Il misterioso personaggio indonesiano che annuncia il sahur durante il Ramadan. Il suo ritmo penetra nella mente.",
@@ -104,7 +104,7 @@ const initialCharacters: Character[] = [
   {
     id: "8",
     name: "Tralalero Tralala",
-    image: "/images/Tralalero%20Tralala.webp",
+    image: "/images/Tralalero-Tralala.webp",
     type: "Musico",
     power: 86,
     description: "Maestro delle arti sonore, può manipolare le onde sonore.",
@@ -118,7 +118,7 @@ const initialCharacters: Character[] = [
   {
     id: "9",
     name: "Trulimero Trulicina",
-    image: "/images/Trulimero%20Trulicina.webp",
+    image: "/images/Trulimero-Trulicina.webp",
     type: "Buffonazzo",
     power: 85,
     description: "Metà pesce, metà umano. Una creatura straordinaria che può respirare sia sott'acqua che sulla terraferma.",
@@ -132,7 +132,7 @@ const initialCharacters: Character[] = [
   {
     id: "11",
     name: "Lirilì Larilà",
-    image: "/images/Lirilì%20Larilà.webp",
+    image: "/images/Lirilì-Larilà.webp",
     type: "Fiabosco",
     power: 82,
     description: "Un ibrido tra gatto e pesce. Ama il mare ma odia l'acqua.",
@@ -146,7 +146,7 @@ const initialCharacters: Character[] = [
   {
     id: "12",
     name: "Trippi Troppi",
-    image: "/images/Trippi%20Troppi.webp",
+    image: "/images/Trippi-Troppi.webp",
     type: "Tecnologia",
     power: 81,
     description: "Il vigilante con la testa a forma di fotocamera. Vede tutto e non dimentica mai.",
@@ -160,7 +160,7 @@ const initialCharacters: Character[] = [
   {
     id: "13",
     name: "Chimpanzini Bananini",
-    image: "/images/Chimpanzini%20Bananini.webp",
+    image: "/images/Chimpanzini-Bananini.webp",
     type: "Aereo",
     power: 81,
     description: "Scimmia volante che lancia banane esplosive mentre ride incontrollabilmente.",
@@ -174,7 +174,7 @@ const initialCharacters: Character[] = [
   {
     id: "14",
     name: "Ballerina Capuchina",
-    image: "/images/Ballerina%20Capuchina.webp",
+    image: "/images/Ballerina-Capuchina.webp",
     type: "Musicale",
     power: 75,
     description: "Scimmia cappuccina ballerina che ipnotizza i nemici con le sue mosse di danza.",
@@ -188,7 +188,7 @@ const initialCharacters: Character[] = [
   {
     id: "15",
     name: "Baranito Tankito",
-    image: "/images/Baranito%20Tankito.webp",
+    image: "/images/Baranito-Tankito.webp",
     type: "Tecnologia",
     power: 78,
     description: "Montone cibernetico con cannoni integrati e armatura impenetrabile.",
@@ -202,7 +202,7 @@ const initialCharacters: Character[] = [
   {
     id: "16",
     name: "Bombinarium Nerpinarium",
-    image: "/images/Bombinarium%20Nerpinarium.webp",
+    image: "/images/Bombinarium-Nerpinarium.webp",
     type: "Tecnologia",
     power: 83,
     description: "Scienziato pazzo che crea pozioni esplosive e armi chimiche bizzarre.",
@@ -230,7 +230,7 @@ const initialCharacters: Character[] = [
   {
     id: "18",
     name: "Bri Bri Bicus Dicus",
-    image: "/images/Bri%20Bri%20Bicus%20Dicus.webp",
+    image: "/images/Bri-Bri-Bicus-Dicus.webp",
     type: "Sonoro",
     power: 74,
     description: "DJ antico romano che mixa beats così potenti da polverizzare edifici.",
@@ -244,7 +244,7 @@ const initialCharacters: Character[] = [
   {
     id: "19",
     name: "Burbaloni Luliloli",
-    image: "/images/Burbaloni%20Luliloli.webp",
+    image: "/images/Burbaloni-Luliloli.webp",
     type: "Musicale",
     power: 77,
     description: "Clown cosmico che crea bolle dimensionali piene di risate isteriche.",
@@ -258,7 +258,7 @@ const initialCharacters: Character[] = [
   {
     id: "20",
     name: "Camelrino Tazzino",
-    image: "/images/Camelrino%20Tazzino.webp",
+    image: "/images/Camelrino-Tazzino.webp",
     type: "Bagno",
     power: 70,
     description: "Cammello che trasporta una teiera gigante e attacca con getti di tè bollente.",
@@ -272,7 +272,7 @@ const initialCharacters: Character[] = [
   {
     id: "21",
     name: "Capuchino Assassino",
-    image: "/images/Capuchino%20Assassino.webp",
+    image: "/images/Capuchino-Assassino.webp",
     type: "Bagno",
     power: 81,
     description: "Tazza di caffè letale che avvelena chiunque beva dal suo contenuto maledetto.",
@@ -286,7 +286,7 @@ const initialCharacters: Character[] = [
   {
     id: "22",
     name: "Frigo Camelo",
-    image: "/images/Frigo%20Camelo.webp",
+    image: "/images/Frigo-Camelo.webp",
     type: "Tecnologia",
     power: 77,
     description: "Cammello con una gobba-frigorifero che congela tutto ciò che tocca.",
@@ -300,7 +300,7 @@ const initialCharacters: Character[] = [
   {
     id: "23",
     name: "Frulli Frulla",
-    image: "/images/Frulli%20Frulla.webp",
+    image: "/images/Frulli-Frulla.webp",
     type: "Fruttoso",
     power: 72,
     description: "Creatura con corpo di frullatore che trasforma qualsiasi cosa in deliziosi frullati.",
@@ -314,7 +314,7 @@ const initialCharacters: Character[] = [
   {
     id: "24",
     name: "Piccione Macchina",
-    image: "/images/Piccione%20Macchina.webp",
+    image: "/images/Piccione-Macchina.webp",
     type: "Tecnologia",
     power: 76,
     description: "Piccione cyborg che spia per le agenzie governative e trasporta messaggi criptati.",
@@ -328,7 +328,7 @@ const initialCharacters: Character[] = [
   {
     id: "25",
     name: "Pot Hotspot Anomaly",
-    image: "/images/Pot%20Hotspot%20Anomaly.webp",
+    image: "/images/Pot-Hotspot-Anomaly.webp",
     type: "Tecnologia",
     power: 85,
     description: "Router vivente che distorce la realtà attraverso segnali WiFi corrotti.",
@@ -342,7 +342,7 @@ const initialCharacters: Character[] = [
   {
     id: "26",
     name: "Rugginato LupoGT Il Cannone Stradale",
-    image: "/images/Rugginato%20LupoGT%20Il%20Cannone%20Stradale.webp",
+    image: "/images/Rugginato-LupoGT-Il-Cannone-Stradale.webp",
     type: "Tecnologia",
     power: 88,
     description: "Auto da corsa senziente con parti di lupo meccanico e cannoni incorporati.",
@@ -356,7 +356,7 @@ const initialCharacters: Character[] = [
   {
     id: "27",
     name: "Serbinyo Carshippinyo",
-    image: "/images/Serbinyo%20Carshippinyo.webp",
+    image: "/images/Serbinyo-Carshippinyo.webp",
     type: "Tecnologia",
     power: 80,
     description: "Navicella spaziale con intelligenza artificiale che trasporta veicoli attraverso le galassie.",
@@ -370,7 +370,7 @@ const initialCharacters: Character[] = [
   {
     id: "28",
     name: "Talpa Di Ferro",
-    image: "/images/Talpa%20Di%20Ferro.webp",
+    image: "/images/Talpa-Di-Ferro.webp",
     type: "Metallo",
     power: 82,
     description: "Talpa robotica che scava tunnel dimensionali attraverso qualsiasi materiale.",
@@ -384,7 +384,7 @@ const initialCharacters: Character[] = [
   {
     id: "29",
     name: "Tracotocutulo",
-    image: "/images/Tracotocutulo%20.webp",
+    image: "/images/Tracotocutulo-.webp",
     type: "Sonoro",
     power: 79,
     description: "Entità fatta di puro suono che può replicare qualsiasi voce e manipolare le onde sonore.",
@@ -398,7 +398,7 @@ const initialCharacters: Character[] = [
   {
     id: "30",
     name: "Tric Trac Baraboom",
-    image: "/images/Tric%20Trac%20Baraboom.webp",
+    image: "/images/Tric-Trac-Baraboom.webp",
     type: "Sonoro",
     power: 76,
     description: "Batterista alieno con sei braccia i cui ritmi possono modificare il flusso del tempo.",
@@ -412,7 +412,7 @@ const initialCharacters: Character[] = [
   {
     id: "31",
     name: "Udin din din dun",
-    image: "/images/Udin%20din%20din%20dun%20.webp",
+    image: "/images/Udin-din-din-dun-.webp",
     type: "Sonoro",
     power: 78,
     description: "Campanile vivente le cui campane suonano melodie che controllano il meteo.",
@@ -426,7 +426,7 @@ const initialCharacters: Character[] = [
   {
     id: "32",
     name: "Zucchini Macanini",
-    image: "/images/Zucchini%20Macanini.webp",
+    image: "/images/Zucchini-Macanini.webp",
     type: "Fruttoso",
     power: 70,
     description: "Zucchina guerriera armata di spada laser verde e poteri vegetali.",
@@ -436,6 +436,20 @@ const initialCharacters: Character[] = [
     abilities: ["Spada fotosintetica", "Crescita esplosiva", "Seme bomba", "Scudo di buccia"],
     biography: "Zucchini Macanini è nata in un orto esposto a radiazioni cosmiche. È una zucchina antropomorfa con un forte senso della giustizia, che combatte per proteggere tutti i vegetali oppressi. La sua spada laser verde è alimentata dalla pura energia della fotosintesi e può tagliare quasi qualsiasi materiale.",
     phrase: "Nel verde c'è la forza, nelle radici la saggezza!"
+  },
+  {
+    id: "33",
+    name: "Bri Bri Bri Kasoot",
+    image: "/images/Kasoot-Brainrot.webp",
+    type: "Tecnologia",
+    power: 79,
+    description: "Ser digital que habita en videojuegos y controla las mentes de los jugadores.",
+    allies: ["Trippi Troppi", "Pot Hotspot Anomaly"],
+    rivals: ["Bombinarium Nerpinarium", "Piccione Macchina"],
+    votes: 17,
+    abilities: ["Control mental digital", "Teletransporte entre dispositivos", "Manipulación de código", "Distorsión de realidad virtual"],
+    biography: "Bri Bri Bri Kasoot surgió de un error en un videojuego educativo. Posee la capacidad de moverse entre dispositivos electrónicos y manipular la percepción de los jugadores. Utiliza su apariencia inocente para atraer a nuevas víctimas a su reino digital donde desafía sus mentes con preguntas imposibles.",
+    phrase: "¡Responde rápido o tu mente será mía!"
   }
 ];
 

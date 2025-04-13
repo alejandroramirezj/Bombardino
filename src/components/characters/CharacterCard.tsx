@@ -26,8 +26,8 @@ const CharacterCard = ({ character, index = 0 }: CharacterCardProps) => {
       return `${character.image.substring(1)}`;
     }
     
-    // Si la imagen es un nombre de archivo, construir la ruta en /images/
-    const fileName = character.name.replace(/\s+/g, '%20');
+    // Si la imagen es un nombre de archivo, construir la ruta en /images/ con guiones
+    const fileName = character.name.replace(/\s+/g, '-');
     return `images/${fileName}.webp`;
   };
   
