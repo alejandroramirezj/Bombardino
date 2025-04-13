@@ -212,14 +212,39 @@ const BattleSimulator = () => {
       if (fighter2.type === scenario.advantage) fighter2Power += 15;
       if (fighter2.type === scenario.disadvantage) fighter2Power -= 10;
       
-      // Aleatoriedad para hacerlo más interesante
-      fighter1Power += Math.floor(Math.random() * 20);
-      fighter2Power += Math.floor(Math.random() * 20);
+      // Factores aleatorios para hacer las batallas más realistas
+      const randomFactor1 = Math.floor(Math.random() * 30) - 10; // Entre -10 y +20
+      const randomFactor2 = Math.floor(Math.random() * 30) - 10; // Entre -10 y +20
+      fighter1Power += randomFactor1;
+      fighter2Power += randomFactor2;
+      
+      // Asegurarnos que el poder mínimo sea 1
+      fighter1Power = Math.max(fighter1Power, 1);
+      fighter2Power = Math.max(fighter2Power, 1);
       
       // Porcentajes relativos (para las barras de estadísticas)
       const total = fighter1Power + fighter2Power;
       const f1Percent = Math.round((fighter1Power / total) * 100);
       const f2Percent = Math.round((fighter2Power / total) * 100);
+      
+      // Calcular puntuaciones - hacer que sean diferentes, más realistas
+      let score1 = Math.floor(fighter1Power / 10);
+      let score2 = Math.floor(fighter2Power / 10);
+      
+      // Asegurar que no sean empates si hay diferencia de poder
+      if (score1 === score2 && fighter1Power > fighter2Power) {
+        score1 += 1;
+      } else if (score1 === score2 && fighter2Power > fighter1Power) {
+        score2 += 1;
+      }
+      
+      // Agregar pequeñas variaciones aleatorias para puntuaciones más interesantes
+      if (Math.random() > 0.7) {
+        score1 += fighter1Power > fighter2Power ? 1 : 0;
+      }
+      if (Math.random() > 0.7) {
+        score2 += fighter2Power > fighter1Power ? 1 : 0;
+      }
       
       // Determinar el ganador
       const winner = fighter1Power > fighter2Power ? fighter1.name : fighter2.name;
@@ -229,27 +254,21 @@ const BattleSimulator = () => {
         fighter1: fighter1,
         fighter2: fighter2,
         scenario: scenario,
-        score1: Math.floor(fighter1Power / 10),
-        score2: Math.floor(fighter2Power / 10),
+        score1: score1,
+        score2: score2,
         winner: winner
       });
       
       setBattleStats([
         { label: "Poder base", fighter1Value: fighter1.power, fighter2Value: fighter2.power },
-        { label: "Ventaja de escenario", fighter1Value: fighter1.type === scenario.advantage ? 75 : 25, fighter2Value: fighter2.type === scenario.advantage ? 75 : 25 },
+        { label: "Ventaja de escenario", fighter1Value: fighter1.type === scenario.advantage ? 75 : (fighter1.type === scenario.disadvantage ? 25 : 50), 
+          fighter2Value: fighter2.type === scenario.advantage ? 75 : (fighter2.type === scenario.disadvantage ? 25 : 50) },
         { label: "Fortaleza", fighter1Value: f1Percent, fighter2Value: f2Percent },
       ]);
       
       setIsSimulating(false);
     }, 1500);
   };
-
-  // Efecto para simular automáticamente cuando se seleccionan todos los elementos
-  useEffect(() => {
-    if (fighter1 && fighter2 && scenario) {
-      simulateBattle();
-    }
-  }, [fighter1, fighter2, scenario]);
 
   // Resetear selecciones
   const resetSimulation = () => {
@@ -332,10 +351,6 @@ const BattleSimulator = () => {
                         src={character.image} 
                         alt={character.name}
                         className="h-full object-contain filter drop-shadow-lg transform group-hover:scale-110 transition-transform duration-300"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = "placeholder.svg";
-                        }}
                       />
                     </div>
                     <div className="p-2 sm:p-3 text-center bg-gradient-to-t from-black to-transparent">
@@ -368,200 +383,179 @@ const BattleSimulator = () => {
       </div>
 
       <div className="p-3 sm:p-4">
-        {/* Versus screen de selección */}
-        <div className="relative flex flex-col sm:flex-row items-center justify-center my-4 sm:my-8 gap-4 sm:gap-0">
-          {/* Personaje 1 */}
-          <motion.div 
-            className="w-full sm:flex-1 text-center"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            {fighter1 ? (
-              <div 
-                className="relative mx-auto cursor-pointer transition-transform hover:scale-105"
-                onClick={() => openCharacterSelect(1)}
+        {battleResult && !isSimulating ? (
+          // Resultado de la batalla
+          <div className="mb-4">
+            <BattleScoreboard 
+              fighter1={battleResult.fighter1}
+              fighter2={battleResult.fighter2}
+              score1={battleResult.score1}
+              score2={battleResult.score2}
+              environment={battleResult.scenario.name}
+              winner={battleResult.winner}
+            />
+            
+            {battleStats && <BattleStats stats={battleStats} />}
+            
+            <div className="flex justify-center space-x-4 mt-6">
+              <Button 
+                onClick={resetSimulation} 
+                className="bg-brainrot-darker text-brainrot-turquoise border border-brainrot-blue/30 flex items-center"
               >
-                <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-gradient-to-b from-brainrot-blue/20 to-transparent rounded-full p-1">
-                  <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
-                    <img 
-                      src={fighter1.image} 
-                      alt={fighter1.name}
-                      className="h-full object-contain transform hover:scale-110 transition-transform duration-300"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "placeholder.svg";
-                      }}
-                    />
-                  </div>
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-white mt-2 sm:mt-3 truncate max-w-[150px] mx-auto">{fighter1.name}</h3>
-                <div className="bg-brainrot-darker/60 rounded-full px-3 py-1 inline-flex items-center mt-1">
-                  <span className="mr-1">{fighter1.emoji}</span>
-                  <span className="text-brainrot-turquoise text-sm">{fighter1.type}</span>
-                </div>
-              </div>
-            ) : (
-              <div 
-                className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-brainrot-blue/40"
-                onClick={() => openCharacterSelect(1)}
+                Nueva Batalla
+              </Button>
+              
+              <Button 
+                className="bg-brainrot-darker text-gray-300 border border-brainrot-blue/30 flex items-center"
               >
-                <div className="text-center">
-                  <div className="text-brainrot-turquoise text-4xl sm:text-5xl mb-1 sm:mb-2">+</div>
-                  <div className="text-gray-400 text-xs sm:text-sm">Seleccionar</div>
-                </div>
-              </div>
-            )}
-          </motion.div>
-          
-          {/* VS - En móvil se muestra entre personajes como un divisor */}
-          <div className="sm:mx-6 sm:z-10 -my-2 sm:my-0">
-            <div className="relative">
-              <div className="bg-gradient-to-r from-red-600 to-red-800 text-white text-2xl sm:text-3xl font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-lg border-4 border-brainrot-darker">
-                VS
-              </div>
-              <div className="absolute -inset-3 bg-red-600/20 rounded-full blur-lg animate-pulse"></div>
+                <Share2 className="w-4 h-4 mr-2" />
+                Compartir
+              </Button>
             </div>
           </div>
-          
-          {/* Personaje 2 */}
-          <motion.div 
-            className="w-full sm:flex-1 text-center"
-            initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            {fighter2 ? (
-              <div 
-                className="relative mx-auto cursor-pointer transition-transform hover:scale-105"
-                onClick={() => openCharacterSelect(2)}
+        ) : (
+          // Selección de personajes y escenario
+          <>
+            {/* Versus screen de selección */}
+            <div className="relative flex flex-col sm:flex-row items-center justify-center my-4 sm:my-8 gap-4 sm:gap-0">
+              {/* Personaje 1 */}
+              <motion.div 
+                className="w-full sm:flex-1 text-center"
+                initial={{ x: -50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
               >
-                <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-gradient-to-b from-red-600/20 to-transparent rounded-full p-1">
-                  <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
-                    <img 
-                      src={fighter2.image} 
-                      alt={fighter2.name}
-                      className="h-full object-contain transform hover:scale-110 transition-transform duration-300"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "placeholder.svg";
-                      }}
-                    />
-                  </div>
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-white mt-2 sm:mt-3 truncate max-w-[150px] mx-auto">{fighter2.name}</h3>
-                <div className="bg-brainrot-darker/60 rounded-full px-3 py-1 inline-flex items-center mt-1">
-                  <span className="mr-1">{fighter2.emoji}</span>
-                  <span className="text-red-400 text-sm">{fighter2.type}</span>
-                </div>
-              </div>
-            ) : (
-              <div 
-                className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-red-500/40"
-                onClick={() => openCharacterSelect(2)}
-              >
-                <div className="text-center">
-                  <div className="text-red-500 text-4xl sm:text-5xl mb-1 sm:mb-2">+</div>
-                  <div className="text-gray-400 text-xs sm:text-sm">Seleccionar</div>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        </div>
-
-        {/* Selección de escenario */}
-        <div className="my-6 sm:my-8">
-          <h3 className="text-base sm:text-lg font-bold text-brainrot-turquoise mb-3 sm:mb-4 text-center">Escenario de batalla</h3>
-          <div className="flex flex-wrap justify-center gap-2">
-            {battleScenarios.map((scene) => (
-              <motion.div
-                key={scene.id}
-                whileHover={{ scale: 1.05 }}
-                className={`cursor-pointer px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex items-center text-sm sm:text-base ${
-                  scenario?.id === scene.id 
-                    ? 'bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise text-white' 
-                    : 'bg-brainrot-darker text-gray-300 hover:bg-brainrot-darker/80'
-                }`}
-                onClick={() => setScenario(scene)}
-              >
-                <span className="text-lg sm:text-xl mr-1 sm:mr-2">{scene.emoji}</span>
-                <span>{scene.name}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Acciones */}
-        <div className="flex justify-center mt-4 sm:mt-6 space-x-3 sm:space-x-4">
-          <Button
-            onClick={simulateBattle}
-            disabled={!fighter1 || !fighter2 || !scenario || isSimulating}
-            className="bg-gradient-to-r from-red-600 to-red-800 text-white px-4 sm:px-8 py-3 sm:py-6 rounded-xl shadow-lg hover:shadow-red-500/20 text-sm sm:text-base"
-          >
-            {isSimulating ? (
-              <span className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-2 sm:mr-3 h-4 w-4 sm:h-5 sm:w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Simulando...
-              </span>
-            ) : (
-              <span className="flex items-center">
-                <Swords className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                ¡LUCHAR!
-              </span>
-            )}
-          </Button>
-          
-          <Button
-            onClick={resetSimulation}
-            variant="outline"
-            className="border-gray-600 text-gray-400 hover:text-white text-sm sm:text-base py-3 sm:py-6"
-          >
-            Reiniciar
-          </Button>
-        </div>
-
-        {/* Resultados */}
-        <AnimatePresence>
-          {battleResult && !isSimulating && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="mt-6 sm:mt-8"
-            >
-              <div className="border-t border-brainrot-blue/30 pt-4 sm:pt-6">
-                <h3 className="text-center text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center justify-center">
-                  <Trophy className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-yellow-500" />
-                  Resultado de la Batalla
-                </h3>
-                
-                <BattleScoreboard 
-                  fighter1={battleResult.fighter1}
-                  fighter2={battleResult.fighter2}
-                  score1={battleResult.score1}
-                  score2={battleResult.score2}
-                  environment={battleResult.scenario.name}
-                  winner={battleResult.winner}
-                />
-                
-                {battleStats && <BattleStats stats={battleStats} />}
-                
-                <div className="mt-4 flex justify-center">
-                  <Button 
-                    className="bg-brainrot-darker text-brainrot-turquoise border border-brainrot-blue/30 flex items-center text-sm sm:text-base"
+                {fighter1 ? (
+                  <div 
+                    className="relative mx-auto cursor-pointer transition-transform hover:scale-105"
+                    onClick={() => openCharacterSelect(1)}
                   >
-                    <Share2 className="w-4 h-4 mr-2" />
-                    Compartir resultado
-                  </Button>
+                    <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-gradient-to-b from-brainrot-blue/20 to-transparent rounded-full p-1">
+                      <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
+                        <img 
+                          src={fighter1.image} 
+                          alt={fighter1.name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-bold text-white mt-2 sm:mt-3 truncate max-w-[150px] mx-auto">{fighter1.name}</h3>
+                    <div className="bg-brainrot-darker/60 rounded-full px-3 py-1 inline-flex items-center mt-1">
+                      <span className="mr-1">{fighter1.emoji}</span>
+                      <span className="text-brainrot-turquoise text-sm">{fighter1.type}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div 
+                    className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-brainrot-blue/40"
+                    onClick={() => openCharacterSelect(1)}
+                  >
+                    <div className="text-center">
+                      <div className="text-brainrot-turquoise text-4xl sm:text-5xl mb-1 sm:mb-2">+</div>
+                      <div className="text-gray-400 text-xs sm:text-sm">Seleccionar</div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+              
+              {/* VS - En móvil se muestra entre personajes como un divisor */}
+              <div className="sm:mx-6 sm:z-10 -my-2 sm:my-0">
+                <div className="relative">
+                  <div className="bg-gradient-to-r from-red-600 to-red-800 text-white text-2xl sm:text-3xl font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-lg border-4 border-brainrot-darker">
+                    VS
+                  </div>
+                  <div className="absolute -inset-3 bg-red-600/20 rounded-full blur-lg animate-pulse"></div>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              
+              {/* Personaje 2 */}
+              <motion.div 
+                className="w-full sm:flex-1 text-center"
+                initial={{ x: 50, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                {fighter2 ? (
+                  <div 
+                    className="relative mx-auto cursor-pointer transition-transform hover:scale-105"
+                    onClick={() => openCharacterSelect(2)}
+                  >
+                    <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-gradient-to-b from-red-600/20 to-transparent rounded-full p-1">
+                      <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
+                        <img 
+                          src={fighter2.image} 
+                          alt={fighter2.name}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-bold text-white mt-2 sm:mt-3 truncate max-w-[150px] mx-auto">{fighter2.name}</h3>
+                    <div className="bg-brainrot-darker/60 rounded-full px-3 py-1 inline-flex items-center mt-1">
+                      <span className="mr-1">{fighter2.emoji}</span>
+                      <span className="text-red-400 text-sm">{fighter2.type}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div 
+                    className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-red-500/40"
+                    onClick={() => openCharacterSelect(2)}
+                  >
+                    <div className="text-center">
+                      <div className="text-red-500 text-4xl sm:text-5xl mb-1 sm:mb-2">+</div>
+                      <div className="text-gray-400 text-xs sm:text-sm">Seleccionar</div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+
+            {/* Selección de escenario */}
+            <div className="my-6 sm:my-8">
+              <h3 className="text-base sm:text-lg font-bold text-brainrot-turquoise mb-3 sm:mb-4 text-center">Escenario de batalla</h3>
+              <div className="flex flex-wrap justify-center gap-2">
+                {battleScenarios.map((scene) => (
+                  <motion.div
+                    key={scene.id}
+                    whileHover={{ scale: 1.05 }}
+                    className={`cursor-pointer px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex items-center text-sm sm:text-base ${
+                      scenario?.id === scene.id 
+                        ? 'bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise text-white' 
+                        : 'bg-brainrot-darker text-gray-300 hover:bg-brainrot-darker/80'
+                    }`}
+                    onClick={() => setScenario(scene)}
+                  >
+                    <span className="text-lg sm:text-xl mr-1 sm:mr-2">{scene.emoji}</span>
+                    <span>{scene.name}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Acciones */}
+            <div className="flex justify-center mt-6 sm:mt-8">
+              <Button
+                onClick={simulateBattle}
+                disabled={!fighter1 || !fighter2 || !scenario || isSimulating}
+                className="bg-gradient-to-r from-red-600 to-red-800 text-white px-6 sm:px-10 py-4 sm:py-6 rounded-xl shadow-lg hover:shadow-red-500/20 text-lg sm:text-xl font-bold"
+              >
+                {isSimulating ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 sm:mr-3 h-5 w-5 sm:h-6 sm:w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Simulando...
+                  </span>
+                ) : (
+                  <span className="flex items-center">
+                    <Swords className="mr-3 h-5 w-5 sm:h-6 sm:w-6" />
+                    ¡LUCHAR!
+                  </span>
+                )}
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
