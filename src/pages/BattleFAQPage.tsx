@@ -7,18 +7,32 @@ import {
   Sword, Swords, ZapIcon, Flame, Droplets, 
   Mountain, Wind, Skull, Trophy, Share2
 } from 'lucide-react';
+import initialCharacters from '@/data/characters';
 
 // Lista de personajes para la simulación
-const battleCharacters = [
-  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "images/Bombardino-Coccodrillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
-  { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "images/Tralalero-Tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
-  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "images/Bombombini-Gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
-  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "images/Tung-Tung-Tung-Sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
-  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "images/La-Vaca-Saturno-Saturnita.webp", power: 90, type: "cósmico", speciality: "gravedad" },
-  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "images/Frigo-Camelo.webp", power: 75, type: "glacial", speciality: "congelación" },
-  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "images/Akulini-Cactusini.webp", power: 65, type: "desértico", speciality: "espinas" },
-  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "images/Bobritto-Bandito.webp", power: 60, type: "constructor", speciality: "presas" }
-];
+const battleCharacters = initialCharacters.map(character => ({
+  id: character.id,
+  name: character.name,
+  emoji: character.type === "Galattico" ? "🌌" : 
+         character.type === "Anfibio" ? "🐊" : 
+         character.type === "Gelatto" ? "🦈" : 
+         character.type === "Animalico" ? "💥" : 
+         character.type === "Criminale" ? "🦫" : 
+         character.type === "Fruttoso" ? "🍎" : 
+         character.type === "Metallo" ? "🥁" : 
+         character.type === "Musico" ? "🎵" : 
+         character.type === "Buffonazzo" ? "🐟" : 
+         character.type === "Fiabosco" ? "🐱" : 
+         character.type === "Tecnologia" ? "🤖" : 
+         character.type === "Aereo" ? "🐒" : 
+         character.type === "Musicale" ? "🎭" : 
+         character.type === "Sonoro" ? "🔊" : 
+         character.type === "Bagno" ? "☕" : "⚡",
+  image: character.image,
+  power: character.power,
+  type: character.type.toLowerCase(),
+  speciality: character.abilities && character.abilities.length > 0 ? character.abilities[0].toLowerCase() : "ataque"
+}));
 
 // Lista de escenarios
 const battleScenarios = [
@@ -38,12 +52,17 @@ const getImagePath = (character) => {
       return character.image;
     }
     
+    // Si la imagen ya comienza con '/' (ruta absoluta desde la raíz), eliminamos el primer caracter
+    if (character.image && character.image.startsWith('/')) {
+      return character.image.substring(1);
+    }
+    
     // Para las rutas relativas, aseguramos que sean correctas
     if (character.image) {
       return character.image;
     }
     
-    // Si la imagen no está definida, usamos un nombre basado en el personaje
+    // Si la imagen no está definida, usamos un nombre basado en el personaje con guiones
     const safeFileName = character.name.replace(/\s+/g, '-');
     return `images/${safeFileName}.webp`;
   } catch (error) {
