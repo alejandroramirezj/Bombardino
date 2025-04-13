@@ -180,29 +180,29 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
   );
 };
 
-// Componente para las estadísticas de batalla
+// Componente para las estadísticas de batalla (versión compacta para móvil)
 const BattleStats = ({ stats }) => {
   return (
-    <div className="bg-brainrot-darker rounded-lg p-3 sm:p-4 my-3 sm:my-4">
-      <h4 className="text-brainrot-turquoise font-semibold mb-2 sm:mb-3 text-sm sm:text-base">Estadísticas de batalla</h4>
-      <div className="space-y-2 sm:space-y-3">
+    <div className="bg-brainrot-darker rounded-lg p-2 sm:p-4 my-2 sm:my-4">
+      <h4 className="text-brainrot-turquoise font-semibold mb-2 text-xs sm:text-sm">Estadísticas</h4>
+      <div className="space-y-1 sm:space-y-3">
         {stats.map((stat, index) => (
           <div key={index} className="grid grid-cols-3 items-center gap-1 sm:gap-2">
-            <div className="text-right text-xs sm:text-sm text-gray-300">{stat.fighter1Value}%</div>
-            <div className="relative h-2 bg-gray-700 rounded-full w-full col-span-1">
+            <div className="text-right text-xs text-gray-300">{stat.fighter1Value}%</div>
+            <div className="relative h-1.5 sm:h-2 bg-gray-700 rounded-full w-full col-span-1">
               <div 
-                className="absolute left-0 top-0 h-2 bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise rounded-full"
+                className="absolute left-0 top-0 h-1.5 sm:h-2 bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise rounded-full"
                 style={{ width: `${stat.fighter1Value}%` }}
               ></div>
               <div 
-                className="absolute right-0 top-0 h-2 bg-gradient-to-l from-brainrot-blue to-red-500 rounded-full"
+                className="absolute right-0 top-0 h-1.5 sm:h-2 bg-gradient-to-l from-brainrot-blue to-red-500 rounded-full"
                 style={{ width: `${stat.fighter2Value}%` }}
               ></div>
             </div>
-            <div className="text-left text-xs sm:text-sm text-gray-300">{stat.fighter2Value}%</div>
-            <div className="text-right text-xs text-gray-400 truncate">{stat.label}</div>
+            <div className="text-left text-xs text-gray-300">{stat.fighter2Value}%</div>
+            <div className="text-right text-[10px] sm:text-xs text-gray-400 truncate">{stat.label}</div>
             <div className="h-0 col-span-1"></div>
-            <div className="text-left text-xs text-gray-400 truncate">{stat.label}</div>
+            <div className="text-left text-[10px] sm:text-xs text-gray-400 truncate">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -468,15 +468,15 @@ const generateBattleNarrative = (fighter1, fighter2, scenario, winner) => {
   return narrative;
 };
 
-// Componente para mostrar la narrativa del combate
+// Componente para mostrar la narrativa del combate (versión mejorada para móvil)
 const BattleNarrative = ({ narrative }) => {
   return (
-    <div className="bg-brainrot-darker/80 rounded-lg p-4 my-4 shadow-inner border border-brainrot-blue/20">
-      <h3 className="text-lg sm:text-xl font-bold mb-3 text-brainrot-turquoise flex items-center">
-        <Sword className="w-5 h-5 mr-2" />
+    <div className="bg-brainrot-darker/80 rounded-lg p-2 sm:p-4 my-3 shadow-inner border border-brainrot-blue/20">
+      <h3 className="text-base sm:text-lg font-bold mb-2 text-brainrot-turquoise flex items-center">
+        <Sword className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
         Desarrollo del Combate
       </h3>
-      <div dangerouslySetInnerHTML={{ __html: narrative }} />
+      <div className="text-sm" dangerouslySetInnerHTML={{ __html: narrative }} />
     </div>
   );
 };
@@ -507,78 +507,69 @@ const BattleSimulator = () => {
     
     setIsSimulating(true);
     
-    // Reducir el tiempo de espera de 800ms a 400ms para respuesta casi instantánea
+    // Ejecutar inmediatamente para mejorar la respuesta en móvil
+    // Calcular ventajas basadas en escenario
+    let fighter1Power = fighter1.power;
+    let fighter2Power = fighter2.power;
+    
+    // Ventajas por tipo
+    if (fighter1.type === scenario.advantage) fighter1Power += 15;
+    if (fighter1.type === scenario.disadvantage) fighter1Power -= 10;
+    if (fighter2.type === scenario.advantage) fighter2Power += 15;
+    if (fighter2.type === scenario.disadvantage) fighter2Power -= 10;
+    
+    // Factores aleatorios simplificados
+    const randomFactor1 = Math.floor(Math.random() * 10);
+    const randomFactor2 = Math.floor(Math.random() * 10);
+    fighter1Power += randomFactor1;
+    fighter2Power += randomFactor2;
+    
+    // Asegurarnos que el poder mínimo sea 1
+    fighter1Power = Math.max(fighter1Power, 1);
+    fighter2Power = Math.max(fighter2Power, 1);
+    
+    // Porcentajes relativos (para las barras de estadísticas)
+    const total = fighter1Power + fighter2Power;
+    const f1Percent = Math.round((fighter1Power / total) * 100);
+    const f2Percent = Math.round((fighter2Power / total) * 100);
+    
+    // Calcular puntuaciones simplificadas
+    let score1 = Math.floor(fighter1Power / 10);
+    let score2 = Math.floor(fighter2Power / 10);
+    
+    if (score1 === score2 && fighter1Power > fighter2Power) {
+      score1 += 1;
+    } else if (score1 === score2 && fighter2Power > fighter1Power) {
+      score2 += 1;
+    }
+    
+    // Determinar el ganador
+    const winner = fighter1Power > fighter2Power ? fighter1.name : fighter2.name;
+    
+    // Generar la narrativa de la batalla
+    const battleNarrative = generateBattleNarrative(fighter1, fighter2, scenario, winner);
+    
+    // Crear resultado y estadísticas
+    setBattleResult({
+      fighter1: fighter1,
+      fighter2: fighter2,
+      scenario: scenario,
+      score1: score1,
+      score2: score2,
+      winner: winner,
+      narrative: battleNarrative
+    });
+    
+    setBattleStats([
+      { label: "Poder base", fighter1Value: fighter1.power, fighter2Value: fighter2.power },
+      { label: "Ventaja escenario", fighter1Value: fighter1.type === scenario.advantage ? 75 : (fighter1.type === scenario.disadvantage ? 25 : 50), 
+        fighter2Value: fighter2.type === scenario.advantage ? 75 : (fighter2.type === scenario.disadvantage ? 25 : 50) },
+      { label: "Fortaleza", fighter1Value: f1Percent, fighter2Value: f2Percent },
+    ]);
+    
     setTimeout(() => {
-      // Calcular ventajas basadas en escenario
-      let fighter1Power = fighter1.power;
-      let fighter2Power = fighter2.power;
-      
-      // Ventajas por tipo
-      if (fighter1.type === scenario.advantage) fighter1Power += 15;
-      if (fighter1.type === scenario.disadvantage) fighter1Power -= 10;
-      if (fighter2.type === scenario.advantage) fighter2Power += 15;
-      if (fighter2.type === scenario.disadvantage) fighter2Power -= 10;
-      
-      // Factores aleatorios para hacer las batallas más realistas
-      const randomFactor1 = Math.floor(Math.random() * 20) - 5; // Reducido de 30 a 20 para menos variabilidad
-      const randomFactor2 = Math.floor(Math.random() * 20) - 5; // Reducido de 30 a 20 para menos variabilidad
-      fighter1Power += randomFactor1;
-      fighter2Power += randomFactor2;
-      
-      // Asegurarnos que el poder mínimo sea 1
-      fighter1Power = Math.max(fighter1Power, 1);
-      fighter2Power = Math.max(fighter2Power, 1);
-      
-      // Porcentajes relativos (para las barras de estadísticas)
-      const total = fighter1Power + fighter2Power;
-      const f1Percent = Math.round((fighter1Power / total) * 100);
-      const f2Percent = Math.round((fighter2Power / total) * 100);
-      
-      // Calcular puntuaciones - hacer que sean diferentes, más realistas
-      let score1 = Math.floor(fighter1Power / 10);
-      let score2 = Math.floor(fighter2Power / 10);
-      
-      // Asegurar que no sean empates si hay diferencia de poder
-      if (score1 === score2 && fighter1Power > fighter2Power) {
-        score1 += 1;
-      } else if (score1 === score2 && fighter2Power > fighter1Power) {
-        score2 += 1;
-      }
-      
-      // Agregar pequeñas variaciones aleatorias para puntuaciones más interesantes
-      if (Math.random() > 0.7) {
-        score1 += fighter1Power > fighter2Power ? 1 : 0;
-      }
-      if (Math.random() > 0.7) {
-        score2 += fighter2Power > fighter1Power ? 1 : 0;
-      }
-      
-      // Determinar el ganador
-      const winner = fighter1Power > fighter2Power ? fighter1.name : fighter2.name;
-      
-      // Generar la narrativa de la batalla
-      const battleNarrative = generateBattleNarrative(fighter1, fighter2, scenario, winner);
-      
-      // Crear resultado y estadísticas
-      setBattleResult({
-        fighter1: fighter1,
-        fighter2: fighter2,
-        scenario: scenario,
-        score1: score1,
-        score2: score2,
-        winner: winner,
-        narrative: battleNarrative  // Añadir la narrativa al resultado
-      });
-      
-      setBattleStats([
-        { label: "Poder base", fighter1Value: fighter1.power, fighter2Value: fighter2.power },
-        { label: "Ventaja de escenario", fighter1Value: fighter1.type === scenario.advantage ? 75 : (fighter1.type === scenario.disadvantage ? 25 : 50), 
-          fighter2Value: fighter2.type === scenario.advantage ? 75 : (fighter2.type === scenario.disadvantage ? 25 : 50) },
-        { label: "Fortaleza", fighter1Value: f1Percent, fighter2Value: f2Percent },
-      ]);
-      
       setIsSimulating(false);
-    }, 400); // Reducido significativamente para mejor experiencia de usuario
+    }, 300);
   };
 
   // Resetear selecciones
@@ -627,53 +618,52 @@ const BattleSimulator = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-2 overflow-hidden"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 touch-none"
           onClick={() => setShowCharacterSelect(false)}
         >
           <motion.div 
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
-            className="bg-gradient-to-b from-brainrot-dark to-black p-4 sm:p-6 rounded-xl w-full max-w-4xl max-h-[80vh] overflow-y-auto"
+            className="bg-gradient-to-b from-brainrot-dark to-black p-3 sm:p-4 rounded-lg w-[95%] sm:w-full max-w-2xl max-h-[75vh] overflow-y-auto overscroll-contain"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 z-10 bg-gradient-to-b from-brainrot-dark to-brainrot-dark/90 flex justify-between items-center mb-4 sm:mb-6 pb-2">
-              <h3 className="text-xl sm:text-2xl font-bold text-brainrot-turquoise">Selecciona un personaje</h3>
+            <div className="sticky top-0 z-10 bg-gradient-to-b from-brainrot-dark to-brainrot-dark/90 flex justify-between items-center mb-2 sm:mb-4 pb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-brainrot-turquoise">Selecciona personaje</h3>
               <Button 
                 variant="ghost" 
                 onClick={() => setShowCharacterSelect(false)}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-400 hover:text-white h-8 w-8 p-0"
               >
-                Cerrar
+                ✕
               </Button>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 pb-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 pb-4">
               {battleCharacters.map(character => (
-                <motion.div
+                <div
                   key={character.id}
-                  className="cursor-pointer group"
-                  whileHover={{ scale: 1.03 }}
+                  className="cursor-pointer"
                   onClick={() => handleCharacterSelect(character)}
                 >
-                  <div className="bg-gradient-to-b from-brainrot-darker/80 to-brainrot-dark border-2 border-transparent group-hover:border-brainrot-turquoise rounded-lg overflow-hidden transition-all duration-300">
-                    <div className="h-28 sm:h-36 bg-brainrot-darker flex items-center justify-center p-2">
+                  <div className="bg-gradient-to-b from-brainrot-darker/80 to-brainrot-dark border border-transparent hover:border-brainrot-turquoise rounded-lg overflow-hidden transition-all duration-200">
+                    <div className="h-20 sm:h-28 bg-brainrot-darker flex items-center justify-center p-1 sm:p-2">
                       <img 
                         src={getImagePath(character)} 
                         alt={character.name}
-                        className="h-full object-contain filter drop-shadow-lg transform group-hover:scale-105 transition-transform duration-300"
+                        className="h-full object-contain filter drop-shadow-md"
                         loading="lazy"
                       />
                     </div>
-                    <div className="p-2 sm:p-3 text-center bg-gradient-to-t from-black to-transparent">
-                      <h4 className="font-bold text-white text-sm sm:text-md mb-1 group-hover:text-brainrot-turquoise transition-colors truncate">{character.name}</h4>
+                    <div className="p-1 sm:p-2 text-center bg-gradient-to-t from-black to-transparent">
+                      <h4 className="font-semibold text-white text-xs sm:text-sm truncate">{character.name}</h4>
                       <div className="flex justify-between text-xs">
-                        <span className="text-gray-400 truncate">{character.emoji} {character.type}</span>
-                        <span className="text-brainrot-turquoise whitespace-nowrap">Poder: {character.power}</span>
+                        <span className="text-gray-400 truncate text-xs">{character.emoji}</span>
+                        <span className="text-brainrot-turquoise text-xs">P: {character.power}</span>
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </motion.div>
@@ -733,18 +723,18 @@ const BattleSimulator = () => {
               {battleStats && <BattleStats stats={battleStats} />}
             </div>
             
-            <div className="flex justify-center space-x-4 mt-6">
+            <div className="flex justify-center space-x-3 sm:space-x-4 mt-4 sm:mt-6">
               <Button 
                 onClick={resetSimulation} 
-                className="bg-brainrot-darker text-brainrot-turquoise border border-brainrot-blue/30 flex items-center"
+                className="bg-brainrot-darker text-brainrot-turquoise border border-brainrot-blue/30 flex items-center text-sm sm:text-base px-3 py-1.5 sm:px-4 sm:py-2"
               >
                 Nueva Batalla
               </Button>
               
               <Button 
-                className="bg-brainrot-darker text-gray-300 border border-brainrot-blue/30 flex items-center"
+                className="bg-brainrot-darker text-gray-300 border border-brainrot-blue/30 flex items-center text-sm sm:text-base px-3 py-1.5 sm:px-4 sm:py-2"
               >
-                <Share2 className="w-4 h-4 mr-2" />
+                <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
                 Compartir
               </Button>
             </div>
@@ -753,132 +743,123 @@ const BattleSimulator = () => {
           // Selección de personajes y escenario
           <>
             {/* Versus screen de selección */}
-            <div className="relative flex flex-col sm:flex-row items-center justify-center my-4 sm:my-8 gap-4 sm:gap-0">
+            <div className="relative flex flex-col sm:flex-row items-center justify-center my-3 sm:my-6 gap-2 sm:gap-0">
               {/* Personaje 1 */}
-              <motion.div 
-                className="w-full sm:flex-1 text-center"
-                initial={{ x: -50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
+              <div className="w-full sm:flex-1 text-center">
                 {fighter1 ? (
                   <div 
-                    className="relative mx-auto cursor-pointer transition-transform hover:scale-105"
+                    className="relative mx-auto cursor-pointer"
                     onClick={() => openCharacterSelect(1)}
                   >
-                    <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-gradient-to-b from-brainrot-blue/20 to-transparent rounded-full p-1">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-gradient-to-b from-brainrot-blue/20 to-transparent rounded-full p-1">
                       <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
                         <img 
                           src={getImagePath(fighter1)} 
                           alt={fighter1.name}
                           className="w-full h-full object-contain object-center"
+                          loading="lazy"
                         />
                       </div>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-white mt-2 sm:mt-3 truncate max-w-[150px] mx-auto">{fighter1.name}</h3>
-                    <div className="bg-brainrot-darker/60 rounded-full px-3 py-1 inline-flex items-center mt-1">
+                    <h3 className="text-base sm:text-lg font-bold text-white mt-1 sm:mt-2 truncate max-w-[140px] mx-auto">{fighter1.name}</h3>
+                    <div className="bg-brainrot-darker/60 rounded-full px-2 py-0.5 inline-flex items-center mt-1">
                       <span className="mr-1">{fighter1.emoji}</span>
-                      <span className="text-brainrot-turquoise text-sm">{fighter1.type}</span>
+                      <span className="text-brainrot-turquoise text-xs sm:text-sm">{fighter1.type}</span>
                     </div>
                   </div>
                 ) : (
                   <div 
-                    className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-brainrot-blue/40"
+                    className="w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-brainrot-blue/40"
                     onClick={() => openCharacterSelect(1)}
                   >
                     <div className="text-center">
-                      <div className="text-brainrot-turquoise text-4xl sm:text-5xl mb-1 sm:mb-2">+</div>
-                      <div className="text-gray-400 text-xs sm:text-sm">Seleccionar</div>
+                      <div className="text-brainrot-turquoise text-3xl sm:text-4xl mb-1">+</div>
+                      <div className="text-gray-400 text-xs">Seleccionar</div>
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </div>
               
               {/* VS - En móvil se muestra entre personajes como un divisor */}
-              <div className="sm:mx-6 sm:z-10 -my-2 sm:my-0">
+              <div className="sm:mx-5 sm:z-10 my-0">
                 <div className="relative">
-                  <div className="bg-gradient-to-r from-red-600 to-red-800 text-white text-2xl sm:text-3xl font-bold w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center shadow-lg border-4 border-brainrot-darker">
+                  <div className="bg-gradient-to-r from-red-600 to-red-800 text-white text-xl sm:text-2xl font-bold w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shadow-md border-2 border-brainrot-darker">
                     VS
                   </div>
-                  <div className="absolute -inset-3 bg-red-600/20 rounded-full blur-lg animate-pulse"></div>
+                  <div className="absolute -inset-2 bg-red-600/20 rounded-full blur-md"></div>
                 </div>
               </div>
               
               {/* Personaje 2 */}
-              <motion.div 
-                className="w-full sm:flex-1 text-center"
-                initial={{ x: 50, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-              >
+              <div className="w-full sm:flex-1 text-center">
                 {fighter2 ? (
                   <div 
-                    className="relative mx-auto cursor-pointer transition-transform hover:scale-105"
+                    className="relative mx-auto cursor-pointer"
                     onClick={() => openCharacterSelect(2)}
                   >
-                    <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-gradient-to-b from-red-600/20 to-transparent rounded-full p-1">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-gradient-to-b from-red-600/20 to-transparent rounded-full p-1">
                       <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
                         <img 
                           src={getImagePath(fighter2)} 
                           alt={fighter2.name}
                           className="w-full h-full object-contain object-center"
+                          loading="lazy"
                         />
                       </div>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-white mt-2 sm:mt-3 truncate max-w-[150px] mx-auto">{fighter2.name}</h3>
-                    <div className="bg-brainrot-darker/60 rounded-full px-3 py-1 inline-flex items-center mt-1">
+                    <h3 className="text-base sm:text-lg font-bold text-white mt-1 sm:mt-2 truncate max-w-[140px] mx-auto">{fighter2.name}</h3>
+                    <div className="bg-brainrot-darker/60 rounded-full px-2 py-0.5 inline-flex items-center mt-1">
                       <span className="mr-1">{fighter2.emoji}</span>
-                      <span className="text-red-400 text-sm">{fighter2.type}</span>
+                      <span className="text-red-400 text-xs sm:text-sm">{fighter2.type}</span>
                     </div>
                   </div>
                 ) : (
                   <div 
-                    className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-red-500/40"
+                    className="w-24 h-24 sm:w-32 sm:h-32 mx-auto bg-brainrot-darker/40 rounded-full flex items-center justify-center cursor-pointer hover:bg-brainrot-darker/60 transition-all border-2 border-dashed border-red-500/40"
                     onClick={() => openCharacterSelect(2)}
                   >
                     <div className="text-center">
-                      <div className="text-red-500 text-4xl sm:text-5xl mb-1 sm:mb-2">+</div>
-                      <div className="text-gray-400 text-xs sm:text-sm">Seleccionar</div>
+                      <div className="text-red-500 text-3xl sm:text-4xl mb-1">+</div>
+                      <div className="text-gray-400 text-xs">Seleccionar</div>
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </div>
             </div>
 
             {/* Selección de escenario */}
-            <div className="my-6 sm:my-8">
-              <h3 className="text-base sm:text-lg font-bold text-brainrot-turquoise mb-3 sm:mb-4 text-center">Escenario de batalla</h3>
-              <div className="flex flex-wrap justify-center gap-2">
+            <div className="my-4 sm:my-6">
+              <h3 className="text-sm sm:text-base font-bold text-brainrot-turquoise mb-2 sm:mb-3 text-center">Escenario de batalla</h3>
+              <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2">
                 {battleScenarios.map((scene) => (
-                  <motion.div
+                  <div
                     key={scene.id}
-                    whileHover={{ scale: 1.05 }}
-                    className={`cursor-pointer px-2 py-1 sm:px-3 sm:py-2 rounded-lg flex items-center text-sm sm:text-base ${
+                    className={`cursor-pointer px-2 py-1 rounded-md flex items-center text-xs sm:text-sm ${
                       scenario?.id === scene.id 
                         ? 'bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise text-white' 
                         : 'bg-brainrot-darker text-gray-300 hover:bg-brainrot-darker/80'
                     }`}
                     onClick={() => setScenario(scene)}
                   >
-                    <span className="text-lg sm:text-xl mr-1 sm:mr-2">{scene.emoji}</span>
+                    <span className="text-base sm:text-lg mr-1">{scene.emoji}</span>
                     <span>{scene.name}</span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
 
             {/* Acciones */}
-            <div className="flex justify-center mt-6 sm:mt-8">
+            <div className="flex justify-center mt-4 sm:mt-6">
               <Button
                 onClick={simulateBattle}
                 disabled={!fighter1 || !fighter2 || !scenario || isSimulating}
-                className="bg-gradient-to-r from-red-600 to-red-800 text-white px-6 sm:px-10 py-4 sm:py-6 rounded-xl shadow-lg hover:shadow-red-500/20 text-lg sm:text-xl font-bold"
+                className="bg-gradient-to-r from-red-600 to-red-800 text-white px-4 sm:px-8 py-2 sm:py-4 rounded-lg shadow-lg hover:shadow-red-500/20 text-base sm:text-lg font-bold"
               >
                 {isSimulating ? (
                   <LoadingSpinner />
                 ) : (
                   <span className="flex items-center justify-center w-full">
-                    <Swords className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
+                    <Swords className="mr-1.5 h-4 w-4 sm:h-5 sm:w-5" />
                     ¡LUCHAR!
                   </span>
                 )}
