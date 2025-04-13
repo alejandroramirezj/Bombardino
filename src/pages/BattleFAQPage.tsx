@@ -1,9 +1,91 @@
 import { Helmet } from 'react-helmet-async';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+
+// Componente de marcador de fútbol
+const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, winner }) => {
+  return (
+    <div className="my-6 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-800 to-emerald-900 rounded-xl shadow-xl p-1">
+        <div className="bg-gradient-to-b from-emerald-700 to-emerald-800 rounded-xl p-4 border border-emerald-500/30">
+          {/* Cabecera del marcador */}
+          <div className="bg-gradient-to-r from-emerald-900/80 to-emerald-800/80 rounded-t-lg p-2 text-center mb-4 border-b border-emerald-500/30">
+            <h3 className="text-white font-mono tracking-widest text-sm">
+              {environment && `ESCENARIO: ${environment.toUpperCase()}`}
+            </h3>
+          </div>
+          
+          {/* Equipos y marcador */}
+          <div className="flex items-center justify-between">
+            <div className={`flex-1 text-center p-3 rounded-l-lg ${winner === fighter1 ? 'bg-green-800/40' : 'bg-emerald-900/40'}`}>
+              <div className="text-2xl font-bold text-white mb-2">{fighter1}</div>
+              <div className="bg-white/10 rounded-full w-10 h-10 mx-auto flex items-center justify-center">
+                <span className="text-3xl font-bold text-white">{score1}</span>
+              </div>
+            </div>
+            
+            <div className="mx-2 p-2 bg-emerald-900 rounded-lg shadow-inner">
+              <span className="text-2xl font-bold text-white">VS</span>
+            </div>
+            
+            <div className={`flex-1 text-center p-3 rounded-r-lg ${winner === fighter2 ? 'bg-green-800/40' : 'bg-emerald-900/40'}`}>
+              <div className="text-2xl font-bold text-white mb-2">{fighter2}</div>
+              <div className="bg-white/10 rounded-full w-10 h-10 mx-auto flex items-center justify-center">
+                <span className="text-3xl font-bold text-white">{score2}</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Ganador */}
+          <div className="mt-4 text-center bg-emerald-900/60 py-2 rounded-b-lg border-t border-emerald-500/30">
+            <div className="text-yellow-300 font-bold">
+              GANADOR: {winner}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Elementos gráficos decorativos */}
+      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-yellow-500/10 rounded-full blur-xl"></div>
+      <div className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-500/10 rounded-full blur-xl"></div>
+    </div>
+  );
+};
+
+// Componente para las estadísticas de batalla
+const BattleStats = ({ stats }) => {
+  return (
+    <div className="bg-brainrot-darker rounded-lg p-4 my-4">
+      <h4 className="text-brainrot-turquoise font-semibold mb-3">Estadísticas de batalla</h4>
+      <div className="space-y-3">
+        {stats.map((stat, index) => (
+          <div key={index} className="grid grid-cols-3 items-center gap-2">
+            <div className="text-right text-sm text-gray-300">{stat.fighter1Value}%</div>
+            <div className="relative h-2 bg-gray-700 rounded-full w-full col-span-1">
+              <div 
+                className="absolute left-0 top-0 h-2 bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise rounded-full"
+                style={{ width: `${stat.fighter1Value}%` }}
+              ></div>
+              <div 
+                className="absolute right-0 top-0 h-2 bg-gradient-to-l from-brainrot-blue to-red-500 rounded-full"
+                style={{ width: `${stat.fighter2Value}%` }}
+              ></div>
+            </div>
+            <div className="text-left text-sm text-gray-300">{stat.fighter2Value}%</div>
+            <div className="text-right text-xs text-gray-400">{stat.label}</div>
+            <div className="h-0 col-span-1"></div>
+            <div className="text-left text-xs text-gray-400">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const BattleFAQPage = () => {
+  const [animate, setAnimate] = useState(true);
+
   return (
     <>
       <Helmet>
@@ -17,231 +99,300 @@ const BattleFAQPage = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-4xl md:text-5xl font-bold text-center mb-8 text-white"
+          className="text-4xl md:text-5xl font-bold text-center mb-4 text-white"
         >
-          Batallas Épicas
+          BATALLAS ÉPICAS
         </motion.h1>
 
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-center mb-12 text-gray-300 max-w-3xl mx-auto"
-        >
-          Las preguntas más frecuentes sobre quién ganaría en los enfrentamientos entre los personajes más poderosos del universo Bombardino.
-        </motion.p>
+        <motion.div 
+          className="w-24 h-1 bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise mx-auto mb-8"
+          initial={{ width: 0 }}
+          animate={{ width: 96 }}
+          transition={{ duration: 0.7, delay: 0.3 }}
+        ></motion.div>
+
+        <div className="text-center mb-8">
+          <span className="inline-block px-3 py-1 bg-brainrot-light text-brainrot-turquoise rounded-full text-sm font-semibold">
+            ¿QUIÉN GANARÍA?
+          </span>
+        </div>
 
         <Tabs defaultValue="bombardino-tralalero" className="max-w-4xl mx-auto">
-          <TabsList className="grid grid-cols-3 mb-8">
-            <TabsTrigger value="bombardino-tralalero">Bombardino vs Tralalero</TabsTrigger>
-            <TabsTrigger value="otros-clasicos">Otras Batallas Clásicas</TabsTrigger>
-            <TabsTrigger value="escenarios">Escenarios de Batalla</TabsTrigger>
+          <TabsList className="bg-brainrot-dark grid w-full grid-cols-3 mb-8">
+            <TabsTrigger value="bombardino-tralalero" className="data-[state=active]:bg-brainrot-blue">Bombardino vs Tralalero</TabsTrigger>
+            <TabsTrigger value="otros-clasicos" className="data-[state=active]:bg-brainrot-blue">Otras Batallas</TabsTrigger>
+            <TabsTrigger value="escenarios" className="data-[state=active]:bg-brainrot-blue">Escenarios</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="bombardino-tralalero" className="bg-brainrot-light p-6 rounded-xl">
-            <h2 className="text-2xl font-bold mb-6 text-white">Bombardino Coccodrillo vs Tralalero Tralala</h2>
+          <TabsContent value="bombardino-tralalero" className="space-y-6">
+            {/* Marcador principal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <BattleScoreboard 
+                fighter1="Bombardino Coccodrillo" 
+                fighter2="Tralalero Tralala"
+                score1="4"
+                score2="2"
+                environment="Batalla General"
+                winner="Bombardino Coccodrillo"
+              />
+            </motion.div>
             
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-white text-lg">¿Quién ganaría en un enfrentamiento directo?</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>Según los registros históricos y simulaciones de combate, Bombardino Coccodrillo tendría ventaja en un enfrentamiento directo con un 65% de probabilidades de victoria.</p>
-                  <p className="mt-3">La ventaja principal de Bombardino radica en su resistencia física y adaptabilidad al combate, mientras que Tralalero cuenta con poderes musicales que pueden afectar psicológicamente, pero requieren tiempo de preparación.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="text-white text-lg">¿Cuántas veces se han enfrentado?</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>El registro oficial muestra 7 enfrentamientos históricos:</p>
-                  <ul className="list-disc pl-5 mt-3 space-y-2">
-                    <li>La Gran Batalla del Pantano (2018) - Victoria para Bombardino</li>
-                    <li>El Duelo Musical (2019) - Victoria para Tralalero</li>
-                    <li>El Enfrentamiento en Roma (2020) - Victoria para Bombardino</li>
-                    <li>La Fiesta Acuática (2021) - Victoria para Bombardino</li>
-                    <li>El Festival de Verano (2022) - Victoria para Tralalero</li>
-                    <li>La Batalla del Ritmo (2022) - Empate</li>
-                    <li>El Gran Duelo de la Brainrot (2023) - Victoria para Bombardino</li>
-                  </ul>
-                  <p className="mt-3">Balance: 4 victorias para Bombardino, 2 para Tralalero y 1 empate.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="text-white text-lg">¿Qué pasaría si se enfrentaran en el agua?</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>En un entorno acuático, Bombardino Coccodrillo tiene una clara ventaja con un 90% de probabilidades de victoria. Su naturaleza de cocodrilo le proporciona:</p>
-                  <ul className="list-disc pl-5 mt-3 space-y-2">
-                    <li>Capacidad para respirar bajo el agua durante largos períodos</li>
-                    <li>Movilidad superior en entornos acuáticos</li>
-                    <li>Camuflaje natural en agua turbia</li>
-                    <li>Mordida más efectiva en ambientes húmedos</li>
-                  </ul>
-                  <p className="mt-3">Tralalero tendría dificultades para utilizar sus poderes musicales bajo el agua, limitando significativamente su capacidad ofensiva.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-4">
-                <AccordionTrigger className="text-white text-lg">¿Qué pasaría si se enfrentaran en un desierto?</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>En un entorno desértico, la batalla sería mucho más equilibrada, con Tralalero ganando ventaja con un 55% de probabilidades de victoria.</p>
-                  <p className="mt-3">Factores clave:</p>
-                  <ul className="list-disc pl-5 mt-3 space-y-2">
-                    <li>La piel de Bombardino se secaría rápidamente, reduciendo su resistencia</li>
-                    <li>El aire seco del desierto amplificaría las ondas sonoras de Tralalero</li>
-                    <li>La falta de agua limitaría los movimientos tácticos de Bombardino</li>
-                    <li>El eco en los cañones del desierto potenciaría los poderes musicales de Tralalero</li>
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-5">
-                <AccordionTrigger className="text-white text-lg">¿Podrían alguna vez formar una alianza?</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>Aunque tienen una rivalidad histórica, existen registros de dos ocasiones en las que formaron una alianza temporal:</p>
-                  <ul className="list-disc pl-5 mt-3 space-y-2">
-                    <li><strong>La Crisis de Bombombini (2021)</strong> - Unieron fuerzas para detener el caos causado por Bombombini Gusini</li>
-                    <li><strong>El Festival de la Paz (2023)</strong> - Realizaron un espectáculo conjunto que combinaba la fuerza de Bombardino con la música de Tralalero</li>
-                  </ul>
-                  <p className="mt-3">Los expertos especulan que, a pesar de su rivalidad, existe un respeto mutuo que permite estas colaboraciones ocasionales.</p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            {/* Estadísticas */}
+            <BattleStats 
+              stats={[
+                { label: "Fuerza", fighter1Value: 75, fighter2Value: 40 },
+                { label: "Agilidad", fighter1Value: 60, fighter2Value: 70 },
+                { label: "Resistencia", fighter1Value: 80, fighter2Value: 55 },
+                { label: "Habilidad especial", fighter1Value: 65, fighter2Value: 85 },
+              ]}
+            />
+            
+            <div className="grid md:grid-cols-2 gap-6 mt-8">
+              {/* Agua */}
+              <div>
+                <h3 className="text-xl font-bold mb-4 text-brainrot-turquoise">Batalla en agua</h3>
+                <BattleScoreboard 
+                  fighter1="Bombardino Coccodrillo" 
+                  fighter2="Tralalero Tralala"
+                  score1="9"
+                  score2="1"
+                  environment="Agua"
+                  winner="Bombardino Coccodrillo"
+                />
+                <p className="text-gray-300 mt-2 text-sm px-4">
+                  En el agua, Bombardino tiene una ventaja casi total gracias a su naturaleza acuática.
+                </p>
+              </div>
+              
+              {/* Desierto */}
+              <div>
+                <h3 className="text-xl font-bold mb-4 text-brainrot-turquoise">Batalla en desierto</h3>
+                <BattleScoreboard 
+                  fighter1="Bombardino Coccodrillo" 
+                  fighter2="Tralalero Tralala"
+                  score1="4"
+                  score2="6"
+                  environment="Desierto"
+                  winner="Tralalero Tralala"
+                />
+                <p className="text-gray-300 mt-2 text-sm px-4">
+                  En el desierto, la piel de Bombardino se seca, dando ventaja a Tralalero.
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-brainrot-light p-6 rounded-xl mt-8">
+              <h3 className="text-2xl font-bold mb-4 text-white">Historial de Enfrentamientos</h3>
+              
+              <div className="space-y-4">
+                <div className="bg-brainrot-dark p-4 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-300">La Gran Batalla del Pantano (2018)</span>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-brainrot-blue font-bold">B</span>
+                      <span className="bg-brainrot-blue w-6 h-6 rounded-full flex items-center justify-center text-white">1</span>
+                      <span className="text-gray-400">-</span>
+                      <span className="bg-gray-700 w-6 h-6 rounded-full flex items-center justify-center text-white">0</span>
+                      <span className="text-gray-300 font-bold">T</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-brainrot-dark p-4 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-300">El Duelo Musical (2019)</span>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-gray-300 font-bold">B</span>
+                      <span className="bg-gray-700 w-6 h-6 rounded-full flex items-center justify-center text-white">0</span>
+                      <span className="text-gray-400">-</span>
+                      <span className="bg-brainrot-blue w-6 h-6 rounded-full flex items-center justify-center text-white">1</span>
+                      <span className="text-brainrot-blue font-bold">T</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-brainrot-dark p-4 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-300">El Enfrentamiento en Roma (2020)</span>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-brainrot-blue font-bold">B</span>
+                      <span className="bg-brainrot-blue w-6 h-6 rounded-full flex items-center justify-center text-white">2</span>
+                      <span className="text-gray-400">-</span>
+                      <span className="bg-gray-700 w-6 h-6 rounded-full flex items-center justify-center text-white">1</span>
+                      <span className="text-gray-300 font-bold">T</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-brainrot-dark p-4 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-300">La Fiesta Acuática (2021)</span>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-brainrot-blue font-bold">B</span>
+                      <span className="bg-brainrot-blue w-6 h-6 rounded-full flex items-center justify-center text-white">3</span>
+                      <span className="text-gray-400">-</span>
+                      <span className="bg-gray-700 w-6 h-6 rounded-full flex items-center justify-center text-white">0</span>
+                      <span className="text-gray-300 font-bold">T</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
-          <TabsContent value="otros-clasicos" className="bg-brainrot-light p-6 rounded-xl">
-            <h2 className="text-2xl font-bold mb-6 text-white">Otras Batallas Clásicas</h2>
-            
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-white text-lg">Bombombini Gusini vs Tung tung tung sahur</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>Este enfrentamiento entre el explosivo Bombombini y el rítmico Tung tung tung sahur es uno de los más equilibrados, con un ligero 52% de ventaja para Bombombini.</p>
-                  <p className="mt-3">Mientras que los poderes explosivos de Bombombini pueden causar gran daño, los ritmos hipnóticos de Tung tung tung pueden desorientar a su rival, creando un duelo muy parejo que suele decidirse por el entorno y las condiciones de la batalla.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="text-white text-lg">Bobritto bandito vs La vaca saturno saturnita</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>La astucia de Bobritto contra los poderes cósmicos de La vaca saturno saturnita es un clásico de contrastes. La vaca tiene ventaja en espacios abiertos con un 70% de probabilidad de victoria.</p>
-                  <p className="mt-3">Sin embargo, en entornos acuáticos o boscosos, Bobritto puede aprovechar el terreno para emboscadas, elevando sus probabilidades al 60%. Han tenido 3 enfrentamientos oficiales, con 2 victorias para La vaca y 1 para Bobritto.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="text-white text-lg">Ballerina Capuchina vs Trippi Troppi</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>El duelo entre la gracia de Ballerina Capuchina y la astucia tecnológica de Trippi Troppi es uno de los más interesantes del universo Bombardino.</p>
-                  <p className="mt-3">Ballerina tiene ventaja en combates a corta distancia con un 65% de probabilidad de victoria gracias a su agilidad y danza hipnótica. Trippi, por su parte, gana terreno en batallas a larga distancia donde puede usar sus dispositivos tecnológicos, con un 60% de ventaja.</p>
-                  <p className="mt-3">Se han enfrentado oficialmente solo una vez, en el evento "Arte vs Tecnología" (2022), donde Ballerina resultó victoriosa por un pequeño margen.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-4">
-                <AccordionTrigger className="text-white text-lg">Glorbo Fruttodrillo vs Frigo Camelo</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>El enfrentamiento entre el jugoso Glorbo y el gélido Frigo representa el clásico duelo de elementos opuestos.</p>
-                  <p className="mt-3">Frigo Camelo tiene una clara ventaja con un 75% de probabilidades de victoria en condiciones normales, ya que sus poderes de hielo pueden neutralizar fácilmente las habilidades de Glorbo.</p>
-                  <p className="mt-3">Sin embargo, en climas cálidos o tropicales, el balance cambia drásticamente, dando a Glorbo un 80% de probabilidades de victoria al potenciarse sus habilidades frutales mientras que Frigo se debilita bajo el calor.</p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+          <TabsContent value="otros-clasicos">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Bombombini vs Tung tung */}
+              <div>
+                <h3 className="text-xl font-bold mb-4 text-brainrot-turquoise">Batalla explosiva</h3>
+                <BattleScoreboard 
+                  fighter1="Bombombini Gusini" 
+                  fighter2="Tung tung tung sahur"
+                  score1="5"
+                  score2="5"
+                  environment="Campo abierto"
+                  winner="Empate"
+                />
+              </div>
+              
+              {/* Bobritto vs La vaca */}
+              <div>
+                <h3 className="text-xl font-bold mb-4 text-brainrot-turquoise">Batalla cósmica</h3>
+                <BattleScoreboard 
+                  fighter1="Bobritto bandito" 
+                  fighter2="La vaca saturno"
+                  score1="3"
+                  score2="7"
+                  environment="Espacio"
+                  winner="La vaca saturno"
+                />
+              </div>
+              
+              {/* Ballerina vs Trippi */}
+              <div>
+                <h3 className="text-xl font-bold mb-4 text-brainrot-turquoise">Arte vs Tecnología</h3>
+                <BattleScoreboard 
+                  fighter1="Ballerina Capuchina" 
+                  fighter2="Trippi Troppi"
+                  score1="6"
+                  score2="4"
+                  environment="Teatro"
+                  winner="Ballerina Capuchina"
+                />
+              </div>
+              
+              {/* Glorbo vs Frigo */}
+              <div>
+                <h3 className="text-xl font-bold mb-4 text-brainrot-turquoise">Calor vs Frío</h3>
+                <BattleScoreboard 
+                  fighter1="Glorbo Fruttodrillo" 
+                  fighter2="Frigo Camelo"
+                  score1="2"
+                  score2="8"
+                  environment="Invierno"
+                  winner="Frigo Camelo"
+                />
+              </div>
+            </div>
           </TabsContent>
 
-          <TabsContent value="escenarios" className="bg-brainrot-light p-6 rounded-xl">
-            <h2 className="text-2xl font-bold mb-6 text-white">Escenarios de Batalla</h2>
-            
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-white text-lg">Batallas Acuáticas</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>En entornos acuáticos, el ranking de poder cambia significativamente:</p>
-                  <ol className="list-decimal pl-5 mt-3 space-y-2">
-                    <li><strong>Bombardino Coccodrillo</strong> - Dominio natural en el agua</li>
-                    <li><strong>Trulimero Trulicina</strong> - Habilidades acuáticas superiores</li>
-                    <li><strong>Lirilì Larilà</strong> - Adaptación perfecta al medio acuático</li>
-                    <li><strong>Bobritto bandito</strong> - Construcción de presas y control del flujo de agua</li>
-                    <li><strong>Brr brr Patapim</strong> - Velocidad excepcional en el agua</li>
-                  </ol>
-                  <p className="mt-3">Los personajes con poderes eléctricos o musicales como Tralalero o Udin din din dun ven sus habilidades severamente limitadas en este entorno.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="text-white text-lg">Batallas en el Desierto</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>El ambiente árido del desierto favorece a ciertos personajes:</p>
-                  <ol className="list-decimal pl-5 mt-3 space-y-2">
-                    <li><strong>Akulini Cactusini</strong> - Adaptación natural al desierto</li>
-                    <li><strong>Markus der Kaktus</strong> - Resistencia extrema a la deshidratación</li>
-                    <li><strong>Camelrino Tazzino</strong> - Capacidad para almacenar agua y energía</li>
-                    <li><strong>Unta tobi tob tob</strong> - Movilidad superior en arena</li>
-                    <li><strong>Tralalero Tralala</strong> - Sus ondas sonoras viajan más lejos en el aire seco</li>
-                  </ol>
-                  <p className="mt-3">Personajes como Bombardino, que dependen de la humedad, o Frigo Camelo, susceptible al calor, se encuentran en clara desventaja en este escenario.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="text-white text-lg">Batallas Urbanas</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>En entornos urbanos, la adaptabilidad y el ingenio son clave:</p>
-                  <ol className="list-decimal pl-5 mt-3 space-y-2">
-                    <li><strong>Trippi Troppi</strong> - Uso de tecnología y cámaras de seguridad</li>
-                    <li><strong>Serbinyo Carshippinyo</strong> - Movilidad rápida en calles</li>
-                    <li><strong>Piccione Macchina</strong> - Vigilancia aérea y conocimiento urbano</li>
-                    <li><strong>Crocodildo Penisini</strong> - Infiltración en sistemas de alcantarillado</li>
-                    <li><strong>Capuchino Assassino</strong> - Camuflaje en cafeterías y establecimientos</li>
-                  </ol>
-                  <p className="mt-3">Bombardino y Tralalero se encuentran en un terreno neutro aquí, ninguno con ventaja clara, dependiendo más de la estrategia que de sus habilidades naturales.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-4">
-                <AccordionTrigger className="text-white text-lg">Batallas Espaciales</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>En el vacío del espacio, el poder cambia drásticamente:</p>
-                  <ol className="list-decimal pl-5 mt-3 space-y-2">
-                    <li><strong>La vaca saturno saturnita</strong> - Control cósmico y gravitacional</li>
-                    <li><strong>Meterito Bearito</strong> - Propulsión natural en el vacío</li>
-                    <li><strong>Brasilini Birimbini</strong> - Resistencia a condiciones extremas</li>
-                    <li><strong>Coccodrilli Faerini</strong> - Magia capaz de crear atmósfera</li>
-                    <li><strong>Tracotocutulo</strong> - Tecnología de supervivencia espacial</li>
-                  </ol>
-                  <p className="mt-3">Tanto Bombardino como Tralalero estarían completamente indefensos en este entorno sin equipo especial, siendo uno de los pocos escenarios donde ambos estarían igualmente desventajados.</p>
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-5">
-                <AccordionTrigger className="text-white text-lg">Batallas Musicales</AccordionTrigger>
-                <AccordionContent className="text-gray-300">
-                  <p>En competiciones basadas en habilidades musicales:</p>
-                  <ol className="list-decimal pl-5 mt-3 space-y-2">
-                    <li><strong>Tralalero Tralala</strong> - Maestría musical incomparable</li>
-                    <li><strong>Udin din din dun</strong> - Ritmos electrónicos hipnóticos</li>
-                    <li><strong>Tung tung tung sahur</strong> - Percusión ancestral poderosa</li>
-                    <li><strong>Ballerina Capuchina</strong> - Fusión perfecta de música y danza</li>
-                    <li><strong>Burbaloni Luliloli</strong> - Composiciones circenses únicas</li>
-                  </ol>
-                  <p className="mt-3">Bombardino, aunque conocido por su rugido característico, no posee habilidades musicales refinadas, quedando en clara desventaja en este tipo de enfrentamientos con solo un 15% de probabilidades de victoria contra Tralalero.</p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+          <TabsContent value="escenarios">
+            <div className="space-y-8">
+              {/* Acuático */}
+              <div>
+                <h3 className="text-2xl font-bold mb-4 text-brainrot-turquoise border-b border-brainrot-blue/30 pb-2">
+                  Batallas Acuáticas
+                </h3>
+                <div className="bg-gradient-to-r from-blue-900/50 to-brainrot-dark rounded-lg p-4">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="inline-block px-2 py-1 bg-blue-700/30 text-white rounded text-xs">🏊 Ambiente acuático</span>
+                    <span className="inline-block px-2 py-1 bg-blue-700/30 text-white rounded text-xs">💧 Alta humedad</span>
+                    <span className="inline-block px-2 py-1 bg-blue-700/30 text-white rounded text-xs">🌊 Corrientes</span>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center bg-brainrot-darker p-3 rounded-lg">
+                      <span className="text-white font-semibold">1. Bombardino Coccodrillo</span>
+                      <div className="w-24 h-3 bg-gray-700 rounded-full">
+                        <div className="h-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-full" style={{width: '95%'}}></div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center bg-brainrot-darker p-3 rounded-lg">
+                      <span className="text-white font-semibold">2. Trulimero Trulicina</span>
+                      <div className="w-24 h-3 bg-gray-700 rounded-full">
+                        <div className="h-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-full" style={{width: '85%'}}></div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center bg-brainrot-darker p-3 rounded-lg">
+                      <span className="text-white font-semibold">3. Lirilì Larilà</span>
+                      <div className="w-24 h-3 bg-gray-700 rounded-full">
+                        <div className="h-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-full" style={{width: '80%'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Desierto */}
+              <div>
+                <h3 className="text-2xl font-bold mb-4 text-brainrot-turquoise border-b border-brainrot-blue/30 pb-2">
+                  Batallas en el Desierto
+                </h3>
+                <div className="bg-gradient-to-r from-yellow-900/50 to-brainrot-dark rounded-lg p-4">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="inline-block px-2 py-1 bg-yellow-700/30 text-white rounded text-xs">🏜️ Arena</span>
+                    <span className="inline-block px-2 py-1 bg-yellow-700/30 text-white rounded text-xs">☀️ Calor extremo</span>
+                    <span className="inline-block px-2 py-1 bg-yellow-700/30 text-white rounded text-xs">🌵 Escasez de agua</span>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center bg-brainrot-darker p-3 rounded-lg">
+                      <span className="text-white font-semibold">1. Akulini Cactusini</span>
+                      <div className="w-24 h-3 bg-gray-700 rounded-full">
+                        <div className="h-3 bg-gradient-to-r from-yellow-500 to-red-500 rounded-full" style={{width: '92%'}}></div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center bg-brainrot-darker p-3 rounded-lg">
+                      <span className="text-white font-semibold">2. Markus der Kaktus</span>
+                      <div className="w-24 h-3 bg-gray-700 rounded-full">
+                        <div className="h-3 bg-gradient-to-r from-yellow-500 to-red-500 rounded-full" style={{width: '85%'}}></div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center bg-brainrot-darker p-3 rounded-lg">
+                      <span className="text-white font-semibold">3. Tralalero Tralala</span>
+                      <div className="w-24 h-3 bg-gray-700 rounded-full">
+                        <div className="h-3 bg-gradient-to-r from-yellow-500 to-red-500 rounded-full" style={{width: '70%'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
-
-        <div className="mt-12 bg-brainrot-dark p-6 rounded-xl max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-4 text-white">Análisis de Expertos</h2>
-          <p className="text-gray-300 mb-4">
-            Según el profesor Luigi Verducci, máxima autoridad en Brainrotología de la Universidad de Milán:
-          </p>
-          <blockquote className="border-l-4 border-brainrot-turquoise pl-4 py-2 mb-4 italic text-gray-300">
-            "Los enfrentamientos entre Bombardino y Tralalero representan el eterno duelo entre fuerza bruta y habilidad artística. Es un reflejo de la dualidad del universo Bombardino, donde ningún poder es absoluto y el contexto siempre influye en el resultado."
-          </blockquote>
-          <p className="text-gray-300">
-            Esta dualidad se manifiesta en todos los escenarios analizados, demostrando que en el universo Bombardino, el equilibrio entre diferentes tipos de poder es lo que mantiene viva la eterna rivalidad entre sus personajes.
-          </p>
+        
+        <div className="mt-12 bg-brainrot-dark p-6 rounded-xl max-w-4xl mx-auto relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-brainrot-blue/10 rounded-full blur-xl -z-0"></div>
+          
+          <div className="relative z-10">
+            <h2 className="text-2xl font-bold mb-4 text-white">Análisis de Expertos</h2>
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 rounded-full bg-brainrot-blue/20 flex items-center justify-center flex-shrink-0">
+                <span className="text-xl">🎓</span>
+              </div>
+              <div>
+                <h3 className="text-brainrot-turquoise font-semibold">Profesor Luigi Verducci</h3>
+                <p className="text-sm text-gray-400">Universidad de Milán, Departamento de Brainrotología</p>
+                <blockquote className="border-l-4 border-brainrot-turquoise pl-4 py-2 mt-2 mb-4 italic text-gray-300">
+                  "Los enfrentamientos entre Bombardino y Tralalero representan el eterno duelo entre fuerza bruta y habilidad artística. Es un reflejo de la dualidad del universo Bombardino."
+                </blockquote>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
