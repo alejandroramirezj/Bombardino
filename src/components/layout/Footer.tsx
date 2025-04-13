@@ -12,7 +12,7 @@ const Footer = () => {
               <span className="text-brainrot-blue">Universe</span>
             </h3>
             <p className="text-gray-400 text-sm mb-4">
-              The fascinating universe of Italian Brainrot with the most absurd and funny characters on the internet.
+              El fascinante universo del Italian Brainrot con los personajes más absurdos y divertidos de internet.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-brainrot-blue transition-colors">
@@ -31,7 +31,7 @@ const Footer = () => {
                 Personajes
               </Link>
               <Link to="ranking" className="text-gray-400 hover:text-white transition-colors text-sm">
-                Power Ranking
+                Ranking de Poder
               </Link>
               <Link to="gallery" className="text-gray-400 hover:text-white transition-colors text-sm">
                 Galería
@@ -78,8 +78,8 @@ const Footer = () => {
         
         <div className="border-t border-gray-800 pt-6">
           <div className="text-center text-gray-500 text-sm">
-            <p>© 2025 BombardinoUniverse. All rights reserved.</p>
-            <p className="mt-1">All characters are part of the Italian Brainrot meme culture.</p>
+            <p>© 2025 BombardinoUniverse. Todos los derechos reservados.</p>
+            <p className="mt-1">Todos los personajes son parte de la cultura de memes Italian Brainrot.</p>
           </div>
         </div>
       </div>

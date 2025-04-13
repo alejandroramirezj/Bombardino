@@ -81,14 +81,14 @@ const Hero = () => {
             className="text-xl md:text-3xl text-brainrot-turquoise mb-8 font-light"
             variants={itemVariants}
           >
-            L'universo del meme italiano più potente
+            El universo del meme italiano más potente
           </motion.h2>
           
           <motion.p 
             className="text-gray-300 mb-10 max-w-2xl mx-auto text-lg"
             variants={itemVariants}
           >
-            Esplora l'universo di Bombardino coccodrillo e tutti i personaggi del fenomeno "Italian Brainrot". Vota i tuoi preferiti e scopri le intricate relazioni tra queste icone della cultura di internet.
+            Explora el universo de Bombardino coccodrillo y todos los personajes del fenómeno "Italian Brainrot". Vota a tus favoritos y descubre las intrincadas relaciones entre estos iconos de la cultura de internet.
           </motion.p>
           
           <motion.div 
@@ -125,7 +125,7 @@ const Hero = () => {
               className="bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise hover:brightness-110 transform transition-all duration-300 hover:scale-105 shadow-lg shadow-brainrot-blue/20 px-8 py-6 text-lg"
             >
               <Link to="personajes">
-                Esplora Personaggi
+                Explorar Personajes
               </Link>
             </Button>
             
@@ -136,7 +136,7 @@ const Hero = () => {
               className="border-2 border-brainrot-turquoise text-brainrot-turquoise hover:bg-brainrot-turquoise/20 transform transition-all duration-300 hover:scale-105 px-8 py-6 text-lg"
             >
               <Link to="ranking">
-                Power Ranking
+                Ranking de Poder
               </Link>
             </Button>
           </motion.div>
