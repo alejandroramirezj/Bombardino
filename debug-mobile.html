@@ -39,11 +39,49 @@
       color: white;
       padding: 0.5rem 1rem;
       cursor: pointer;
+      display: block;
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    .debug-button.secondary {
+      background-color: #2A2A2A;
+      border: 1px solid #33C3F0;
     }
     .debug-header {
       font-size: 1.5rem;
       text-align: center;
       margin: 1rem 0;
+    }
+    .test-box {
+      width: 50px;
+      height: 50px;
+      background-color: #33C3F0;
+      margin: 10px auto;
+    }
+    .test-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 10px 0;
+      margin-bottom: 1rem;
+    }
+    .test-item {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      margin-right: 10px;
+      background-color: #33C3F0;
+      text-align: center;
+      line-height: 100px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      background-color: #2A2A2A;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
     }
   </style>
 </head>
@@ -86,7 +124,43 @@
       <div id="browserInfo" class="debug-value"></div>
     </div>
     
+    <div class="debug-info">
+      <div class="debug-title">Cloudflare Headers (if visible):</div>
+      <div id="cfHeaders" class="debug-value">Not available client-side</div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">Página Principal Test:</div>
+      <div id="mainPageTest" class="debug-value">
+        <iframe src="/" width="100%" height="100" style="border:1px solid #555; background: white;"></iframe>
+      </div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">Rendering Test:</div>
+      <div class="test-box" id="testBox"></div>
+      <div class="test-container">
+        <div class="test-item">Item 1</div>
+        <div class="test-item">Item 2</div>
+        <div class="test-item">Item 3</div>
+        <div class="test-item">Item 4</div>
+        <div class="test-item">Item 5</div>
+      </div>
+    </div>
+    
+    <div class="debug-info">
+      <div class="debug-title">Cache Test:</div>
+      <div id="cacheTime" class="debug-value"></div>
+    </div>
+    
     <button class="debug-button" onclick="refreshInfo()">Refresh Information</button>
+    <button class="debug-button secondary" onclick="testPerformance()">Test Performance</button>
+    <button class="debug-button secondary" onclick="clearCache()">Attempt Clear Cache</button>
+    
+    <div class="debug-info">
+      <div class="debug-title">Debug Notes:</div>
+      <textarea id="debugNotes" placeholder="Add your observations here..."></textarea>
+    </div>
   </div>
 
   <script>
@@ -126,12 +200,40 @@
         language: navigator.language,
         onLine: navigator.onLine,
         platform: navigator.platform,
-        touchPoints: navigator.maxTouchPoints || 0
+        touchPoints: navigator.maxTouchPoints || 0,
+        orientation: window.screen.orientation ? window.screen.orientation.type : 'N/A',
+        connectionType: navigator.connection ? navigator.connection.effectiveType : 'N/A'
       };
       
       document.getElementById('browserInfo').innerHTML = Object.entries(browserInfo)
         .map(([key, value]) => `${key}: ${value}`)
         .join('<br>');
+        
+      // Cache time
+      document.getElementById('cacheTime').innerText = new Date().toISOString();
+    }
+    
+    function testPerformance() {
+      const start = performance.now();
+      for (let i = 0; i < 10000; i++) {
+        Math.sqrt(i);
+      }
+      const end = performance.now();
+      
+      alert(`Performance test: ${(end - start).toFixed(2)}ms`);
+    }
+    
+    function clearCache() {
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          for (let name of names) {
+            caches.delete(name);
+          }
+          alert('Cache clearing attempted');
+        });
+      } else {
+        alert('Cache API not available');
+      }
     }
     
     // Initial load
