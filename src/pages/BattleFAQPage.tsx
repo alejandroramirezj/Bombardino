@@ -10,14 +10,14 @@ import {
 
 // Lista de personajes para la simulación
 const battleCharacters = [
-  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "images/Bombardino%20Crocodillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
-  { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "images/Tralalero%20Tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
-  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "placeholder.svg", power: 80, type: "explosivo", speciality: "bombas" },
-  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "placeholder.svg", power: 70, type: "rítmico", speciality: "percusión" },
-  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "placeholder.svg", power: 90, type: "cósmico", speciality: "gravedad" },
-  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "placeholder.svg", power: 75, type: "glacial", speciality: "congelación" },
-  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "placeholder.svg", power: 65, type: "desértico", speciality: "espinas" },
-  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "placeholder.svg", power: 60, type: "constructor", speciality: "presas" }
+  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "/images/bombardino-coccodrillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
+  { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "/images/tralalero-tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
+  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "/images/bombombini-gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
+  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "/images/tung-tung-tung-sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
+  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "/images/la-vaca-saturno-saturnita.webp", power: 90, type: "cósmico", speciality: "gravedad" },
+  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "/images/frigo-camelo.webp", power: 75, type: "glacial", speciality: "congelación" },
+  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "/images/akulini-cactusini.webp", power: 65, type: "desértico", speciality: "espinas" },
+  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "/images/bobritto-bandito.webp", power: 60, type: "constructor", speciality: "presas" }
 ];
 
 // Lista de escenarios
@@ -191,11 +191,8 @@ const BattleSimulator = () => {
   const [showCharacterSelect, setShowCharacterSelect] = useState(false);
   const [selectingFighter, setSelectingFighter] = useState(null);
 
-  // Asegurar que todas las imágenes de personajes tengan rutas correctas
-  const charactersWithImages = battleCharacters.map(char => ({
-    ...char,
-    image: char.image.includes('placeholder') ? `/images/${char.name.toLowerCase().replace(/\s+/g, '-')}.webp` : char.image
-  }));
+  // Ya no necesitamos esta transformación pues todas las imágenes tienen rutas correctas
+  const charactersWithImages = battleCharacters;
 
   // Función para simular una batalla
   const simulateBattle = () => {
