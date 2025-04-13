@@ -57,7 +57,7 @@ const CharactersPage = () => {
       (filters.sortOrder === 'alphabetical' && filters.sortBy !== 'name') ||
       (filters.sortOrder === 'recent' && filters.sortBy !== 'recent')
     ) {
-      // Ordenar
+    // Ordenar
       switch(filters.sortBy) {
         case 'votes':
           results.sort((a, b) => (b.votes?.length || 0) - (a.votes?.length || 0));
