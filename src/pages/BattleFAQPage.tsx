@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button';
 import { 
   Sword, Swords, ZapIcon, Flame, Droplets, 
   Mountain, Wind, Skull, Trophy, Share2,
-  ChevronDown, Award, History, User, Bell, X
+  ChevronDown, Award, History, User, Bell, X,
+  MessageCircle, BarChart, Loader2
 } from 'lucide-react';
 import initialCharacters from '@/data/characters';
+import { Input } from '@/components/ui/input';
 
 // Lista de personajes para la simulación
 const battleCharacters = initialCharacters.map(character => ({
@@ -314,313 +316,326 @@ const generateBattleNarrative = (fighter1, fighter2, scenario, winner) => {
     const winnerHasAdvantage = winnerFighter.type === scenario.advantage;
     const loserHasDisadvantage = loserFighter.type === scenario.disadvantage;
     
-    // Narrativas específicas según personajes y escenarios
+    // Narrativas específicas con ataques en italiano
     const narratives = {
       // Bombardino
       "Bombardino coccodrillo": {
         attacks: [
-          "un potente coletazo que dejó sin aliento a",
-          "una mordida fulminante que sorprendió a",
-          "su ataque especial 'Mandíbula Trituracohetes' contra",
-          "una embestida desde el agua que derribó a"
+          { name: "Coda Potente", description: "un potente coletazo" },
+          { name: "Morso Fulminante", description: "una mordida fulminante" },
+          { name: "Mascella Tritamissili", description: "su ataque 'Mandíbula Trituracohetes'" },
+          { name: "Carica Acquatica", description: "una embestida acuática" }
         ],
         finishers: [
-          `lanzó un gran chorro de agua a presión que dejó fuera de combate a ${loserFighter.name}`,
-          `giró en espiral creando un remolino que arrastró a ${loserFighter.name}`,
-          `usó su técnica especial "Bombardeo Acuático" que ${loserFighter.name} no pudo esquivar`,
-          `nadó en círculos a gran velocidad creando una trampa de la que ${loserFighter.name} no pudo escapar`
+          { name: "Getto d'Acqua Pressurizzata", description: "chorro de agua a presión" },
+          { name: "Vortice Devastante", description: "remolino devastador" },
+          { name: "Bombardamento Acquatico", description: "Bombardeo Acuático" },
+          { name: "Trappola Acquatica", description: "trampa acuática" }
         ],
         defeats: [
-          `intentó su ataque acuático pero ${winnerFighter.name} fue más rápido`,
-          `no pudo mantener su fuerza fuera del agua y ${winnerFighter.name} aprovechó la oportunidad`,
-          `resbaló en el terreno desfavorable y ${winnerFighter.name} aprovechó el descuido`
+          { name: "Attacco Acquatico Fallito", description: "fallido ataque acuático" },
+          { name: "Mancanza d'Acqua", description: "falta de agua" },
+          { name: "Terreno Sfavorevole", description: "terreno desfavorable" }
         ]
       },
       // Tralalero
       "Tralalero Tralala": {
         attacks: [
-          "una melodía hipnótica que confundió a",
-          "un riff de guitarra ensordecedor contra",
-          "una lluvia de notas musicales afiladas hacia",
-          "su ataque sónico que desestabilizó a"
+          { name: "Melodia Ipnotica", description: "melodía hipnótica" },
+          { name: "Riff di Chitarra", description: "riff de guitarra" },
+          { name: "Note Musicali Affilate", description: "notas musicales afiladas" },
+          { name: "Attacco Sonico", description: "ataque sónico" }
         ],
         finishers: [
-          `tocó su solo de guitarra "Tralalazo Ensordecedor" dejando paralizado a ${loserFighter.name}`,
-          `lanzó su micrófono como un proyectil que impactó directamente en ${loserFighter.name}`,
-          `creó una onda de sonido tan potente que ${loserFighter.name} salió volando por los aires`,
-          `usó sus zapatillas de la suerte para golpear a ${loserFighter.name} en un punto débil`
+          { name: "Assordante Tralalazo", description: "Tralalazo Ensordecedor" },
+          { name: "Proiettile di Microfono", description: "proyectil de micrófono" },
+          { name: "Onda Sonora", description: "onda de sonido" },
+          { name: "Scarpe Magiche", description: "zapatillas mágicas" }
         ],
         defeats: [
-          `intentó hipnotizar con su música pero ${winnerFighter.name} tapó sus oídos a tiempo`,
-          `falló su nota musical más poderosa y ${winnerFighter.name} contraatacó implacablemente`,
-          `tropezó con sus propios cables mientras actuaba y ${winnerFighter.name} no perdonó el error`
-        ]
-      },
-      // Bombombini
-      "Bombombini Gusini": {
-        attacks: [
-          "una explosión controlada que sorprendió a",
-          "una lluvia de pequeñas bombas sobre",
-          "un proyectil explosivo que impactó cerca de",
-          "su famosa técnica 'Explosión en Cadena' contra"
-        ],
-        finishers: [
-          `desplegó su "Bombazo Supremo" que ${loserFighter.name} no pudo esquivar`,
-          `creó una cortina de humo y atacó por sorpresa a ${loserFighter.name}`,
-          `calculó perfectamente el tiempo de una explosión retardada que pilló desprevenido a ${loserFighter.name}`,
-          `hizo explotar el terreno bajo los pies de ${loserFighter.name} haciéndole perder el equilibrio`
-        ],
-        defeats: [
-          `se le mojó la mecha de su bomba principal y ${winnerFighter.name} aprovechó el momento`,
-          `calculó mal el tiempo de explosión y ${winnerFighter.name} esquivó fácilmente el ataque`,
-          `se vio afectado por su propia explosión y ${winnerFighter.name} contraatacó`
-        ]
-      },
-      // Tung tung
-      "Tung tung tung sahur": {
-        attacks: [
-          "un ritmo de percusión que mareó a",
-          "un golpe de batería que resonó en todo el cuerpo de",
-          "una secuencia de golpes rítmicos contra",
-          "su técnica especial 'Percusión Paralizante' hacia"
-        ],
-        finishers: [
-          `ejecutó su "Ritmo Demoledor" que ${loserFighter.name} no pudo resistir`,
-          `creó vibraciones en el suelo que desequilibraron a ${loserFighter.name}`,
-          `aceleró tanto el ritmo de sus tambores que ${loserFighter.name} quedó hipnotizado`,
-          `lanzó sus baquetas como proyectiles precisos hacia los puntos débiles de ${loserFighter.name}`
-        ],
-        defeats: [
-          `perdió el ritmo en un momento crucial y ${winnerFighter.name} aprovechó la oportunidad`,
-          `rompió su tambor favorito y perdió concentración, momento que ${winnerFighter.name} usó a su favor`,
-          `no pudo mantener el tempo adecuado y ${winnerFighter.name} tomó la iniciativa`
-        ]
-      },
-      // La vaca
-      "La vaca saturno saturnita": {
-        attacks: [
-          "un campo gravitacional que aplastó a",
-          "un rayo cósmico que impactó cerca de",
-          "anillos gravitacionales que atraparon a",
-          "su mirada cósmica que desconcertó a"
-        ],
-        finishers: [
-          `alteró la gravedad haciendo flotar y luego caer bruscamente a ${loserFighter.name}`,
-          `absorbió la energía espacial y lanzó un "Rayo Galáctico" que ${loserFighter.name} no pudo esquivar`,
-          `creó un mini agujero negro que desestabilizó completamente a ${loserFighter.name}`,
-          `usó sus anillos cósmicos para atar y derribar a ${loserFighter.name}`
-        ],
-        defeats: [
-          `perdió su conexión cósmica temporalmente y ${winnerFighter.name} lo aprovechó`,
-          `se distrajo observando las estrellas y ${winnerFighter.name} atacó por sorpresa`,
-          `calculó mal la órbita de su ataque y ${winnerFighter.name} lo esquivó con facilidad`
-        ]
-      },
-      // Frigo Camelo
-      "Frigo Camelo": {
-        attacks: [
-          "una ventisca helada que ralentizó a",
-          "proyectiles de hielo afilados contra",
-          "una capa de escarcha que dificultó los movimientos de",
-          "su técnica 'Aliento Glacial' sobre"
-        ],
-        finishers: [
-          `creó una tormenta de nieve que cegó y desorientó a ${loserFighter.name}`,
-          `congeló el suelo haciendo resbalar y caer a ${loserFighter.name}`,
-          `formó un bloque de hielo alrededor de las piernas de ${loserFighter.name}, inmovilizándolo`,
-          `ejecutó su "Abrazo Polar" que dejó completamente helado a ${loserFighter.name}`
-        ],
-        defeats: [
-          `se derritió parcialmente bajo presión y ${winnerFighter.name} aprovechó su debilidad`,
-          `resbaló en su propio hielo y ${winnerFighter.name} atacó decisivamente`,
-          `no pudo mantener la temperatura baja y ${winnerFighter.name} ganó ventaja`
-        ]
-      },
-      // Akulini
-      "Akulini Cactusini": {
-        attacks: [
-          "una lluvia de espinas que acribillaron a",
-          "arena del desierto en los ojos de",
-          "un látigo de cactus que golpeó a",
-          "su técnica 'Abrazo Espinoso' contra"
-        ],
-        finishers: [
-          `disparó sus espinas venenosas que paralizaron lentamente a ${loserFighter.name}`,
-          `creó una tormenta de arena que desorientó completamente a ${loserFighter.name}`,
-          `enterró sus raíces en el suelo y emergió sorpresivamente bajo ${loserFighter.name}`,
-          `usó su "Floración Explosiva" liberando polen que adormeció a ${loserFighter.name}`
-        ],
-        defeats: [
-          `no pudo extraer suficiente agua del ambiente y ${winnerFighter.name} notó su debilidad`,
-          `perdió varias espinas intentando atacar y ${winnerFighter.name} encontró un punto vulnerable`,
-          `se secó temporalmente por el esfuerzo y ${winnerFighter.name} aprovechó el momento`
-        ]
-      },
-      // Bobritto
-      "Bobritto bandito": {
-        attacks: [
-          "una construcción rápida que bloqueó a",
-          "un golpe de cola que sorprendió a",
-          "una trampa de madera que atrapó a",
-          "su técnica 'Mordisco Constructor' sobre"
-        ],
-        finishers: [
-          `construyó una presa en tiempo récord que ahogó el ataque de ${loserFighter.name}`,
-          `lanzó troncos afilados como proyectiles que impactaron en ${loserFighter.name}`,
-          `creó un laberinto de madera del que ${loserFighter.name} no pudo escapar`,
-          `utilizó su "Ingeniería Suprema" para construir una trampa donde cayó ${loserFighter.name}`
-        ],
-        defeats: [
-          `se quedó sin materiales de construcción y ${winnerFighter.name} aprovechó el momento`,
-          `su presa se rompió en el peor momento y ${winnerFighter.name} usó esto a su favor`,
-          `se distrajo con los detalles de su construcción y ${winnerFighter.name} atacó por sorpresa`
+          { name: "Ipnosi Fallita", description: "hipnosis fallida" },
+          { name: "Nota Musicale Stonata", description: "nota musical desafinada" },
+          { name: "Inciampo nei Cavi", description: "tropiezo con cables" }
         ]
       }
+      // Otros personajes se añadirían aquí siguiendo el mismo patrón
     };
     
     // Narrativas genéricas para personajes sin narrativas específicas
     const genericNarratives = {
       attacks: [
-        `un ataque sorprendente que impactó en`,
-        `una maniobra rápida contra`,
-        `un golpe directo hacia`,
-        `una táctica inesperada frente a`
+        { name: "Attacco Sorprendente", description: "ataque sorprendente" },
+        { name: "Manovra Rapida", description: "maniobra rápida" },
+        { name: "Colpo Diretto", description: "golpe directo" },
+        { name: "Tattica Inaspettata", description: "táctica inesperada" }
       ],
       finishers: [
-        `utilizó su ataque más poderoso que ${loserFighter.name} no pudo contrarrestar`,
-        `ejecutó una combinación perfecta que dejó sin opciones a ${loserFighter.name}`,
-        `aprovechó una oportunidad crucial para derrotar a ${loserFighter.name}`,
-        `demostró su superioridad con un movimiento final devastador contra ${loserFighter.name}`
+        { name: "Attacco Più Potente", description: "ataque más poderoso" },
+        { name: "Combinazione Perfetta", description: "combinación perfecta" },
+        { name: "Opportunità Cruciale", description: "oportunidad crucial" },
+        { name: "Movimento Devastante", description: "movimiento devastador" }
       ],
       defeats: [
-        `intentó defenderse pero ${winnerFighter.name} fue más hábil`,
-        `no logró esquivar el ataque decisivo de ${winnerFighter.name}`,
-        `cometió un error táctico que ${winnerFighter.name} supo aprovechar`
+        { name: "Difesa Fallita", description: "defensa fallida" },
+        { name: "Schivata Fallita", description: "esquive fallido" },
+        { name: "Errore Tattico", description: "error táctico" }
       ]
     };
     
-    // Obtener narrativas para cada luchador (o usar genéricas si no existen)
-    const fighter1Narratives = narratives[fighter1.name] || { 
-      attacks: genericNarratives.attacks,
-      finishers: genericNarratives.finishers.map(f => f.replace('${loserFighter.name}', loserFighter.name)),
-      defeats: genericNarratives.defeats.map(d => d.replace('${winnerFighter.name}', winnerFighter.name))
-    };
+    // Obtener narrativas para cada luchador o usar genéricas
+    const fighter1Narratives = narratives[fighter1.name] || genericNarratives;
+    const fighter2Narratives = narratives[fighter2.name] || genericNarratives;
     
-    const fighter2Narratives = narratives[fighter2.name] || {
-      attacks: genericNarratives.attacks,
-      finishers: genericNarratives.finishers.map(f => f.replace('${loserFighter.name}', loserFighter.name)),
-      defeats: genericNarratives.defeats.map(d => d.replace('${winnerFighter.name}', winnerFighter.name))
-    };
-    
-    // Frases específicas por escenario
-    const scenarioEffects = {
-      "Agua": {
-        advantage: "las corrientes de agua amplificaron los movimientos de",
-        neutral: "el agua creó condiciones desafiantes para ambos combatientes",
-        disadvantage: "el exceso de humedad complicó las acciones de"
-      },
-      "Desierto": {
-        advantage: "la arena y el calor potenciaron las habilidades de",
-        neutral: "el calor del desierto afectó a ambos luchadores",
-        disadvantage: "la sequedad debilitó considerablemente a"
-      },
-      "Ciudad": {
-        advantage: "el entorno urbano proporcionó ventajas tácticas a",
-        neutral: "los edificios y calles crearon un escenario impredecible",
-        disadvantage: "la falta de su entorno natural limitó a"
-      },
-      "Espacio": {
-        advantage: "la ausencia de gravedad amplificó los poderes de",
-        neutral: "las condiciones espaciales sorprendieron a ambos",
-        disadvantage: "la falta de atmósfera complicó la estrategia de"
-      },
-      "Escenario musical": {
-        advantage: "la acústica del lugar potenció las habilidades de",
-        neutral: "los instrumentos musicales fueron usados por ambos luchadores",
-        disadvantage: "el ruido ambiental interfirió con las técnicas de"
-      },
-      "Montañas": {
-        advantage: "la altura y el terreno escarpado favorecieron a",
-        neutral: "el terreno montañoso desafió a ambos combatientes",
-        disadvantage: "las pendientes pronunciadas dificultaron los movimientos de"
-      }
-    };
-    
-    // Asegurar que exista el escenario o usar uno predeterminado
-    const effectForScenario = scenarioEffects[scenario.name] || {
-      advantage: "el ambiente favoreció a",
-      neutral: "el escenario presentó desafíos para ambos combatientes",
-      disadvantage: "el entorno dificultó el desempeño de"
-    };
-    
-    // Construir la narrativa
-    let narrative = "";
-    
-    // Introducción según el escenario
-    narrative += `<div class="text-gray-300 mt-3 mb-5 border-l-4 border-brainrot-turquoise pl-4 py-2 bg-brainrot-darker/30 rounded">`;
-    narrative += `<p class="mb-2"><span class="text-brainrot-turquoise font-semibold">Escenario:</span> ${scenario.name}</p>`;
-    
-    // Efectos del escenario
-    if (winnerHasAdvantage) {
-      narrative += `<p class="mb-1">${effectForScenario.advantage} ${winnerFighter.name}.</p>`;
-    } else if (loserHasDisadvantage) {
-      narrative += `<p class="mb-1">${effectForScenario.disadvantage} ${loserFighter.name}.</p>`;
-    } else {
-      narrative += `<p class="mb-1">${effectForScenario.neutral}.</p>`;
-    }
-    narrative += `</div>`;
-    
-    // Desarrollo del combate
-    narrative += `<div class="space-y-4 text-gray-200">`;
-    
-    // Inicio - primeros intercambios
+    // Seleccionar ataques al azar
     const fighter1Attack = fighter1Narratives.attacks[Math.floor(Math.random() * fighter1Narratives.attacks.length)];
     const fighter2Attack = fighter2Narratives.attacks[Math.floor(Math.random() * fighter2Narratives.attacks.length)];
+    const winnerFinisher = winner === fighter1.name 
+      ? fighter1Narratives.finishers[Math.floor(Math.random() * fighter1Narratives.finishers.length)]
+      : fighter2Narratives.finishers[Math.floor(Math.random() * fighter2Narratives.finishers.length)];
+    const loserDefeat = winner === fighter1.name
+      ? fighter2Narratives.defeats[Math.floor(Math.random() * fighter2Narratives.defeats.length)]
+      : fighter1Narratives.defeats[Math.floor(Math.random() * fighter1Narratives.defeats.length)];
     
-    narrative += `<p>El combate comenzó con ${fighter1.name} y ${fighter2.name} estudiándose mutuamente. 
-    <span class="text-brainrot-turquoise">${fighter1.emoji} ${fighter1.name}</span> lanzó ${fighter1Attack} 
-    <span class="text-red-400">${fighter2.emoji} ${fighter2.name}</span>, quien respondió con ${fighter2Attack} 
-    su oponente.</p>`;
+    // Construir la narrativa con más elementos visuales
+    let narrative = "";
     
-    // Desarrollo - momento crucial
-    const momentoDecisivo = Math.random() > 0.5 
-      ? `<p>La batalla estuvo reñida hasta que ${scenario.name === "Agua" ? "una ola inesperada" : scenario.name === "Desierto" ? "una tormenta de arena" : scenario.name === "Ciudad" ? "un vehículo pasando cerca" : scenario.name === "Espacio" ? "una lluvia de meteoritos" : scenario.name === "Escenario musical" ? "un cambio de ritmo repentino" : "un derrumbe de rocas"} cambió el curso del combate.</p>`
-      : `<p>Ambos intercambiaron golpes, cada uno mostrando sus habilidades especiales. ${fighter1.name} utilizó su especialidad de ${fighter1.speciality} mientras que ${fighter2.name} contraatacó con su ${fighter2.speciality}.</p>`;
-    
-    narrative += momentoDecisivo;
-    
-    // Final - resolución
-    if (winner === fighter1.name) {
-      const finisher = fighter1Narratives.finishers[Math.floor(Math.random() * fighter1Narratives.finishers.length)];
-      const defeat = fighter2Narratives.defeats[Math.floor(Math.random() * fighter2Narratives.defeats.length)];
+    // Panel de escenario visual - usando clase de fondo en lugar de imagen de fondo con URL
+    narrative += `
+    <div class="relative overflow-hidden rounded-lg mb-4 bg-gradient-to-r from-brainrot-darker to-brainrot-dark border border-brainrot-blue/30">
+      <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-brainrot-darker"></div>
       
-      narrative += `<p class="font-medium">En un movimiento decisivo, <span class="text-white">${fighter1.name}</span> ${finisher}.</p>`;
-      narrative += `<p>${fighter2.name} ${defeat}.</p>`;
-    } else {
-      const finisher = fighter2Narratives.finishers[Math.floor(Math.random() * fighter2Narratives.finishers.length)];
-      const defeat = fighter1Narratives.defeats[Math.floor(Math.random() * fighter1Narratives.defeats.length)];
+      <div class="relative p-3 flex items-center justify-between z-10">
+        <div class="flex items-center">
+          <span class="text-lg mr-2">${scenario.emoji}</span>
+          <span class="text-brainrot-turquoise font-semibold">${scenario.name}</span>
+        </div>
+        
+        <div class="bg-brainrot-darker/50 px-2 py-1 rounded-full text-xs">
+          ${winnerHasAdvantage ? 
+            `<span class="text-green-400">Ventaja: ${winnerFighter.name}</span>` : 
+            loserHasDisadvantage ? 
+            `<span class="text-red-400">Desventaja: ${loserFighter.name}</span>` : 
+            `<span class="text-gray-400">Neutral</span>`
+          }
+        </div>
+      </div>
+    </div>`;
+    
+    // Batalla visual con animaciones y ataques en italiano
+    narrative += `
+    <div class="grid grid-cols-11 gap-1 mb-6">
+      <!-- Luchador 1 con ataques -->
+      <div class="col-span-5 pr-1">
+        <div class="relative">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-brainrot-darker rounded-full p-1 mb-2 overflow-hidden flex items-center justify-center ${winner === fighter1.name ? 'animate-pulse-slow' : ''}">
+            <img src="${getImagePath(fighter1)}" alt="${fighter1.name}" class="w-full h-full object-contain ${winner === fighter1.name ? 'scale-110' : 'opacity-85'}" />
+          </div>
+          
+          <div class="text-xs sm:text-sm font-semibold text-center mb-2 ${winner === fighter1.name ? 'text-brainrot-turquoise' : 'text-gray-400'}">${fighter1.emoji} ${fighter1.name}</div>
+          
+          <!-- Ataques del luchador 1 -->
+          <div class="bg-gradient-to-r from-brainrot-darker to-brainrot-dark rounded-lg p-2 border-l-2 border-brainrot-blue/50">
+            <div class="text-xs font-bold mb-1 text-brainrot-blue">ATTACCHI:</div>
+            <div class="flex flex-col space-y-1">
+              <div class="flex items-center text-xs">
+                <span class="w-4 h-4 rounded-full bg-brainrot-blue/20 flex items-center justify-center text-[9px] mr-1">⚡</span>
+                <span class="text-brainrot-turquoise font-semibold">${fighter1Attack.name}</span>
+              </div>
+              <div class="text-xs italic text-gray-400">${fighter1Attack.description}</div>
+            </div>
+          </div>
+          
+          ${winner === fighter1.name ? `
+          <!-- Ataque final del ganador -->
+          <div class="bg-gradient-to-r from-yellow-800/30 to-brainrot-dark rounded-lg p-2 border-l-2 border-yellow-600/50 mt-2 animate-pulse-slow">
+            <div class="text-xs font-bold mb-1 text-yellow-500">COLPO FINALE:</div>
+            <div class="flex flex-col space-y-1">
+              <div class="flex items-center text-xs">
+                <span class="w-4 h-4 rounded-full bg-yellow-500/20 flex items-center justify-center text-[9px] mr-1">🏆</span>
+                <span class="text-yellow-400 font-semibold">${winnerFinisher.name}</span>
+              </div>
+              <div class="text-xs italic text-gray-400">${winnerFinisher.description}</div>
+            </div>
+          </div>
+          ` : `
+          <!-- Derrota -->
+          <div class="bg-gradient-to-r from-red-900/30 to-brainrot-dark rounded-lg p-2 border-l-2 border-red-700/50 mt-2">
+            <div class="text-xs font-bold mb-1 text-red-500">SCONFITTA:</div>
+            <div class="flex flex-col space-y-1">
+              <div class="flex items-center text-xs">
+                <span class="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[9px] mr-1">❌</span>
+                <span class="text-red-400 font-semibold">${winner === fighter2.name ? loserDefeat.name : ''}</span>
+              </div>
+              <div class="text-xs italic text-gray-400">${winner === fighter2.name ? loserDefeat.description : ''}</div>
+            </div>
+          </div>
+          `}
+        </div>
+      </div>
       
-      narrative += `<p class="font-medium">En un movimiento decisivo, <span class="text-white">${fighter2.name}</span> ${finisher}.</p>`;
-      narrative += `<p>${fighter1.name} ${defeat}.</p>`;
-    }
+      <!-- Indicador central -->
+      <div class="col-span-1 flex flex-col items-center justify-center">
+        <div class="h-full flex flex-col items-center justify-center">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-r from-red-600 to-red-800 flex items-center justify-center text-white font-bold text-xs animate-bounce">VS</div>
+          <div class="h-24 w-0.5 bg-gradient-to-b from-red-600/50 to-transparent"></div>
+          <div class="w-6 h-6 rounded-full bg-yellow-600 flex items-center justify-center text-white font-bold text-xs animate-pulse">
+            <Trophy className="w-3 h-3" />
+          </div>
+        </div>
+      </div>
+      
+      <!-- Luchador 2 con ataques -->
+      <div class="col-span-5 pl-1">
+        <div class="relative">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-brainrot-darker rounded-full p-1 mb-2 overflow-hidden flex items-center justify-center ${winner === fighter2.name ? 'animate-pulse-slow' : ''}">
+            <img src="${getImagePath(fighter2)}" alt="${fighter2.name}" class="w-full h-full object-contain ${winner === fighter2.name ? 'scale-110' : 'opacity-85'}" />
+          </div>
+          
+          <div class="text-xs sm:text-sm font-semibold text-center mb-2 ${winner === fighter2.name ? 'text-brainrot-turquoise' : 'text-gray-400'}">${fighter2.emoji} ${fighter2.name}</div>
+          
+          <!-- Ataques del luchador 2 -->
+          <div class="bg-gradient-to-l from-brainrot-darker to-brainrot-dark rounded-lg p-2 border-r-2 border-red-500/50">
+            <div class="text-xs font-bold mb-1 text-red-400 text-right">ATTACCHI:</div>
+            <div class="flex flex-col space-y-1">
+              <div class="flex items-center text-xs justify-end">
+                <span class="text-red-400 font-semibold">${fighter2Attack.name}</span>
+                <span class="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[9px] ml-1">⚡</span>
+              </div>
+              <div class="text-xs italic text-gray-400 text-right">${fighter2Attack.description}</div>
+            </div>
+          </div>
+          
+          ${winner === fighter2.name ? `
+          <!-- Ataque final del ganador -->
+          <div class="bg-gradient-to-l from-yellow-800/30 to-brainrot-dark rounded-lg p-2 border-r-2 border-yellow-600/50 mt-2 animate-pulse-slow">
+            <div class="text-xs font-bold mb-1 text-yellow-500 text-right">COLPO FINALE:</div>
+            <div class="flex flex-col space-y-1">
+              <div class="flex items-center text-xs justify-end">
+                <span class="text-yellow-400 font-semibold">${winnerFinisher.name}</span>
+                <span class="w-4 h-4 rounded-full bg-yellow-500/20 flex items-center justify-center text-[9px] ml-1">🏆</span>
+              </div>
+              <div class="text-xs italic text-gray-400 text-right">${winnerFinisher.description}</div>
+            </div>
+          </div>
+          ` : `
+          <!-- Derrota -->
+          <div class="bg-gradient-to-l from-red-900/30 to-brainrot-dark rounded-lg p-2 border-r-2 border-red-700/50 mt-2">
+            <div class="text-xs font-bold mb-1 text-red-500 text-right">SCONFITTA:</div>
+            <div class="flex flex-col space-y-1">
+              <div class="flex items-center text-xs justify-end">
+                <span class="text-red-400 font-semibold">${winner === fighter1.name ? loserDefeat.name : ''}</span>
+                <span class="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-[9px] ml-1">❌</span>
+              </div>
+              <div class="text-xs italic text-gray-400 text-right">${winner === fighter1.name ? loserDefeat.description : ''}</div>
+            </div>
+          </div>
+          `}
+        </div>
+      </div>
+    </div>`;
     
-    // Conclusión
-    narrative += `<p class="mt-3 text-yellow-300 font-semibold">¡${winner} logró la victoria gracias a su ${winnerFighter.speciality} superior y su increíble adaptación al ${scenario.name.toLowerCase()}!</p>`;
+    // Estadísticas de batalla mejoradas visualmente
+    narrative += `
+    <div class="bg-brainrot-darker/50 p-3 rounded-lg mb-4">
+      <h4 class="text-sm font-semibold text-white mb-3 flex items-center">
+        <svg class="w-4 h-4 mr-1 text-brainrot-turquoise" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="2"/><line x1="8" y1="7" x2="8" y2="2"/><line x1="16" y1="12" x2="16" y2="2"/><line x1="20" y1="7" x2="16" y2="7"/><line x1="20" y1="12" x2="16" y2="12"/><line x1="20" y1="18" x2="16" y2="18"/><line x1="8" y1="18" x2="4" y2="18"/><line x1="4" y1="12" x2="8" y2="12"/><line x1="8" y1="7" x2="4" y2="7"/></svg>
+        Estadísticas de Combate
+      </h4>
+      
+      <div class="space-y-3">
+        <!-- Poder Base -->
+        <div>
+          <div class="flex justify-between items-center text-[10px] mb-1">
+            <span>${fighter1.name}</span>
+            <span class="text-xs font-semibold text-white">Poder Base</span>
+            <span>${fighter2.name}</span>
+          </div>
+          <div class="relative h-2 bg-brainrot-dark rounded-full overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise rounded-l-full" 
+              style="width: ${(fighter1.power / (fighter1.power + fighter2.power)) * 100}%"></div>
+            <div class="absolute right-0 top-0 bottom-0 bg-gradient-to-l from-red-500 to-red-400 rounded-r-full"
+              style="width: ${(fighter2.power / (fighter1.power + fighter2.power)) * 100}%"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+            <span>${fighter1.power}</span>
+            <span>${fighter2.power}</span>
+          </div>
+        </div>
+        
+        <!-- Ventaja por escenario -->
+        <div>
+          <div class="flex justify-between items-center text-[10px] mb-1">
+            <span>${fighter1Narratives.attacks[0].name}</span>
+            <span class="text-xs font-semibold text-white">Técnica</span>
+            <span>${fighter2Narratives.attacks[0].name}</span>
+          </div>
+          <div class="relative h-2 bg-brainrot-dark rounded-full overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise rounded-l-full"
+              style="width: ${fighter1.type === scenario.advantage ? '65%' : (fighter1.type === scenario.disadvantage ? '35%' : '50%')}"></div>
+            <div class="absolute right-0 top-0 bottom-0 bg-gradient-to-l from-red-500 to-red-400 rounded-r-full"
+              style="width: ${fighter2.type === scenario.advantage ? '65%' : (fighter2.type === scenario.disadvantage ? '35%' : '50%')}"></div>
+          </div>
+        </div>
+        
+        <!-- Resultado final -->
+        <div>
+          <div class="flex justify-between items-center text-[10px] mb-1">
+            <span>${winner === fighter1.name ? winnerFinisher.name : ''}</span>
+            <span class="text-xs font-semibold text-yellow-400">Golpe Final</span>
+            <span>${winner === fighter2.name ? winnerFinisher.name : ''}</span>
+          </div>
+          <div class="relative h-2 bg-brainrot-dark rounded-full overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-l-full" 
+              style="width: ${winner === fighter1.name ? '70%' : '30%'}"></div>
+            <div class="absolute right-0 top-0 bottom-0 bg-gradient-to-l from-yellow-600 to-yellow-400 rounded-r-full"
+              style="width: ${winner === fighter2.name ? '70%' : '30%'}"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
     
-    narrative += `</div>`;
+    // Banner del ganador animado
+    narrative += `
+    <div class="relative overflow-hidden bg-gradient-to-r from-yellow-600 to-yellow-800 rounded-lg p-3 text-center mb-2 animate-pulse-slow">
+      <div class="absolute inset-0 opacity-20 bg-brainrot-dark"></div>
+      <div class="relative z-10 flex items-center justify-center">
+        <Trophy class="w-5 h-5 mr-2 text-yellow-300" />
+        <span class="font-bold text-white">¡${winner} es el vencedor!</span>
+      </div>
+      <div class="text-xs text-yellow-200 mt-1">
+        Victoria con el golpe final: ${winner === fighter1.name ? winnerFinisher.name : winnerFinisher.name}
+      </div>
+    </div>`;
     
     return narrative;
   } catch (error) {
     console.error("Error al generar narrativa:", error);
     // Narrativa de respaldo simple en caso de error
     return `
-      <div class="text-gray-300 mt-3 mb-5 border-l-4 border-brainrot-turquoise pl-4 py-2 bg-brainrot-darker/30 rounded">
-        <p class="mb-2"><span class="text-brainrot-turquoise font-semibold">Escenario:</span> ${scenario ? scenario.name : 'Desconocido'}</p>
-      </div>
-      <div class="space-y-4 text-gray-200">
-        <p>Una batalla épica se desarrolló entre ${fighter1 ? fighter1.name : 'Luchador 1'} y ${fighter2 ? fighter2.name : 'Luchador 2'}.</p>
-        <p class="font-medium">Tras un intenso combate, <span class="text-white">${winner}</span> resultó victorioso.</p>
-        <p class="mt-3 text-yellow-300 font-semibold">¡${winner} ha ganado la batalla!</p>
+      <div class="bg-brainrot-darker/50 p-3 rounded-lg mb-4 text-center">
+        <h4 class="text-sm font-semibold text-white mb-2">Battaglia Epica</h4>
+        <div class="my-4 flex justify-center items-center gap-4">
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto rounded-full overflow-hidden mb-2">
+              <img src="${getImagePath(fighter1)}" alt="${fighter1.name}" class="w-full h-full object-contain ${winner === fighter1.name ? '' : 'opacity-50'}" />
+            </div>
+            <div class="text-xs">${fighter1.name}</div>
+          </div>
+          
+          <div class="text-xl font-bold">VS</div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 mx-auto rounded-full overflow-hidden mb-2">
+              <img src="${getImagePath(fighter2)}" alt="${fighter2.name}" class="w-full h-full object-contain ${winner === fighter2.name ? '' : 'opacity-50'}" />
+            </div>
+            <div class="text-xs">${fighter2.name}</div>
+          </div>
+        </div>
+        
+        <div class="mt-4 bg-yellow-600/20 py-2 rounded-lg">
+          <Trophy class="w-5 h-5 mx-auto text-yellow-500 mb-1" />
+          <div class="text-yellow-400 font-semibold">¡${winner} ha ganado la batalla!</div>
+        </div>
       </div>
     `;
   }
@@ -635,6 +650,145 @@ const BattleNarrative = ({ narrative }) => {
         Desarrollo del Combate
       </h3>
       <div className="text-sm" dangerouslySetInnerHTML={{ __html: narrative }} />
+    </div>
+  );
+};
+
+// Componente para mostrar comentarios de expertos sobre la batalla
+const BattleExpertCommentary = ({ fighter1, fighter2, winner }) => {
+  // Lista de expertos ficticios
+  const experts = [
+    { name: "Prof. Aldo Macarroni", specialty: "Estudios de Italian Brainrot", avatar: "🧠" },
+    { name: "Marco Spaghetti", specialty: "Analista de Batallas Épicas", avatar: "🍝" },
+    { name: "Dra. Giulia Ravioli", specialty: "Psicología de Personajes", avatar: "🎭" },
+    { name: "Leonardo DiCaprio", specialty: "Actor y Fan de Bombardino", avatar: "🎬" }
+  ];
+
+  // Seleccionar un experto al azar
+  const expert = experts[Math.floor(Math.random() * experts.length)];
+  
+  // Generar comentario según el resultado de la batalla
+  const generateComment = () => {
+    const comments = [
+      `"La técnica de ${winner} fue claramente superior. Su posicionamiento y timing fueron impecables. Mamma mia, che spettacolo!"`,
+      `"Lo que acabamos de presenciar es un clásico ejemplo de la superioridad táctica en el universo Bombardino. ${winner} ha estudiado a su oponente perfectamente."`,
+      `"Bellissimo combattimento! He visto muchos enfrentamientos, pero la forma en que ${winner} utilizó el escenario a su favor fue magistral."`,
+      `"Por un momento pensé que ${winner === fighter1.name ? fighter2.name : fighter1.name} tenía ventaja, pero la capacidad de adaptación de ${winner} cambió completamente el rumbo de la batalla."`
+    ];
+    return comments[Math.floor(Math.random() * comments.length)];
+  };
+  
+  return (
+    <div className="bg-gradient-to-r from-brainrot-darker to-black rounded-lg p-3 mb-4 border-l-4 border-yellow-600">
+      <div className="flex items-start">
+        <div className="w-10 h-10 rounded-full bg-yellow-600/20 flex items-center justify-center text-xl mr-3">
+          {expert.avatar}
+        </div>
+        <div>
+          <div className="flex items-center mb-1">
+            <h4 className="font-bold text-white text-sm">{expert.name}</h4>
+            <span className="ml-2 px-2 py-0.5 bg-yellow-600/20 rounded-full text-yellow-400 text-xs">{expert.specialty}</span>
+          </div>
+          <p className="text-gray-300 text-sm italic">{generateComment()}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Componente para comentarios de usuarios
+const BattleComments = ({ battleId, isAuthenticated }) => {
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Cargar comentarios guardados al montar el componente
+  useEffect(() => {
+    if (battleId) {
+      // Simulación de carga de comentarios desde localStorage
+      const savedComments = localStorage.getItem(`battle_comments_${battleId}`);
+      if (savedComments) {
+        setComments(JSON.parse(savedComments));
+      }
+    }
+  }, [battleId]);
+  
+  // Guardar un nuevo comentario
+  const saveComment = () => {
+    if (!newComment.trim() || !isAuthenticated) return;
+    
+    setIsLoading(true);
+    
+    // Simular una llamada a API
+    setTimeout(() => {
+      const commentObject = {
+        id: Date.now(),
+        text: newComment,
+        author: localStorage.getItem('userName') || 'Usuario',
+        avatar: localStorage.getItem('userAvatar') || '👤',
+        timestamp: new Date().toISOString()
+      };
+      
+      const updatedComments = [...comments, commentObject];
+      setComments(updatedComments);
+      setNewComment('');
+      
+      // Guardar en localStorage
+      localStorage.setItem(`battle_comments_${battleId}`, JSON.stringify(updatedComments));
+      
+      setIsLoading(false);
+    }, 500);
+  };
+  
+  return (
+    <div className="bg-brainrot-darker rounded-lg p-3 mt-4">
+      <h4 className="text-sm font-bold text-brainrot-turquoise mb-3 flex items-center">
+        <MessageCircle className="w-4 h-4 mr-2" />
+        Comentarios ({comments.length})
+      </h4>
+      
+      {comments.length > 0 ? (
+        <div className="space-y-3 mb-4 max-h-48 overflow-y-auto pr-2">
+          {comments.map(comment => (
+            <div key={comment.id} className="bg-brainrot-dark p-2 rounded-lg">
+              <div className="flex items-center mb-1">
+                <span className="w-6 h-6 rounded-full bg-brainrot-blue/20 flex items-center justify-center text-sm mr-2">
+                  {comment.avatar}
+                </span>
+                <span className="text-white text-xs font-semibold">{comment.author}</span>
+                <span className="ml-auto text-gray-500 text-xs">{new Date(comment.timestamp).toLocaleTimeString()}</span>
+              </div>
+              <p className="text-gray-300 text-xs sm:text-sm">{comment.text}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-3 mb-4 text-gray-500 text-sm">
+          No hay comentarios. ¡Sé el primero!
+        </div>
+      )}
+      
+      {isAuthenticated ? (
+        <div className="flex gap-2">
+          <Input 
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Añade un comentario..."
+            className="text-xs bg-brainrot-dark border-brainrot-blue/30"
+          />
+          <Button 
+            onClick={saveComment} 
+            className="bg-brainrot-blue text-white text-xs"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : "Enviar"}
+          </Button>
+        </div>
+      ) : (
+        <div className="text-center py-2 bg-brainrot-dark rounded-lg text-xs text-gray-400">
+          Inicia sesión para comentar
+        </div>
+      )}
     </div>
   );
 };
@@ -902,6 +1056,7 @@ const BattleSimulator = () => {
   const [showCharacterStats, setShowCharacterStats] = useState(false);
   const [savedBattles, setSavedBattles] = useState([]);
   const [battleId, setBattleId] = useState(null);
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(!!localStorage.getItem('userName'));
 
   // Cargar batallas guardadas
   useEffect(() => {
@@ -1223,20 +1378,18 @@ const BattleSimulator = () => {
             {/* Añadir la narrativa de la batalla */}
             <BattleNarrative narrative={battleResult.narrative} />
             
-            {/* Opcionalmente, aún puedes mostrar las estadísticas si lo deseas */}
-            <div className="flex mt-6 mb-2 justify-center">
-              <Button
-                onClick={() => document.getElementById('battle-stats').classList.toggle('hidden')}
-                variant="outline"
-                className="text-xs sm:text-sm text-gray-400 hover:text-white"
-              >
-                Ver estadísticas detalladas
-              </Button>
-            </div>
+            {/* Añadir comentario de experto */}
+            <BattleExpertCommentary 
+              fighter1={battleResult.fighter1} 
+              fighter2={battleResult.fighter2} 
+              winner={battleResult.winner} 
+            />
             
-            <div id="battle-stats" className="hidden">
-              {battleStats && <BattleStats stats={battleStats} />}
-            </div>
+            {/* Sistema de comentarios para usuarios */}
+            <BattleComments 
+              battleId={battleId} 
+              isAuthenticated={isUserAuthenticated} 
+            />
             
             <div className="flex justify-center space-x-3 sm:space-x-4 mt-4 sm:mt-6">
               <Button 
