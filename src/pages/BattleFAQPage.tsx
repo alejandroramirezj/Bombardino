@@ -42,7 +42,7 @@ const CharacterSelectCard = ({ character, isSelected, onSelect }) => (
       <img 
         src={character.image} 
         alt={character.name}
-        className="h-full w-full object-cover object-center"
+        className="h-full w-full object-contain object-center"
         onError={(e) => {
           const target = e.target as HTMLImageElement;
           target.src = "placeholder.svg";
@@ -94,7 +94,7 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
                   <img 
                     src={fighter1.image} 
                     alt={fighter1.name}
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-contain object-center"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = "placeholder.svg";
@@ -118,7 +118,7 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
                   <img 
                     src={fighter2.image} 
                     alt={fighter2.name}
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-contain object-center"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = "placeholder.svg";
@@ -621,11 +621,15 @@ const BattleSimulator = () => {
                   onClick={() => handleCharacterSelect(character)}
                 >
                   <div className="bg-gradient-to-b from-brainrot-darker/80 to-brainrot-dark border-2 border-transparent group-hover:border-brainrot-turquoise rounded-lg overflow-hidden transition-all duration-300">
-                    <div className="h-28 sm:h-36 bg-gradient-to-b from-brainrot-darker/50 to-transparent flex items-center justify-center p-2">
+                    <div className="h-28 sm:h-36 bg-brainrot-darker flex items-center justify-center p-2">
                       <img 
                         src={character.image} 
                         alt={character.name}
                         className="h-full object-contain filter drop-shadow-lg transform group-hover:scale-110 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "placeholder.svg";
+                        }}
                       />
                     </div>
                     <div className="p-2 sm:p-3 text-center bg-gradient-to-t from-black to-transparent">
@@ -726,7 +730,7 @@ const BattleSimulator = () => {
                         <img 
                           src={fighter1.image} 
                           alt={fighter1.name}
-                          className="w-full h-full object-cover object-center"
+                          className="w-full h-full object-contain object-center"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.src = "placeholder.svg";
@@ -780,7 +784,7 @@ const BattleSimulator = () => {
                         <img 
                           src={fighter2.image} 
                           alt={fighter2.name}
-                          className="w-full h-full object-cover object-center"
+                          className="w-full h-full object-contain object-center"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.src = "placeholder.svg";
