@@ -10,14 +10,14 @@ import {
 
 // Lista de personajes para la simulación
 const battleCharacters = [
-  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "images/Bombardino%20Coccodrillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
-  { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "images/Tralalero%20Tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
-  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "images/Bombombini%20Gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
-  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "images/Tung%20Tung%20Tung%20Sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
-  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "images/La%20Vaca%20Saturno%20Saturnita.webp", power: 90, type: "cósmico", speciality: "gravedad" },
-  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "images/Frigo%20Camelo.webp", power: 75, type: "glacial", speciality: "congelación" },
-  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "images/Akulini%20Cactusini.webp", power: 65, type: "desértico", speciality: "espinas" },
-  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "images/Bobritto%20Bandito.webp", power: 60, type: "constructor", speciality: "presas" }
+  { id: 1, name: "Bombardino coccodrillo", emoji: "🐊", image: "/images/Bombardino Coccodrillo.webp", power: 85, type: "acuático", speciality: "mordisco" },
+  { id: 2, name: "Tralalero Tralala", emoji: "🎵", image: "/images/Tralalero Tralala.webp", power: 75, type: "musical", speciality: "hipnosis" },
+  { id: 3, name: "Bombombini Gusini", emoji: "💥", image: "/images/Bombombini Gusini.webp", power: 80, type: "explosivo", speciality: "bombas" },
+  { id: 4, name: "Tung tung tung sahur", emoji: "🥁", image: "/images/Tung Tung Tung Sahur.webp", power: 70, type: "rítmico", speciality: "percusión" },
+  { id: 5, name: "La vaca saturno saturnita", emoji: "🐄", image: "/images/La Vaca Saturno Saturnita.webp", power: 90, type: "cósmico", speciality: "gravedad" },
+  { id: 6, name: "Frigo Camelo", emoji: "❄️", image: "/images/Frigo Camelo.webp", power: 75, type: "glacial", speciality: "congelación" },
+  { id: 7, name: "Akulini Cactusini", emoji: "🌵", image: "/images/Akulini Cactusini.webp", power: 65, type: "desértico", speciality: "espinas" },
+  { id: 8, name: "Bobritto bandito", emoji: "🦫", image: "/images/Bobritto Bandito.webp", power: 60, type: "constructor", speciality: "presas" }
 ];
 
 // Lista de escenarios
@@ -30,6 +30,23 @@ const battleScenarios = [
   { id: 6, name: "Montañas", emoji: "⛰️", advantage: "constructor", disadvantage: "glacial" }
 ];
 
+// Función para obtener la ruta correcta de la imagen
+const getImagePath = (character) => {
+  // Si la imagen es una URL externa, usarla directamente
+  if (character.image.startsWith('http')) {
+    return character.image;
+  }
+  
+  // Si la imagen ya empieza con /images/, añadir el prefijo base
+  if (character.image.startsWith('/images/')) {
+    return `${character.image.substring(1)}`;
+  }
+  
+  // Si la imagen es un nombre de archivo, construir la ruta en /images/
+  const fileName = character.name.replace(/\s+/g, '%20');
+  return `images/${fileName}.webp`;
+};
+
 // Componente para tarjeta de selección de personaje
 const CharacterSelectCard = ({ character, isSelected, onSelect }) => (
   <div 
@@ -40,13 +57,9 @@ const CharacterSelectCard = ({ character, isSelected, onSelect }) => (
   >
     <div className="relative h-28 bg-brainrot-darker flex items-center justify-center">
       <img 
-        src={character.image} 
+        src={getImagePath(character)} 
         alt={character.name}
         className="h-full w-full object-contain object-center"
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          target.src = "placeholder.svg";
-        }}
       />
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
         <div className="flex items-center">
@@ -92,13 +105,9 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brainrot-darker rounded-full mb-1 sm:mb-2 overflow-hidden flex items-center justify-center">
                   <img 
-                    src={fighter1.image} 
+                    src={getImagePath(fighter1)} 
                     alt={fighter1.name}
                     className="w-full h-full object-contain object-center"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "placeholder.svg";
-                    }}
                   />
                 </div>
                 <div className="text-sm sm:text-lg font-bold text-white mb-1 sm:mb-2 line-clamp-1 px-1">{fighter1.name}</div>
@@ -116,13 +125,9 @@ const BattleScoreboard = ({ fighter1, fighter2, score1, score2, environment, win
               <div className="flex flex-col items-center">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-brainrot-darker rounded-full mb-1 sm:mb-2 overflow-hidden flex items-center justify-center">
                   <img 
-                    src={fighter2.image} 
+                    src={getImagePath(fighter2)} 
                     alt={fighter2.name}
                     className="w-full h-full object-contain object-center"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "placeholder.svg";
-                    }}
                   />
                 </div>
                 <div className="text-sm sm:text-lg font-bold text-white mb-1 sm:mb-2 line-clamp-1 px-1">{fighter2.name}</div>
@@ -623,13 +628,9 @@ const BattleSimulator = () => {
                   <div className="bg-gradient-to-b from-brainrot-darker/80 to-brainrot-dark border-2 border-transparent group-hover:border-brainrot-turquoise rounded-lg overflow-hidden transition-all duration-300">
                     <div className="h-28 sm:h-36 bg-brainrot-darker flex items-center justify-center p-2">
                       <img 
-                        src={character.image} 
+                        src={getImagePath(character)} 
                         alt={character.name}
                         className="h-full object-contain filter drop-shadow-lg transform group-hover:scale-110 transition-transform duration-300"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = "placeholder.svg";
-                        }}
                       />
                     </div>
                     <div className="p-2 sm:p-3 text-center bg-gradient-to-t from-black to-transparent">
@@ -728,13 +729,9 @@ const BattleSimulator = () => {
                     <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-gradient-to-b from-brainrot-blue/20 to-transparent rounded-full p-1">
                       <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
                         <img 
-                          src={fighter1.image} 
+                          src={getImagePath(fighter1)} 
                           alt={fighter1.name}
                           className="w-full h-full object-contain object-center"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "placeholder.svg";
-                          }}
                         />
                       </div>
                     </div>
@@ -782,13 +779,9 @@ const BattleSimulator = () => {
                     <div className="w-28 h-28 sm:w-36 sm:h-36 mx-auto bg-gradient-to-b from-red-600/20 to-transparent rounded-full p-1">
                       <div className="w-full h-full bg-brainrot-darker/40 rounded-full flex items-center justify-center overflow-hidden">
                         <img 
-                          src={fighter2.image} 
+                          src={getImagePath(fighter2)} 
                           alt={fighter2.name}
                           className="w-full h-full object-contain object-center"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "placeholder.svg";
-                          }}
                         />
                       </div>
                     </div>
