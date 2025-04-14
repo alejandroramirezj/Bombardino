@@ -598,12 +598,15 @@ const generateBattleNarrative = (fighter1, fighter2, scenario, winner) => {
     narrative += `
     <div class="relative overflow-hidden bg-gradient-to-r from-yellow-600 to-yellow-800 rounded-lg p-3 text-center mb-2 animate-pulse-slow">
       <div class="absolute inset-0 opacity-20 bg-brainrot-dark"></div>
-      <div class="relative z-10 flex items-center justify-center">
-        <Trophy class="w-5 h-5 mr-2 text-yellow-300" />
-        <span class="font-bold text-white">¡${winner} es el vencedor!</span>
-      </div>
-      <div class="text-xs text-yellow-200 mt-1">
-        Victoria con el golpe final: ${winner === fighter1.name ? winnerFinisher.name : winnerFinisher.name}
+      <div class="relative z-10">
+        <div class="flex items-center justify-center mb-1">
+          <svg class="w-5 h-5 mr-2 text-yellow-300" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+          <span class="font-bold text-white text-sm sm:text-base">¡${winner} es el vencedor!</span>
+        </div>
+        <div class="text-xs text-yellow-200 mt-2 px-2">
+          <span class="inline-block">Victoria con el golpe final:</span>
+          <span class="inline-block font-semibold mt-1">${winner === fighter1.name ? winnerFinisher.name : fighter2Narratives.finishers[Math.floor(Math.random() * fighter2Narratives.finishers.length)].name}</span>
+        </div>
       </div>
     </div>`;
     
