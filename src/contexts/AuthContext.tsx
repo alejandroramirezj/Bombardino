@@ -7,8 +7,8 @@ interface UserProfile {
   name?: string;
   picture?: string;
   password?: string;
-  createdCharacters?: string[];
-  votedCharacters?: string[];
+  createdCharacters: string[];
+  votedCharacters: string[];
 }
 
 interface AuthContextType {
@@ -38,16 +38,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return storedUsers ? JSON.parse(storedUsers) : [];
   });
 
+  // Persistir usuarios en localStorage cada vez que cambie la base de datos
   useEffect(() => {
-    // Persistir usuarios en localStorage
-    localStorage.setItem('brainrot-users', JSON.stringify(usersDB));
+    if (usersDB.length > 0) {
+      localStorage.setItem('brainrot-users', JSON.stringify(usersDB));
+    }
   }, [usersDB]);
 
+  // Sincronizar usuario actual con la base de datos
   useEffect(() => {
-    // Check if user is already logged in
+    if (user) {
+      const updatedUserFromDB = usersDB.find(u => u.id === user.id);
+      if (updatedUserFromDB) {
+        const { password: _, ...safeUser } = updatedUserFromDB;
+        localStorage.setItem('brainrot-user', JSON.stringify(safeUser));
+        setUser(safeUser);
+      }
+    }
+  }, [usersDB, user?.id]);
+
+  useEffect(() => {
+    // Recuperar usuario del localStorage al cargar
     const storedUser = localStorage.getItem('brainrot-user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      // Asegurarse de que los arrays estén inicializados
+      parsedUser.votedCharacters = parsedUser.votedCharacters || [];
+      parsedUser.createdCharacters = parsedUser.createdCharacters || [];
+      setUser(parsedUser);
+      
+      // Sincronizar con la base de datos
+      setUsersDB(prev => {
+        const userIndex = prev.findIndex(u => u.id === parsedUser.id);
+        if (userIndex >= 0) {
+          const updatedUsers = [...prev];
+          updatedUsers[userIndex] = {
+            ...updatedUsers[userIndex],
+            votedCharacters: parsedUser.votedCharacters,
+            createdCharacters: parsedUser.createdCharacters
+          };
+          return updatedUsers;
+        }
+        return prev;
+      });
     }
     setIsLoading(false);
   }, []);
@@ -55,7 +88,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      // Buscar usuario en la "base de datos"
       const foundUser = usersDB.find(u => u.email === email && u.password === password);
       
       if (!foundUser) {
@@ -64,8 +96,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return false;
       }
       
-      // Eliminar la contraseña antes de guardar en localStorage
       const { password: _, ...safeUser } = foundUser;
+      // Asegurarse de que los arrays estén inicializados
+      safeUser.votedCharacters = safeUser.votedCharacters || [];
+      safeUser.createdCharacters = safeUser.createdCharacters || [];
+      
       localStorage.setItem('brainrot-user', JSON.stringify(safeUser));
       setUser(safeUser);
       toast.success("Inicio de sesión exitoso");
@@ -207,41 +242,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       // Verificar si ya está en la lista
-      if (user.votedCharacters?.includes(characterId)) return;
+      if (user.votedCharacters.includes(characterId)) return;
       
-      const votedCharacters = [...(user.votedCharacters || []), characterId];
+      const updatedVotedCharacters = [...user.votedCharacters, characterId];
       
-      // Actualizar usuario en la "base de datos"
+      // Actualizar usuario en la base de datos
       setUsersDB(prev => prev.map(u => 
-        u.id === user.id ? { ...u, votedCharacters } : u
+        u.id === user.id 
+          ? { ...u, votedCharacters: updatedVotedCharacters }
+          : u
       ));
       
       // Actualizar usuario actual
-      const updatedUser = { ...user, votedCharacters };
+      const updatedUser = { ...user, votedCharacters: updatedVotedCharacters };
       localStorage.setItem('brainrot-user', JSON.stringify(updatedUser));
       setUser(updatedUser);
     } catch (error) {
       console.error("Error al añadir personaje votado:", error);
+      toast.error("Error al registrar el voto");
     }
   };
 
   const removeVotedCharacter = (characterId: string) => {
-    if (!user || !user.votedCharacters) return;
+    if (!user) return;
     
     try {
-      const votedCharacters = user.votedCharacters.filter(id => id !== characterId);
+      const updatedVotedCharacters = user.votedCharacters.filter(id => id !== characterId);
       
-      // Actualizar usuario en la "base de datos"
+      // Actualizar usuario en la base de datos
       setUsersDB(prev => prev.map(u => 
-        u.id === user.id ? { ...u, votedCharacters } : u
+        u.id === user.id 
+          ? { ...u, votedCharacters: updatedVotedCharacters }
+          : u
       ));
       
       // Actualizar usuario actual
-      const updatedUser = { ...user, votedCharacters };
+      const updatedUser = { ...user, votedCharacters: updatedVotedCharacters };
       localStorage.setItem('brainrot-user', JSON.stringify(updatedUser));
       setUser(updatedUser);
     } catch (error) {
       console.error("Error al eliminar personaje votado:", error);
+      toast.error("Error al eliminar el voto");
     }
   };
 
@@ -249,19 +290,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) return;
     
     try {
-      const createdCharacters = [...(user.createdCharacters || []), characterId];
+      // Verificar si ya está en la lista
+      if (user.createdCharacters.includes(characterId)) return;
       
-      // Actualizar usuario en la "base de datos"
+      const updatedCreatedCharacters = [...user.createdCharacters, characterId];
+      
+      // Actualizar usuario en la base de datos
       setUsersDB(prev => prev.map(u => 
-        u.id === user.id ? { ...u, createdCharacters } : u
+        u.id === user.id 
+          ? { ...u, createdCharacters: updatedCreatedCharacters }
+          : u
       ));
       
       // Actualizar usuario actual
-      const updatedUser = { ...user, createdCharacters };
+      const updatedUser = { ...user, createdCharacters: updatedCreatedCharacters };
       localStorage.setItem('brainrot-user', JSON.stringify(updatedUser));
       setUser(updatedUser);
     } catch (error) {
       console.error("Error al añadir personaje creado:", error);
+      toast.error("Error al registrar el personaje creado");
     }
   };
 
