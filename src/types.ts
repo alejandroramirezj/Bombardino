@@ -28,8 +28,8 @@ export interface Character {
   description: string;
   allies: string[];
   rivals: string[];
-  votes: string[] | number;
-  voteCount?: number;
+  votes: string[];
+  voteCount: number;
   phrase?: string;
   appearances?: string[];
   abilities?: string[];

@@ -21,7 +21,14 @@ export interface CharacterContextType {
 const CharacterContext = createContext<CharacterContextType | undefined>(undefined);
 
 export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [characters, setCharacters] = useState<Character[]>(initialCharacters);
+  // Asegurarnos de que los personajes iniciales tengan la estructura correcta
+  const normalizedInitialCharacters = initialCharacters.map(char => ({
+    ...char,
+    votes: Array.isArray(char.votes) ? char.votes : [],
+    voteCount: typeof char.voteCount === 'number' ? char.voteCount : 0
+  }));
+
+  const [characters, setCharacters] = useState<Character[]>(normalizedInitialCharacters);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -55,8 +62,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       .slice(0, limit);
   };
 
-  const addCharacter = (character: Omit<Character, 'id' | 'votes' | 'voteCount'> & { id?: string, votes?: string[], voteCount?: number }) => {
-    // Crear un personaje completo con valores por defecto para los campos opcionales
+  const addCharacter = (character: Omit<Character, 'id' | 'votes' | 'voteCount'> & { id?: string }) => {
     const newCharacter: Character = {
       id: character.id || crypto.randomUUID(),
       name: character.name,
@@ -66,12 +72,12 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       image: character.image,
       allies: character.allies || [],
       rivals: character.rivals || [],
-      votes: character.votes || [],
-      voteCount: character.voteCount || 0,
+      votes: [],
+      voteCount: 0,
       phrase: character.phrase,
-      appearances: character.appearances,
-      abilities: character.abilities,
-      biography: character.biography
+      appearances: character.appearances || [],
+      abilities: character.abilities || [],
+      biography: character.biography || ''
     };
 
     setCharacters(prevCharacters => [...prevCharacters, newCharacter]);
@@ -85,9 +91,16 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const updateCharacter = (character: Character) => {
+    // Asegurarnos de que los votos sean siempre un array
+    const updatedCharacter = {
+      ...character,
+      votes: Array.isArray(character.votes) ? character.votes : [],
+      voteCount: typeof character.voteCount === 'number' ? character.voteCount : 0
+    };
+
     setCharacters(prevCharacters =>
       prevCharacters.map(char =>
-        char.id === character.id ? character : char
+        char.id === character.id ? updatedCharacter : char
       )
     );
     toast.success('¡Personaje actualizado con éxito!');
@@ -116,15 +129,16 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
 
       const character = characters[characterIndex];
-      const hasVoted = character.votes?.includes(userId) || false;
+      const votes = Array.isArray(character.votes) ? character.votes : [];
+      const hasVoted = votes.includes(userId);
 
       const updatedCharacters = [...characters];
       if (hasVoted) {
         // Quitar voto
         updatedCharacters[characterIndex] = {
           ...character,
-          votes: character.votes.filter(id => id !== userId),
-          voteCount: character.voteCount - 1
+          votes: votes.filter(id => id !== userId),
+          voteCount: Math.max(0, character.voteCount - 1)
         };
         
         // Actualizar perfil del usuario
@@ -135,8 +149,8 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         // Añadir voto
         updatedCharacters[characterIndex] = {
           ...character,
-          votes: [...character.votes, userId],
-          voteCount: character.voteCount + 1
+          votes: [...votes, userId],
+          voteCount: (character.voteCount || 0) + 1
         };
         
         // Actualizar perfil del usuario
@@ -155,7 +169,9 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const hasUserVotedFor = (characterId: string, userId: string) => {
     const character = characters.find(char => char.id === characterId);
-    return character?.votes?.includes(userId) || false;
+    if (!character) return false;
+    const votes = Array.isArray(character.votes) ? character.votes : [];
+    return votes.includes(userId);
   };
 
   return (
