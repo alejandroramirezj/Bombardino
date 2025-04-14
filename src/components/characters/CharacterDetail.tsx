@@ -27,6 +27,7 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
   const [hasVoted, setHasVoted] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -64,27 +65,39 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
 
   const getImagePath = () => {
     // Si la imagen es una URL externa, usarla directamente
-    if (character.image.startsWith('http')) {
+    if (character.image && character.image.startsWith('http')) {
       return character.image;
     }
     
     // Si la imagen ya empieza con /images/, usar directamente
-    if (character.image.startsWith('/images/')) {
+    if (character.image && character.image.startsWith('/images/')) {
       return character.image;
     }
     
     // Si la imagen es un nombre de archivo, construir la ruta en /images/ con guiones
-    const fileName = character.name.replace(/\s+/g, '-');
+    const fileName = character.name.replace(/\s+/g, '-').toLowerCase();
     return `/images/${fileName}.webp`;
+  };
+
+  // Manejar errores de imagen
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoaded(true);
+  };
+
+  // Manejar carga exitosa de imagen
+  const handleImageLoad = () => {
+    setImageLoaded(true);
   };
 
   // Se agrega un efecto para resetear el error de imagen cuando cambia el personaje
   useEffect(() => {
     setImageError(false);
+    setImageLoaded(false);
   }, [character.id]);
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-brainrot-darker">
+    <div className="container mx-auto px-4 py-8 bg-brainrot-darker min-h-screen">
       <div className="mb-6">
         <Link 
           to={`/personajes`}
@@ -106,11 +119,18 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
           variants={itemVariants}
           className="lg:col-span-1"
         >
-          <div className="bg-brainrot-light rounded-xl overflow-hidden shadow-xl mb-4">
+          <div className="bg-brainrot-light rounded-xl overflow-hidden shadow-xl mb-4 relative">
+            {!imageLoaded && (
+              <div className="w-full h-[400px] flex items-center justify-center bg-brainrot-dark">
+                <div className="w-10 h-10 border-4 border-brainrot-turquoise border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
             <img 
-              src={getImagePath()}
+              src={imageError ? '/images/placeholder.webp' : getImagePath()}
               alt={character.name}
-              className="w-full h-[400px] object-contain object-center bg-brainrot-darker transition-transform duration-500"
+              className={`w-full h-[400px] object-contain object-center bg-brainrot-darker transition-all duration-300 ${!imageLoaded ? 'opacity-0 absolute' : 'opacity-100'}`}
+              onError={handleImageError}
+              onLoad={handleImageLoad}
             />
           </div>
           
