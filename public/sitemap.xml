@@ -7,7 +7,7 @@
 
   <!-- Página principal -->
   <url>
-    <loc>https://bombardirocrocodrilo.com/</loc>
+    <loc>https://bombardirocrocodrilo.com</loc>
     <lastmod>2024-03-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -42,49 +42,6 @@
     <priority>0.8</priority>
   </url>
   
-  <!-- Personajes principales -->
-  <url>
-    <loc>https://bombardirocrocodrilo.com/personajes/bombardino-coccodrillo</loc>
-    <lastmod>2024-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://bombardirocrocodrilo.com/personajes/la-vaca-saturno-saturnita</loc>
-    <lastmod>2024-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://bombardirocrocodrilo.com/personajes/tralalero-tralala</loc>
-    <lastmod>2024-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://bombardirocrocodrilo.com/personajes/bombombini-gusini</loc>
-    <lastmod>2024-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://bombardirocrocodrilo.com/personajes/tung-tung-tung-sahur</loc>
-    <lastmod>2024-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://bombardirocrocodrilo.com/personajes/bobritto-bandito</loc>
-    <lastmod>2024-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
   <!-- Funcionalidades principales -->
   <url>
     <loc>https://bombardirocrocodrilo.com/crear-personaje</loc>
@@ -107,4 +64,237 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+
+  <!-- Páginas de personajes -->
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/la-vaca-saturno-saturnita</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/bombardino-coccodrillo</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/brr-brr-patapim</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/bombombini-gusini</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/bobritto-bandito</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/glorbo-fruttodrillo</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/tung-tung-tung-sahur</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/tralalero-tralala</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/trulimero-trulicina</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/lirili-larila</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/trippi-troppi</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/chimpanzini-bananini</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/ballerina-capuchina</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/baranito-tankito</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/bombinarium-nerpinarium</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/brasilini-birimbini</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/bri-bri-bicus-dicus</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/burbaloni-luliloli</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/camelrino-tazzino</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/capuchino-assassino</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/frigo-camelo</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/frulli-frulla</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/piccione-macchina</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/pot-hotspot-anomaly</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/rugginato-lupogt-il-cannone-stradale</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/serbinyo-carshippinyo</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/talpa-di-ferro</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/tracotocutulo</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/tric-trac-baraboom</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/udin-din-din-dun</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/zucchini-macanini</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/bri-bri-bri-kasoot</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bombardirocrocodrilo.com/personajes/tripi-tropa</loc>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
 </urlset> 
