@@ -28,6 +28,17 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     voteCount: typeof char.voteCount === 'number' ? char.voteCount : 0
   }));
 
+  // Eliminar cualquier duplicado por nombre
+  const uniqueCharacters = normalizedInitialCharacters.reduce((acc, current) => {
+    const existingChar = acc.find(char => char.name === current.name);
+    if (!existingChar) {
+      acc.push(current);
+    } else {
+      console.warn(`Personaje duplicado encontrado y eliminado: ${current.name} (ID: ${current.id})`);
+    }
+    return acc;
+  }, [] as Character[]);
+
   // Cargar personajes guardados desde localStorage
   const loadSavedCharacters = () => {
     try {
@@ -35,7 +46,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (savedCharacters) {
         const parsedCharacters = JSON.parse(savedCharacters);
         // Combinar personajes iniciales con los guardados, evitando duplicados por ID
-        const combinedCharacters = [...normalizedInitialCharacters];
+        const combinedCharacters = [...uniqueCharacters];
         
         parsedCharacters.forEach((savedChar: Character) => {
           const existingIndex = combinedCharacters.findIndex(c => c.id === savedChar.id);
@@ -43,8 +54,13 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             // Actualizar personaje existente
             combinedCharacters[existingIndex] = savedChar;
           } else {
-            // Añadir nuevo personaje
-            combinedCharacters.push(savedChar);
+            // Añadir nuevo personaje si no está duplicado por nombre
+            const nameExists = combinedCharacters.some(c => c.name === savedChar.name);
+            if (!nameExists) {
+              combinedCharacters.push(savedChar);
+            } else {
+              console.warn(`Personaje duplicado en localStorage ignorado: ${savedChar.name} (ID: ${savedChar.id})`);
+            }
           }
         });
         
@@ -53,7 +69,7 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     } catch (error) {
       console.error("Error al cargar personajes guardados:", error);
     }
-    return normalizedInitialCharacters;
+    return uniqueCharacters;
   };
 
   const [characters, setCharacters] = useState<Character[]>(loadSavedCharacters());

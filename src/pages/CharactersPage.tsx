@@ -5,6 +5,8 @@ import CharacterFilters from '@/components/characters/CharacterFilters';
 import { Character } from '@/types';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { Helmet } from 'react-helmet-async';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const CharactersPage = () => {
   const { characters, loading } = useCharacters();
@@ -16,10 +18,19 @@ const CharactersPage = () => {
     sortOrder: 'popularity' as 'recent' | 'popularity' | 'alphabetical'
   });
 
+  const clearLocalStorage = () => {
+    localStorage.removeItem('brainrot-characters');
+    toast.success('Cache de personajes limpiado. Recarga la página para ver los cambios.');
+  };
+
   useEffect(() => {
     if (loading) return;
     
     let results = [...characters];
+    
+    // Debug para detectar personajes duplicados
+    console.log('IDs de personajes:', results.map(char => char.id));
+    console.log('Nombres de personajes:', results.map(char => char.name));
     
     // Filtrar por tipo
     if (filters.type !== 'all') {
@@ -97,6 +108,15 @@ const CharactersPage = () => {
             Explora todos los personajes del universo Bombardino. Descubre sus historias, 
             habilidades y relaciones con otros personajes.
           </p>
+          <div className="mt-4">
+            <Button 
+              variant="outline"
+              onClick={clearLocalStorage}
+              className="text-xs text-gray-400 hover:text-white"
+            >
+              Limpiar caché
+            </Button>
+          </div>
         </div>
         
         <CharacterFilters 
