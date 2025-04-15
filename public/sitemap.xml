@@ -1,97 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
   <!-- Página principal -->
   <url>
     <loc>https://bombardirocrocodrilo.com/</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
-  <!-- Páginas principales -->
+  <!-- Secciones principales -->
   <url>
     <loc>https://bombardirocrocodrilo.com/personajes</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
     <loc>https://bombardirocrocodrilo.com/ranking</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   
   <url>
     <loc>https://bombardirocrocodrilo.com/batallas</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
     <loc>https://bombardirocrocodrilo.com/brainrot</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   
-  <!-- Personajes principales - añade manualmente los más importantes -->
+  <!-- Personajes principales -->
   <url>
     <loc>https://bombardirocrocodrilo.com/personajes/bombardino-coccodrillo</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://bombardirocrocodrilo.com/personajes/la-vaca-saturno-saturnita</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://bombardirocrocodrilo.com/personajes/tralalero-tralala</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://bombardirocrocodrilo.com/personajes/bombombini-gusini</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://bombardirocrocodrilo.com/personajes/tung-tung-tung-sahur</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://bombardirocrocodrilo.com/personajes/bobritto-bandito</loc>
-    <lastmod>2023-04-13</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
-  <!-- Otras páginas secundarias -->
+  <!-- Funcionalidades principales -->
   <url>
     <loc>https://bombardirocrocodrilo.com/crear-personaje</loc>
-    <lastmod>2023-04-13</lastmod>
+    <lastmod>2024-03-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Páginas de usuario -->
+  <url>
+    <loc>https://bombardirocrocodrilo.com/login</loc>
+    <lastmod>2024-03-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://bombardirocrocodrilo.com/login</loc>
-    <lastmod>2023-04-13</lastmod>
+    <loc>https://bombardirocrocodrilo.com/perfil</loc>
+    <lastmod>2024-03-14</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
   </url>
 </urlset> 
