@@ -28,11 +28,46 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     voteCount: typeof char.voteCount === 'number' ? char.voteCount : 0
   }));
 
-  const [characters, setCharacters] = useState<Character[]>(normalizedInitialCharacters);
+  // Cargar personajes guardados desde localStorage
+  const loadSavedCharacters = () => {
+    try {
+      const savedCharacters = localStorage.getItem('brainrot-characters');
+      if (savedCharacters) {
+        const parsedCharacters = JSON.parse(savedCharacters);
+        // Combinar personajes iniciales con los guardados, evitando duplicados por ID
+        const combinedCharacters = [...normalizedInitialCharacters];
+        
+        parsedCharacters.forEach((savedChar: Character) => {
+          const existingIndex = combinedCharacters.findIndex(c => c.id === savedChar.id);
+          if (existingIndex >= 0) {
+            // Actualizar personaje existente
+            combinedCharacters[existingIndex] = savedChar;
+          } else {
+            // Añadir nuevo personaje
+            combinedCharacters.push(savedChar);
+          }
+        });
+        
+        return combinedCharacters;
+      }
+    } catch (error) {
+      console.error("Error al cargar personajes guardados:", error);
+    }
+    return normalizedInitialCharacters;
+  };
+
+  const [characters, setCharacters] = useState<Character[]>(loadSavedCharacters());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   const { user, addVotedCharacter, removeVotedCharacter, addCreatedCharacter } = useAuth();
+
+  // Guardar personajes en localStorage cuando cambien
+  useEffect(() => {
+    if (!loading) {
+      localStorage.setItem('brainrot-characters', JSON.stringify(characters));
+    }
+  }, [characters, loading]);
 
   useEffect(() => {
     // Eliminamos la carga artificial para respuesta inmediata

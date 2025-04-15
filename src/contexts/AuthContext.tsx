@@ -58,31 +58,82 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [usersDB, user?.id]);
 
   useEffect(() => {
-    // Recuperar usuario del localStorage al cargar
-    const storedUser = localStorage.getItem('brainrot-user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      // Asegurarse de que los arrays estén inicializados
-      parsedUser.votedCharacters = parsedUser.votedCharacters || [];
-      parsedUser.createdCharacters = parsedUser.createdCharacters || [];
-      setUser(parsedUser);
-      
-      // Sincronizar con la base de datos
-      setUsersDB(prev => {
-        const userIndex = prev.findIndex(u => u.id === parsedUser.id);
-        if (userIndex >= 0) {
-          const updatedUsers = [...prev];
-          updatedUsers[userIndex] = {
-            ...updatedUsers[userIndex],
-            votedCharacters: parsedUser.votedCharacters,
-            createdCharacters: parsedUser.createdCharacters
-          };
-          return updatedUsers;
+    // Comprobar si existe una sesión guardada en localStorage
+    const checkSavedSession = () => {
+      try {
+        const savedUser = localStorage.getItem('brainrot-user');
+        if (savedUser) {
+          const parsedUser = JSON.parse(savedUser);
+          
+          // Asegurarse de que los arrays existan
+          if (!Array.isArray(parsedUser.createdCharacters)) {
+            parsedUser.createdCharacters = [];
+          }
+          
+          if (!Array.isArray(parsedUser.votedCharacters)) {
+            parsedUser.votedCharacters = [];
+          }
+          
+          setUser(parsedUser);
+          
+          // Sincronizar con la base de datos de usuarios
+          setUsersDB(prev => {
+            const userIndex = prev.findIndex(u => u.id === parsedUser.id);
+            if (userIndex >= 0) {
+              // Actualizar usuario existente
+              const updatedUsers = [...prev];
+              updatedUsers[userIndex] = {
+                ...prev[userIndex],
+                createdCharacters: parsedUser.createdCharacters,
+                votedCharacters: parsedUser.votedCharacters,
+                name: parsedUser.name
+              };
+              return updatedUsers;
+            } else {
+              // Añadir nuevo usuario a la "base de datos"
+              return [...prev, {
+                ...parsedUser,
+                password: "predeterminada" // No almacenamos contraseñas reales
+              }];
+            }
+          });
         }
-        return prev;
-      });
-    }
-    setIsLoading(false);
+      } catch (error) {
+        console.error("Error al recuperar sesión:", error);
+        // Si hay error, limpiar localStorage corrupto
+        localStorage.removeItem('brainrot-user');
+      }
+      
+      setIsLoading(false);
+    };
+    
+    // Cargar usuarios "demo" para la aplicación
+    const loadUsers = async () => {
+      // Usuarios predefinidos para demostración
+      return [
+        {
+          id: "user1",
+          email: "user@example.com",
+          password: "password123",
+          name: "Usuario Demo",
+          createdCharacters: [],
+          votedCharacters: []
+        },
+        {
+          id: "user2",
+          email: "demo@brainrot.com",
+          password: "demo123",
+          name: "Demo User",
+          createdCharacters: [],
+          votedCharacters: []
+        }
+      ];
+    };
+    
+    loadUsers().then(users => {
+      setUsersDB(users);
+      checkSavedSession();
+    });
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {

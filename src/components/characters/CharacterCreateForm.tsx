@@ -74,20 +74,27 @@ const CharacterCreateForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Ajustar la ruta para GitHub Pages agregando el prefijo base
-      const basePath = import.meta.env.BASE_URL || '/Bombardino/';
+      let finalImageUrl = "";
       
-      // Si estamos subiendo un archivo, primero lo procesaríamos
-      // Esta es una simulación, en un entorno real subirías el archivo a un servidor
-      const finalImageUrl = imageTab === "url" 
-        ? imageUrl 
-        : `${basePath.replace(/\/$/, '')}/images/${name.toLowerCase().replace(/\s+/g, '_')}.webp`;
+      // Usar data URL directamente para la imagen subida
+      if (imageTab === "upload" && imagePreview) {
+        finalImageUrl = imagePreview; // Esta es la representación base64 de la imagen
+      } else if (imageTab === "url") {
+        finalImageUrl = imageUrl;
+      } else {
+        // Imagen de placeholder en caso de error
+        finalImageUrl = "/placeholder-character.png";
+      }
       
       // Simular biografía y otras propiedades adicionales
       const biography = `${name} es un personaje de tipo ${type} con poderes extraordinarios. ${description}`;
       
+      // Crear ID único para el personaje
+      const uniqueId = `custom_${Date.now().toString()}`;
+      
+      // Añadir el personaje con todos los datos necesarios
       addCharacter({
-        id: Date.now().toString(),
+        id: uniqueId,
         name,
         type,
         power,
@@ -96,16 +103,12 @@ const CharacterCreateForm = () => {
         allies: allies.split(',').map(a => a.trim()).filter(Boolean),
         rivals: rivals.split(',').map(r => r.trim()).filter(Boolean),
         biography: biography,
+        phrase: description.substring(0, 50) + "...",
+        appearances: [],
+        abilities: [],
         votes: [],
         voteCount: 0
       });
-      
-      // En un caso real, aquí subirías el archivo al servidor
-      if (imageTab === "upload" && imageFile) {
-        // Código de subida de archivos simulado
-        console.log(`Subiendo archivo ${imageFile.name} para ${name}`);
-        // La imagen se guardaría como /images/nombre_del_personaje.webp
-      }
       
       toast.success("¡Personaje creado con éxito!");
       navigate('/characters');
