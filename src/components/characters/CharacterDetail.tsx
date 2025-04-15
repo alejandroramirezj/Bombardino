@@ -64,9 +64,19 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
   };
 
   const getImagePath = () => {
+    // Si la imagen es un string base64 (data URL), usarla directamente
+    if (character.image && (character.image.startsWith('data:image') || character.image.includes('base64'))) {
+      return character.image;
+    }
+    
     // Si la imagen es una URL externa, usarla directamente
     if (character.image && character.image.startsWith('http')) {
       return character.image;
+    }
+    
+    // Caso especial para Birillo Impazzito
+    if (character.id === 'birillo-impazzito') {
+      return '/images/Birillo-Impazzito.webp';
     }
     
     // Si la imagen ya empieza con /images/, usar directamente
@@ -75,6 +85,15 @@ export default function CharacterDetail({ character }: CharacterDetailProps) {
     }
     
     // Si la imagen es un nombre de archivo, construir la ruta en /images/ con guiones
+    // Personajes personalizados tienen un ID que comienza con 'custom_'
+    if (character.id && character.id.startsWith('custom_')) {
+      // Para personajes personalizados, debería tener la imagen en base64 o una URL completa
+      // Si llegamos aquí, probablemente hay un error con los datos
+      console.warn('Personaje personalizado sin imagen válida:', character.name);
+      return '/images/placeholder.webp';
+    }
+    
+    // Para personajes predefinidos, usar la convención de nomenclatura
     const fileName = character.name.replace(/\s+/g, '-').toLowerCase();
     return `/images/${fileName}.webp`;
   };
