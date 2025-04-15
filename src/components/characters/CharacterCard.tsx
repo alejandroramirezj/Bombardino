@@ -16,6 +16,11 @@ const CharacterCard = ({ character, index = 0 }: CharacterCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   
   const getImagePath = () => {
+    // Caso especial para Birillo Impazzito
+    if (character.id === 'birillo-impazzito') {
+      return 'images/Birillo-Impazzito.webp';
+    }
+    
     // Si la imagen es una URL externa, usarla directamente
     if (character.image.startsWith('http')) {
       return character.image;

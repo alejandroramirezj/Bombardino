@@ -496,6 +496,22 @@ const initialCharacters: Character[] = [
     abilities: ["Camminata terrestre", "Nuoto abissale", "Sguardo ipnotico", "Trasformazione anfibio-terrestre"],
     biography: "Tripi Tropa è un rarissimo esemplare di pesce che ha sviluppato gambe possenti per camminare sulla terraferma. Originario delle profondità marine più misteriose, è emerso portando con sé i segreti degli abissi. I suoi occhi brillanti possono indurre allucinazioni psichedeliche in chiunque lo fissi troppo a lungo, facendo sperimentare visioni del mondo sottomarino.",
     phrase: "Tra terra e mare, la realtà scompare!"
+  },
+  {
+    id: "birillo-impazzito",
+    name: "Birillo Impazzito",
+    image: "/images/Birillo-Impazzito.webp",
+    type: "Ladro",
+    power: 91,
+    description: "Il più elegante dei birilli diventato folle dopo un trauma al bowling. Velocissimo e imprevedibile.",
+    allies: ["Bombardino coccodrillo", "Chimpanzini Bananini", "Glorbo Fruttodrillo"],
+    rivals: ["Bombombini Gusini", "Trippi Troppi", "Tralalero Tralala"],
+    votes: [],
+    voteCount: 27,
+    biography: "Un tempo era il più elegante dei birilli nella pista numero 7. Aveva sogni tranquilli di strike e abbracci collettivi coi suoi fratelli birilli. Ma tutto cambiò il giorno in cui una palla da bowling lo colpì... due volte di fila, di taglio, e mientras ascoltava reggaeton a tutto volume.\n\nDa quel giorno, Birillo Impazzito vive in modalità turbo.\nGrida anche quando dorme, ha le sopracciglia più arrabbiate d'Europa e una lingua che pare una sciarpa di carne.\nOdia le palle da bowling, ama il caos e si nutre di formaggio puzzolente e energia cinetica.\n\nSe lo vedi tremare così... corri.\nO balla con lui. Ma poi corri.",
+    phrase: "STRIIIIKEEEE NELLA TUA FACCIA!",
+    abilities: ["Iperattività turbo", "Grido penetrante", "Danza caotica", "Manipolazione del formaggio"],
+    appearances: ["Il Grande Strike", "Bowling Apocalypse", "La Vendetta del Birillo"]
   }
 ];
 
