@@ -1,0 +1,6 @@
+# Redirigir www a non-www
+https://www.bombardirocrocodrilo.com/* https://bombardirocrocodrilo.com/:splat 301!
+
+# Redirigir HTTP a HTTPS
+http://bombardirocrocodrilo.com/* https://bombardirocrocodrilo.com/:splat 301!
+http://www.bombardirocrocodrilo.com/* https://bombardirocrocodrilo.com/:splat 301! 
