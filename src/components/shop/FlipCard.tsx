@@ -21,12 +21,16 @@ const FlipCard = ({ character, onClick }: FlipCardProps) => {
       onClick={handleClick}
     >
       <motion.div
-        className="relative w-full h-full preserve-3d transition-all duration-500"
+        className="relative w-full h-full"
+        style={{ transformStyle: "preserve-3d" }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         transition={{ duration: 0.6, ease: "easeInOut" }}
       >
         {/* Cara frontal */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl overflow-hidden shadow-xl border-4 border-brainrot-turquoise bg-brainrot-dark">
+        <div 
+          className="absolute w-full h-full rounded-xl overflow-hidden shadow-xl border-4 border-brainrot-turquoise bg-brainrot-dark"
+          style={{ backfaceVisibility: "hidden" }}
+        >
           <img 
             src="/images/Bombardino-card-front.webp"
             alt={`Front of ${character.name} card`}
@@ -35,7 +39,13 @@ const FlipCard = ({ character, onClick }: FlipCardProps) => {
         </div>
         
         {/* Cara trasera */}
-        <div className="absolute w-full h-full backface-hidden rounded-xl overflow-hidden shadow-xl border-4 border-brainrot-blue bg-brainrot-dark rotateY-180">
+        <div 
+          className="absolute w-full h-full rounded-xl overflow-hidden shadow-xl border-4 border-brainrot-blue bg-brainrot-dark"
+          style={{ 
+            backfaceVisibility: "hidden", 
+            transform: "rotateY(180deg)"
+          }}
+        >
           <img 
             src="/images/Bombardino-card-back.webp"
             alt={`Back of ${character.name} card`}
