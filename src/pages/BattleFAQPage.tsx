@@ -308,51 +308,51 @@ const BattleStats = ({ stats }) => {
 // Añadir función generadora de narrativas de batalla
 const generateBattleNarrative = (fighter1, fighter2, scenario, winner) => {
   try {
-    // Identificar quién ganó y quién perdió
-    const winnerFighter = winner === fighter1.name ? fighter1 : fighter2;
-    const loserFighter = winner === fighter1.name ? fighter2 : fighter1;
-    
-    // Ventajas según escenario
-    const winnerHasAdvantage = winnerFighter.type === scenario.advantage;
-    const loserHasDisadvantage = loserFighter.type === scenario.disadvantage;
-    
+  // Identificar quién ganó y quién perdió
+  const winnerFighter = winner === fighter1.name ? fighter1 : fighter2;
+  const loserFighter = winner === fighter1.name ? fighter2 : fighter1;
+  
+  // Ventajas según escenario
+  const winnerHasAdvantage = winnerFighter.type === scenario.advantage;
+  const loserHasDisadvantage = loserFighter.type === scenario.disadvantage;
+  
     // Narrativas específicas con ataques en italiano
-    const narratives = {
-      // Bombardino
-      "Bombardino coccodrillo": {
-        attacks: [
+  const narratives = {
+    // Bombardino
+    "Bombardino coccodrillo": {
+      attacks: [
           { name: "Coda Potente", description: "un potente coletazo" },
           { name: "Morso Fulminante", description: "una mordida fulminante" },
           { name: "Mascella Tritamissili", description: "su ataque 'Mandíbula Trituracohetes'" },
           { name: "Carica Acquatica", description: "una embestida acuática" }
-        ],
-        finishers: [
+      ],
+      finishers: [
           { name: "Getto d'Acqua Pressurizzata", description: "chorro de agua a presión" },
           { name: "Vortice Devastante", description: "remolino devastador" },
           { name: "Bombardamento Acquatico", description: "Bombardeo Acuático" },
           { name: "Trappola Acquatica", description: "trampa acuática" }
-        ],
-        defeats: [
+      ],
+      defeats: [
           { name: "Attacco Acquatico Fallito", description: "fallido ataque acuático" },
           { name: "Mancanza d'Acqua", description: "falta de agua" },
           { name: "Terreno Sfavorevole", description: "terreno desfavorable" }
-        ]
-      },
-      // Tralalero
-      "Tralalero Tralala": {
-        attacks: [
+      ]
+    },
+    // Tralalero
+    "Tralalero Tralala": {
+      attacks: [
           { name: "Melodia Ipnotica", description: "melodía hipnótica" },
           { name: "Riff di Chitarra", description: "riff de guitarra" },
           { name: "Note Musicali Affilate", description: "notas musicales afiladas" },
           { name: "Attacco Sonico", description: "ataque sónico" }
-        ],
-        finishers: [
+      ],
+      finishers: [
           { name: "Assordante Tralalazo", description: "Tralalazo Ensordecedor" },
           { name: "Proiettile di Microfono", description: "proyectil de micrófono" },
           { name: "Onda Sonora", description: "onda de sonido" },
           { name: "Scarpe Magiche", description: "zapatillas mágicas" }
-        ],
-        defeats: [
+      ],
+      defeats: [
           { name: "Ipnosi Fallita", description: "hipnosis fallida" },
           { name: "Nota Musicale Stonata", description: "nota musical desafinada" },
           { name: "Inciampo nei Cavi", description: "tropiezo con cables" }
@@ -397,8 +397,8 @@ const generateBattleNarrative = (fighter1, fighter2, scenario, winner) => {
       : fighter1Narratives.defeats[Math.floor(Math.random() * fighter1Narratives.defeats.length)];
     
     // Construir la narrativa con más elementos visuales
-    let narrative = "";
-    
+  let narrative = "";
+  
     // Panel de escenario visual - usando clase de fondo en lugar de imagen de fondo con URL
     narrative += `
     <div class="relative overflow-hidden rounded-lg mb-4 bg-gradient-to-r from-brainrot-darker to-brainrot-dark border border-brainrot-blue/30">
@@ -609,8 +609,8 @@ const generateBattleNarrative = (fighter1, fighter2, scenario, winner) => {
         </div>
       </div>
     </div>`;
-    
-    return narrative;
+  
+  return narrative;
   } catch (error) {
     console.error("Error al generar narrativa:", error);
     // Narrativa de respaldo simple en caso de error
@@ -1152,28 +1152,28 @@ const BattleSimulator = () => {
     const winner = fighter1Power > fighter2Power ? fighter1.name : fighter2.name;
     
     try {
-      // Generar la narrativa de la batalla
-      const battleNarrative = generateBattleNarrative(fighter1, fighter2, scenario, winner);
-      
-      // Crear resultado y estadísticas
+    // Generar la narrativa de la batalla
+    const battleNarrative = generateBattleNarrative(fighter1, fighter2, scenario, winner);
+    
+    // Crear resultado y estadísticas
       const result = {
-        fighter1: fighter1,
-        fighter2: fighter2,
-        scenario: scenario,
-        score1: score1,
-        score2: score2,
-        winner: winner,
-        narrative: battleNarrative
+      fighter1: fighter1,
+      fighter2: fighter2,
+      scenario: scenario,
+      score1: score1,
+      score2: score2,
+      winner: winner,
+      narrative: battleNarrative
       };
       
       setBattleResult(result);
-      
-      setBattleStats([
-        { label: "Poder base", fighter1Value: fighter1.power, fighter2Value: fighter2.power },
-        { label: "Ventaja escenario", fighter1Value: fighter1.type === scenario.advantage ? 75 : (fighter1.type === scenario.disadvantage ? 25 : 50), 
-          fighter2Value: fighter2.type === scenario.advantage ? 75 : (fighter2.type === scenario.disadvantage ? 25 : 50) },
-        { label: "Fortaleza", fighter1Value: f1Percent, fighter2Value: f2Percent },
-      ]);
+    
+    setBattleStats([
+      { label: "Poder base", fighter1Value: fighter1.power, fighter2Value: fighter2.power },
+      { label: "Ventaja escenario", fighter1Value: fighter1.type === scenario.advantage ? 75 : (fighter1.type === scenario.disadvantage ? 25 : 50), 
+        fighter2Value: fighter2.type === scenario.advantage ? 75 : (fighter2.type === scenario.disadvantage ? 25 : 50) },
+      { label: "Fortaleza", fighter1Value: f1Percent, fighter2Value: f2Percent },
+    ]);
       
       // Guardar batalla y obtener ID
       const id = saveBattle(result);
@@ -1340,10 +1340,10 @@ const BattleSimulator = () => {
       
       <div className="bg-gradient-to-r from-brainrot-darker to-brainrot-dark p-4 border-b border-brainrot-blue/30">
         <div className="flex justify-between items-center">
-          <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center">
-            <Swords className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-brainrot-turquoise" />
-            Simulador de Batallas Épicas
-          </h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center">
+          <Swords className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-brainrot-turquoise" />
+          Simulador de Batallas Épicas
+        </h2>
           
           <div className="flex gap-2">
             <Button 
