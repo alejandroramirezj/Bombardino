@@ -13,6 +13,7 @@ import { Character } from '@/types';
 import initialCharacters from '@/data/characters';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Truck, Sparkles, Printer } from 'lucide-react';
+import FloatingEmojis from '../components/effects/FloatingEmojis'; // Usando ruta relativa ya corregida
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -41,18 +42,23 @@ const HomePage = () => {
 
       {bombardinoCharacter && (
         <motion.section 
-          className="py-24 bg-gradient-to-br from-brainrot-dark via-brainrot-darker to-black overflow-hidden"
+          className="relative py-24 bg-gradient-to-br from-brainrot-dark via-brainrot-darker to-black overflow-hidden"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-6">
-              ¡<span className="text-brainrot-turquoise">Exclusiva</span> Física!
+          <FloatingEmojis count={20} emojis={['💥', '💣']} />
+
+          <div className="relative z-10 container mx-auto px-4 text-center">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight">
+              Colecciona la Carta <span className="text-brainrot-turquoise">Premium</span>
+              <span className="block text-2xl md:text-3xl lg:text-4xl mt-2 font-semibold text-gray-300">
+                Bombardino Coccodrillo - ¡Edición Limitada!
+              </span>
             </h2>
             <p className="text-gray-400 text-lg max-w-xl mx-auto mb-16">
-              ¡Lleva a casa la carta física oficial de Bombardino Coccodrillo! Edición limitada para coleccionistas. ¡Gírala!
+              Añade a tu colección la pieza física definitiva. Solo 50 unidades disponibles. ¡Gírala para verla!
             </p>
             
             <div className="flex flex-col lg:flex-row items-center justify-center gap-16">
@@ -61,25 +67,29 @@ const HomePage = () => {
               </div>
 
               <div className="text-left max-w-md">
-                <h3 className="text-3xl font-bold text-white mb-6">¿Qué Recibes?</h3>
-                <ul className="space-y-4 text-gray-300 mb-10">
-                  <li className="flex items-start gap-3">
-                    <Sparkles className="w-5 h-5 text-brainrot-turquoise mt-1 flex-shrink-0" />
-                    <span>**Carta Física Premium:** Impresión de alta calidad con acabado brillante y detalles nítidos.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Printer className="w-5 h-5 text-brainrot-turquoise mt-1 flex-shrink-0" />
-                    <span>**Diseño Exclusivo:** Arte original de Italian Brainrot en ambas caras.</span>
-                  </li>
-                   <li className="flex items-start gap-3">
-                    <ShieldCheck className="w-5 h-5 text-brainrot-turquoise mt-1 flex-shrink-0" />
-                    <span>**Sobre Protector:** Incluido para mantener tu carta en perfecto estado.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Truck className="w-5 h-5 text-brainrot-turquoise mt-1 flex-shrink-0" />
-                    <span>**Envío Seguro:** Empaquetado cuidadosamente para que llegue impecable a tu casa.</span>
-                  </li>
-                </ul>
+                <h3 className="text-3xl font-bold text-white mb-8 text-center lg:text-left">¿Qué Recibes?</h3>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-6 text-white mb-10">
+                  <div className="flex flex-col items-center text-center">
+                    <Sparkles className="w-10 h-10 text-brainrot-turquoise mb-2" />
+                    <span className="font-semibold">Calidad Premium</span>
+                    <span className="text-xs text-gray-400">Acabado brillante</span> 
+                  </div>
+                  <div className="flex flex-col items-center text-center">
+                    <Printer className="w-10 h-10 text-brainrot-turquoise mb-2" />
+                    <span className="font-semibold">Diseño Exclusivo</span>
+                    <span className="text-xs text-gray-400">Arte original</span>
+                  </div>
+                  <div className="flex flex-col items-center text-center">
+                    <ShieldCheck className="w-10 h-10 text-brainrot-turquoise mb-2" />
+                    <span className="font-semibold">Protección Incluida</span>
+                    <span className="text-xs text-gray-400">Sobre protector</span>
+                  </div>
+                  <div className="flex flex-col items-center text-center">
+                    <Truck className="w-10 h-10 text-brainrot-turquoise mb-2" />
+                    <span className="font-semibold">Envío Seguro</span>
+                    <span className="text-xs text-gray-400">Empaquetado</span>
+                  </div>
+                </div>
 
                 <motion.div
                   whileHover={{ scale: 1.05 }}
