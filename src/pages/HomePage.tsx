@@ -2,7 +2,8 @@ import Hero from '@/components/home/Hero';
 import CharacterShowcase from '@/components/home/CharacterShowcase';
 import CharacterMarquee from '@/components/home/CharacterMarquee';
 import RankingSection from '@/components/home/RankingSection';
-import FlipCard from '@/components/shop/FlipCard';
+// import FlipCard from '@/components/shop/FlipCard'; // Comentamos la importación con alias
+import FlipCard from '../components/shop/FlipCard'; // Usamos ruta relativa
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +11,8 @@ import { Helmet } from 'react-helmet-async';
 import { useState, useEffect } from 'react';
 import { Character } from '@/types';
 import initialCharacters from '@/data/characters';
+import { motion } from 'framer-motion';
+import { ShieldCheck, Truck, Sparkles, Printer } from 'lucide-react';
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -37,33 +40,73 @@ const HomePage = () => {
       <RankingSection />
 
       {bombardinoCharacter && (
-        <section className="py-16 bg-gradient-to-b from-brainrot-dark to-brainrot-darker">
+        <motion.section 
+          className="py-24 bg-gradient-to-br from-brainrot-dark via-brainrot-darker to-black overflow-hidden"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
-              Carta <span className="text-brainrot-turquoise">Destacada</span>
+            <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-6">
+              ¡<span className="text-brainrot-turquoise">Exclusiva</span> Física!
             </h2>
-            <p className="text-gray-400 max-w-xl mx-auto mb-10">
-              ¡Consigue la carta coleccionable exclusiva de Bombardino Coccodrillo! Haz clic para ver ambos lados.
+            <p className="text-gray-400 text-lg max-w-xl mx-auto mb-16">
+              ¡Lleva a casa la carta física oficial de Bombardino Coccodrillo! Edición limitada para coleccionistas. ¡Gírala!
             </p>
             
-            <div className="flex flex-col items-center gap-8">
-              <FlipCard character={bombardinoCharacter} />
-              
-              <Button 
-                asChild 
-                className="mt-4 px-8 py-4 text-lg bg-brainrot-turquoise hover:bg-brainrot-blue text-black font-bold transition-colors shadow-lg"
-              >
-                <a 
-                  href="https://buy.stripe.com/14kdRi0iv0kYfPG4gg" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-16">
+              <div className="flex-shrink-0">
+                <FlipCard character={bombardinoCharacter} />
+              </div>
+
+              <div className="text-left max-w-md">
+                <h3 className="text-3xl font-bold text-white mb-6">¿Qué Recibes?</h3>
+                <ul className="space-y-4 text-gray-300 mb-10">
+                  <li className="flex items-start gap-3">
+                    <Sparkles className="w-5 h-5 text-brainrot-turquoise mt-1 flex-shrink-0" />
+                    <span>**Carta Física Premium:** Impresión de alta calidad con acabado brillante y detalles nítidos.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Printer className="w-5 h-5 text-brainrot-turquoise mt-1 flex-shrink-0" />
+                    <span>**Diseño Exclusivo:** Arte original de Italian Brainrot en ambas caras.</span>
+                  </li>
+                   <li className="flex items-start gap-3">
+                    <ShieldCheck className="w-5 h-5 text-brainrot-turquoise mt-1 flex-shrink-0" />
+                    <span>**Sobre Protector:** Incluido para mantener tu carta en perfecto estado.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <Truck className="w-5 h-5 text-brainrot-turquoise mt-1 flex-shrink-0" />
+                    <span>**Envío Seguro:** Empaquetado cuidadosamente para que llegue impecable a tu casa.</span>
+                  </li>
+                </ul>
+
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                  className="w-full"
                 >
-                  Comprar Carta Ahora - 3,00 €
-                </a>
-              </Button>
+                  <Button 
+                    asChild 
+                    className="w-full px-10 py-5 text-xl bg-brainrot-turquoise hover:bg-brainrot-blue text-black font-bold transition-colors duration-300 shadow-lg shadow-brainrot-turquoise/30 rounded-lg"
+                  >
+                    <a 
+                      href="https://buy.stripe.com/14kdRi0iv0kYfPG4gg" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      Comprar Carta Física - 3,00 €
+                    </a>
+                  </Button>
+                </motion.div>
+                
+                <p className="text-gray-500 text-xs mt-4 text-center flex items-center justify-center gap-1">
+                  <ShieldCheck className="w-3 h-3"/> Pago 100% seguro vía Stripe.
+                </p>
+              </div>
             </div>
           </div>
-        </section>
+        </motion.section>
       )}
       
       <section className="py-16 bg-brainrot-dark">
