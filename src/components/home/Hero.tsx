@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, MouseEvent } from 'react';
 
 // Componente de explosión mejorado
 const Explosion = ({ x, y }: { x: number; y: number }) => {
   return (
     <motion.div
-      className="absolute pointer-events-none"
+      className="absolute pointer-events-none z-50"
       style={{ left: x, top: y }}
       initial={{ opacity: 1 }}
       animate={{ opacity: 0 }}
@@ -147,29 +147,30 @@ const ParticleEffect = () => {
 const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [explosions, setExplosions] = useState<{id: number; x: number; y: number}[]>([]);
-  const [explosionCount, setExplosionCount] = useState(0);
+  const heroContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsLoaded(true);
-    const interval = setInterval(() => {
-      const x = Math.random() * (window.innerWidth - 200) + 100;
-      const y = Math.random() * (window.innerHeight - 200) + 100;
-      setExplosions(prev => [...prev, { id: explosionCount, x, y }]);
-      setExplosionCount(c => c + 1);
-      
-      // Sonido de explosión
-      const audio = new Audio('/sounds/explosion.mp3');
-      audio.volume = 0.3;
-      audio.play().catch(() => {}); // Ignorar errores si el navegador bloquea el audio
-      
-      // Limpiar explosiones antiguas
-      setTimeout(() => {
-        setExplosions(prev => prev.filter(e => e.id !== explosionCount));
-      }, 1200);
-    }, 2500);
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [explosionCount]);
+  const handleHeroClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (!heroContainerRef.current) return;
+
+    const rect = heroContainerRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    const newExplosionId = Date.now();
+    setExplosions(prev => [...prev, { id: newExplosionId, x, y }]);
+
+    const audio = new Audio('/sounds/explosion.mp3');
+    audio.volume = 0.4;
+    audio.play().catch(() => {});
+
+    setTimeout(() => {
+      setExplosions(prev => prev.filter(e => e.id !== newExplosionId));
+    }, 1200);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -202,12 +203,18 @@ const Hero = () => {
       {/* Efecto de partículas */}
       <ParticleEffect />
       
-      {/* Explosiones */}
-      <AnimatePresence>
-        {explosions.map(({ id, x, y }) => (
-          <Explosion key={id} x={x} y={y} />
-        ))}
-      </AnimatePresence>
+      {/* Contenedor para explosiones (para coordenadas relativas) y click handler */}
+      <div 
+        ref={heroContainerRef} 
+        className="absolute inset-0 z-20 cursor-crosshair"
+        onClick={handleHeroClick}
+      >
+        <AnimatePresence>
+          {explosions.map(({ id, x, y }) => (
+            <Explosion key={id} x={x} y={y} />
+          ))}
+        </AnimatePresence>
+      </div>
       
       <div className="container mx-auto relative z-10">
         <motion.div 
@@ -259,69 +266,26 @@ const Hero = () => {
           </motion.div>
           
           <motion.div 
-            className="mb-12 relative group"
+            className="relative w-full max-w-4xl mx-auto mt-8 md:mt-0 aspect-[16/7] rounded-xl overflow-hidden shadow-2xl shadow-brainrot-blue/30 border-2 border-brainrot-blue/50"
             variants={itemVariants}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
           >
-            <div className="relative bg-brainrot-darker/50 backdrop-blur-xl border-2 border-brainrot-blue/50 p-2 rounded-2xl max-w-xl mx-auto overflow-hidden shadow-2xl shadow-brainrot-blue/20">
-              <div className="absolute inset-0 bg-gradient-to-r from-brainrot-blue/0 via-brainrot-blue/30 to-brainrot-blue/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 -translate-x-full group-hover:translate-x-full"></div>
-              
-              <motion.img 
-                src="/images/Bombardino-Crocodillo.webp"
-                alt="Bombardino coccodrillo"
-                className="w-full h-auto object-contain rounded-xl mx-auto transform transition-transform duration-700"
-                style={{ maxHeight: "350px", width: "auto" }}
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                whileHover={{ scale: 1.05, rotate: -1 }}
-              />
-
-              {/* Añadir efecto de destello en las esquinas */}
-              <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-radial from-brainrot-blue/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-radial from-brainrot-turquoise/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </div>
-            
-            <div className="absolute -inset-4 bg-gradient-to-r from-brainrot-blue/0 via-brainrot-blue/20 to-brainrot-blue/0 blur-2xl -z-10 opacity-75"></div>
+            <img
+              src="/images/bombardino-hero.webp"
+              alt="Bombardino Coccodrillo volando en un avión bombardero"
+              className="w-full h-full object-contain"
+              width={1280}
+              height={560}
+              loading="eager"
+              fetchPriority="high"
+            />
           </motion.div>
           
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            variants={itemVariants}
-          >
-            <Button 
-              asChild 
-              size="lg" 
-              className="bg-gradient-to-r from-brainrot-blue to-brainrot-turquoise hover:brightness-110 transform transition-all duration-300 hover:scale-105 hover:rotate-1 shadow-lg shadow-brainrot-blue/20 px-8 py-6 text-xl font-bold tracking-wide w-full sm:w-auto rounded-xl relative overflow-hidden group"
-            >
-              <Link to="personajes" className="relative z-10 flex items-center gap-2">
-                <span className="group-hover:animate-pulse">EXPLORAR AHORA</span>
-                <motion.span
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                >
-                  →
-                </motion.span>
-              </Link>
+          <motion.div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center" variants={itemVariants}>
+            <Button asChild size="lg" className="px-8 py-6 text-lg bg-brainrot-turquoise hover:bg-brainrot-blue text-black font-bold shadow-lg">
+              <Link to="/personajes">Explorar Personajes</Link>
             </Button>
-            
-            <Button 
-              asChild 
-              size="lg" 
-              variant="outline" 
-              className="border-2 border-brainrot-turquoise text-brainrot-turquoise hover:bg-brainrot-turquoise/20 transform transition-all duration-300 hover:scale-105 hover:-rotate-1 px-8 py-6 text-xl font-bold tracking-wide w-full sm:w-auto rounded-xl group"
-            >
-              <Link to="ranking" className="flex items-center gap-2">
-                <span>VER RANKING</span>
-                <motion.span
-                  className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                >
-                  🏆
-                </motion.span>
-              </Link>
+            <Button asChild variant="outline" size="lg" className="px-8 py-6 text-lg border-brainrot-turquoise text-brainrot-turquoise hover:bg-brainrot-turquoise/10 hover:text-brainrot-turquoise font-bold shadow-lg">
+              <Link to="/ranking">Ver Ranking</Link>
             </Button>
           </motion.div>
 

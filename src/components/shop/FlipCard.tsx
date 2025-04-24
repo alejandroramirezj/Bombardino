@@ -50,6 +50,9 @@ const FlipCard = ({ character, onClick }: FlipCardProps) => {
             src="/images/Bombardino-card-front.webp"
             alt={`Front of ${character.name} card`}
             className="w-full h-full object-cover object-center"
+            width={300}
+            height={420}
+            loading="lazy"
           />
         </div>
         
@@ -65,6 +68,9 @@ const FlipCard = ({ character, onClick }: FlipCardProps) => {
             src="/images/Bombardino-card-back.webp"
             alt={`Back of ${character.name} card`}
             className="w-full h-full object-cover object-center"
+            width={300}
+            height={420}
+            loading="lazy"
           />
         </div>
       </motion.div>
