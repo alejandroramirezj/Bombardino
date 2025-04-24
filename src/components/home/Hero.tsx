@@ -272,7 +272,7 @@ const Hero = () => {
             <img
               src="/images/Epic-battle.webp"
               alt="Épica batalla de personajes de Bombardino Universe"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
               width={1280}
               height={560}
               loading="eager"
