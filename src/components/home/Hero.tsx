@@ -270,8 +270,8 @@ const Hero = () => {
             variants={itemVariants}
           >
             <img
-              src="/images/bombardino-hero.webp"
-              alt="Bombardino Coccodrillo volando en un avión bombardero"
+              src="/images/Epic-battle.webp"
+              alt="Épica batalla de personajes de Bombardino Universe"
               className="w-full h-full object-contain"
               width={1280}
               height={560}
