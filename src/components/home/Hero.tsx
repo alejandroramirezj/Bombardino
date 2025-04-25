@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -122,27 +123,12 @@ const Explosion = ({ x, y }: { x: number; y: number }) => {
   );
 };
 
-// Componente para el efecto de partículas
-const ParticleEffect = () => {
-  const particleCount = window.innerWidth < 768 ? 20 : 40;
-  
-  const particles = Array.from({ length: particleCount }, (_, i) => (
-    <div 
-      key={i}
-      className="absolute rounded-full bg-brainrot-blue/30 animate-float"
-      style={{
-        top: `${Math.random() * 100}%`,
-        left: `${Math.random() * 100}%`,
-        width: `${Math.random() * 8 + 3}px`,
-        height: `${Math.random() * 8 + 3}px`,
-        animationDelay: `${Math.random() * 5}s`,
-        animationDuration: `${Math.random() * 10 + 10}s`,
-      }}
-    />
-  ));
+// Corregido: Importar desde el nuevo archivo
+// Lazy load ParticleEffect
+const ParticleEffect = React.lazy(() => import('./ParticleEffect'));
 
-  return <div className="absolute inset-0 overflow-hidden z-0">{particles}</div>;
-};
+// Simple fallback para ParticleEffect si es necesario (podría ser null)
+const ParticleFallback = () => null;
 
 const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -200,10 +186,12 @@ const Hero = () => {
       {/* Gradiente de fondo mejorado */}
       <div className="absolute inset-0 bg-gradient-radial from-brainrot-blue/20 via-brainrot-dark to-brainrot-darker z-0"></div>
       
-      {/* Efecto de partículas */}
-      <ParticleEffect />
+      {/* Efecto de partículas (Lazy loaded) */}
+      <Suspense fallback={<ParticleFallback />}>
+        <ParticleEffect />
+      </Suspense>
       
-      {/* Contenedor para explosiones (para coordenadas relativas) y click handler */}
+      {/* Contenedor para explosiones */}
       <div 
         ref={heroContainerRef} 
         className="absolute inset-0 z-20 cursor-crosshair"
@@ -224,7 +212,7 @@ const Hero = () => {
           animate={isLoaded ? "visible" : "hidden"}
         >
           <motion.div
-            className="relative inline-block mb-8"
+            className="relative inline-block mb-6"
             variants={itemVariants}
           >
             <motion.h1 
@@ -266,7 +254,7 @@ const Hero = () => {
           </motion.div>
           
           <motion.div 
-            className="relative w-full max-w-4xl mx-auto mt-8 md:mt-0"
+            className="relative w-full max-w-4xl mx-auto mt-6 md:mt-0"
             variants={itemVariants}
           >
             <img
@@ -277,6 +265,7 @@ const Hero = () => {
               height={560}
               loading="eager"
               fetchPriority="high"
+              decoding="async"
             />
           </motion.div>
           
