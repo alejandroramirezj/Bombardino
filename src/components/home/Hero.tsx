@@ -133,30 +133,49 @@ const ParticleFallback = () => null;
 const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [explosions, setExplosions] = useState<{id: number; x: number; y: number}[]>([]);
-  const heroContainerRef = useRef<HTMLDivElement>(null);
+  const heroContainerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
 
-  const handleHeroClick = (event: MouseEvent<HTMLDivElement>) => {
-    if (!heroContainerRef.current) return;
-
-    const rect = heroContainerRef.current.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    
-    const newExplosionId = Date.now();
+  const triggerExplosion = (x: number, y: number) => {
+    const newExplosionId = Date.now() + Math.random();
     setExplosions(prev => [...prev, { id: newExplosionId, x, y }]);
 
     const audio = new Audio('/sounds/explosion.mp3');
-    audio.volume = 0.4;
+    audio.volume = 0.3;
     audio.play().catch(() => {});
 
     setTimeout(() => {
       setExplosions(prev => prev.filter(e => e.id !== newExplosionId));
     }, 1200);
   };
+
+  const handleHeroClick = (event: MouseEvent<HTMLElement>) => {
+    if (event.target instanceof Element && (event.target.closest('button') || event.target.closest('a'))) {
+      return;
+    }
+
+    if (!heroContainerRef.current) return;
+    const rect = heroContainerRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    triggerExplosion(x, y);
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (heroContainerRef.current) {
+        const rect = heroContainerRef.current.getBoundingClientRect();
+        const randomX = Math.random() * rect.width;
+        const randomY = Math.random() * rect.height;
+        triggerExplosion(randomX, randomY);
+      }
+    }, 4000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -182,7 +201,11 @@ const Hero = () => {
   };
 
   return (
-    <section className="bg-brainrot-dark py-12 md:py-28 px-4 relative overflow-hidden min-h-[90vh] md:min-h-[80vh] flex items-center">
+    <section 
+      ref={heroContainerRef}
+      onClick={handleHeroClick}
+      className="bg-brainrot-dark py-12 md:py-28 px-4 relative overflow-hidden min-h-[90vh] md:min-h-[80vh] flex items-center cursor-default"
+    >
       {/* Gradiente de fondo mejorado */}
       <div className="absolute inset-0 bg-gradient-radial from-brainrot-blue/20 via-brainrot-dark to-brainrot-darker z-0"></div>
       
@@ -191,12 +214,8 @@ const Hero = () => {
         <ParticleEffect />
       </Suspense>
       
-      {/* Contenedor para explosiones */}
-      <div 
-        ref={heroContainerRef} 
-        className="absolute inset-0 z-20 cursor-crosshair"
-        onClick={handleHeroClick}
-      >
+      {/* Contenedor para renderizar las explosiones (NECESARIO) */}
+      <div className="absolute inset-0 z-30 pointer-events-none"> 
         <AnimatePresence>
           {explosions.map(({ id, x, y }) => (
             <Explosion key={id} x={x} y={y} />
@@ -269,7 +288,10 @@ const Hero = () => {
             />
           </motion.div>
           
-          <motion.div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center" variants={itemVariants}>
+          <motion.div 
+            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center relative z-20"
+            variants={itemVariants}
+          >
             <Button asChild size="lg" className="px-8 py-6 text-lg bg-brainrot-turquoise hover:bg-brainrot-blue text-black font-bold shadow-lg">
               <Link to="/personajes">Explorar Personajes</Link>
             </Button>
