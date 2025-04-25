@@ -164,19 +164,6 @@ const Hero = () => {
     triggerExplosion(x, y);
   };
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (heroContainerRef.current) {
-        const rect = heroContainerRef.current.getBoundingClientRect();
-        const randomX = Math.random() * rect.width;
-        const randomY = Math.random() * rect.height;
-        triggerExplosion(randomX, randomY);
-      }
-    }, 4000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
