@@ -266,13 +266,13 @@ const Hero = () => {
           </motion.div>
           
           <motion.div 
-            className="relative w-full max-w-4xl mx-auto mt-8 md:mt-0 aspect-[16/7] rounded-xl overflow-hidden shadow-2xl shadow-brainrot-blue/30 border-2 border-brainrot-blue/50"
+            className="relative w-full max-w-4xl mx-auto mt-8 md:mt-0"
             variants={itemVariants}
           >
             <img
               src="/images/Epic-battle.webp"
               alt="Épica batalla de personajes de Bombardino Universe"
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain"
               width={1280}
               height={560}
               loading="eager"
