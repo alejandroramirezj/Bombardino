@@ -170,7 +170,7 @@ const Hero = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.5,
+        delayChildren: 0.1,
       }
     }
   };
@@ -181,9 +181,8 @@ const Hero = () => {
       y: 0, 
       opacity: 1, 
       transition: { 
-        duration: 0.6,
-        ease: "easeOut",
-        delay: 0.2
+        duration: 0.5,
+        ease: "easeOut"
       } 
     }
   };
