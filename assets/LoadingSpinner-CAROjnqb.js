@@ -1,1 +1,0 @@
-import{j as s,n as e}from"./index-CSdkmxbB.js";const n={sm:"w-4 h-4 border-2",md:"w-8 h-8 border-3",lg:"w-12 h-12 border-4"},t=({size:r="md",className:o})=>s.jsx("div",{className:e("animate-spin rounded-full border-solid border-brainrot-turquoise border-t-transparent",n[r],o)});export{t as L};
