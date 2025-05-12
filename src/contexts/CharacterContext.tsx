@@ -4,6 +4,11 @@ import { toast } from 'sonner';
 import { Character, CharacterType } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 
+// --- Versión de los datos de personajes ---
+// Incrementar esto si cambian los datos base en characters.ts
+const CHARACTERS_DATA_VERSION = '1.1'; 
+// Versión anterior era '1.0' o sin versión.
+
 export interface CharacterContextType {
   characters: Character[];
   loading: boolean;
@@ -31,28 +36,60 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Cargar personajes guardados desde localStorage
   const loadSavedCharacters = () => {
     try {
-      const savedCharacters = localStorage.getItem('brainrot-characters');
-      if (savedCharacters) {
-        const parsedCharacters = JSON.parse(savedCharacters);
-        // Combinar personajes iniciales con los guardados, evitando duplicados por ID
-        const combinedCharacters = [...normalizedInitialCharacters];
+      const savedData = localStorage.getItem('brainrot-characters');
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
         
-        parsedCharacters.forEach((savedChar: Character) => {
-          const existingIndex = combinedCharacters.findIndex(c => c.id === savedChar.id);
-          if (existingIndex >= 0) {
-            // Actualizar personaje existente
-            combinedCharacters[existingIndex] = savedChar;
-          } else {
-            // Añadir nuevo personaje
-            combinedCharacters.push(savedChar);
-          }
-        });
-        
-        return combinedCharacters;
+        // Verificar versión
+        if (parsedData && typeof parsedData === 'object' && parsedData.version === CHARACTERS_DATA_VERSION) {
+          console.log(`Cargando personajes desde localStorage (versión ${parsedData.version})`);
+          const savedCharacters = parsedData.data as Character[]; // Asumimos que los datos están en 'data'
+          
+          // --- Lógica de combinación existente (mantener votos, etc.) ---
+          const combinedCharacters = [...normalizedInitialCharacters];
+          savedCharacters.forEach((savedChar: Character) => {
+            const existingIndex = combinedCharacters.findIndex(c => c.id === savedChar.id);
+            if (existingIndex >= 0) {
+              // Actualizar personaje existente preservando estructura inicial pero manteniendo votos
+              combinedCharacters[existingIndex] = {
+                  ...normalizedInitialCharacters.find(c => c.id === savedChar.id), // Datos base del archivo
+                  ...savedChar, // Sobrescribir con datos guardados (incluye votos/voteCount)
+                  // Asegurar que los campos clave siempre vengan del archivo si existen
+                  name: normalizedInitialCharacters.find(c => c.id === savedChar.id)?.name || savedChar.name,
+                  image: normalizedInitialCharacters.find(c => c.id === savedChar.id)?.image || savedChar.image,
+                  type: normalizedInitialCharacters.find(c => c.id === savedChar.id)?.type || savedChar.type,
+                  // Asegurar que votes y voteCount sean correctos
+                  votes: Array.isArray(savedChar.votes) ? savedChar.votes : [],
+                  voteCount: typeof savedChar.voteCount === 'number' ? savedChar.voteCount : 0
+              };
+            } else {
+              // Añadir nuevo personaje (si estaba en localStorage pero no en initial - raro)
+               if (!normalizedInitialCharacters.some(c => c.id === savedChar.id)) {
+                 // Podríamos optar por no añadirlo si ya no existe en el archivo base
+                 // console.log("Personaje guardado no encontrado en datos iniciales, omitiendo:", savedChar.id);
+               } 
+            }
+          });
+           // Asegurar que todos los personajes de initialCharacters estén presentes
+           normalizedInitialCharacters.forEach(initialChar => {
+             if (!combinedCharacters.some(c => c.id === initialChar.id)) {
+               combinedCharacters.push(initialChar);
+             }
+           });
+          return combinedCharacters;
+          // --- Fin lógica de combinación ---
+          
+        } else {
+          console.warn('Datos de localStorage obsoletos o sin versión. Cargando datos frescos.');
+          // No coincide la versión o formato antiguo, ignorar localStorage
+        }
+      } else {
+        console.log('No se encontraron datos en localStorage. Cargando datos iniciales.');
       }
     } catch (error) {
-      console.error("Error al cargar personajes guardados:", error);
+      console.error("Error al cargar o parsear personajes guardados:", error);
     }
+    // Si falla, no hay datos, o la versión es obsoleta, cargar desde archivo
     return normalizedInitialCharacters;
   };
 
@@ -65,7 +102,17 @@ export const CharacterProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Guardar personajes en localStorage cuando cambien
   useEffect(() => {
     if (!loading) {
-      localStorage.setItem('brainrot-characters', JSON.stringify(characters));
+      try {
+        // Guardar con versión
+        const dataToSave = {
+          version: CHARACTERS_DATA_VERSION,
+          data: characters
+        };
+        localStorage.setItem('brainrot-characters', JSON.stringify(dataToSave));
+      } catch (error) {
+          console.error("Error al guardar personajes en localStorage:", error);
+          // Considerar si mostrar un error al usuario
+      }
     }
   }, [characters, loading]);
 
